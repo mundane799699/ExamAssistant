@@ -3,6 +3,7 @@ package com.mundane.examassistant.ui.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,7 @@ public class MainActivity extends BaseActivity {
 	private SelectCoursePopupWindowRvAdapter mAdapter;
 	private SelectCoursePopupWindow mCoursePopupWindow;
 	private ContentAdapter mContentAdapter;
+	private SelectCoursePopupWindow mCustomPopupWindow;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,14 @@ public class MainActivity extends BaseActivity {
 		StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 		mRvContent.setLayoutManager(manager);
 		mContentAdapter = new ContentAdapter();
+		mContentAdapter.setOnItemClickListener(new ContentAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClicked(Class clazz) {
+				if (clazz != null) {
+					startActivity(new Intent(MainActivity.this, clazz));
+				}
+			}
+		});
 		mRvContent.setAdapter(mContentAdapter);
 	}
 
@@ -111,27 +121,34 @@ public class MainActivity extends BaseActivity {
 	private SelectCoursePopupWindow createPopupWindow() {
 		View view = View.inflate(this, R.layout.popupwindow_select_course, null);
 		initView(view);
-		SelectCoursePopupWindow customPopupWindow = new SelectCoursePopupWindow(this, view);
-		customPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+		mCustomPopupWindow = new SelectCoursePopupWindow(this, view);
+		mCustomPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
 			@Override
 			public void onDismiss() {
 				mFlBg.setVisibility(View.GONE);
 				rotateArrow(180, 0);
 			}
 		});
-		return customPopupWindow;
+		return mCustomPopupWindow;
 	}
 
 	private void initView(View view) {
 		mRv = (RecyclerView) view.findViewById(R.id.rv);
 		mRv.setLayoutManager(new GridLayoutManager(this, 4));
 		if (mList.isEmpty()) {
-			mList.add(new CourseItem("近代史"));
-			mList.add(new CourseItem("思修"));
-			mList.add(new CourseItem("马克思"));
-			mList.add(new CourseItem("毛概下"));
+			mList.add(new CourseItem("近代史", true));
+			mList.add(new CourseItem("思修", false));
+			mList.add(new CourseItem("马克思", false));
+			mList.add(new CourseItem("毛概下", false));
 		}
 		mAdapter = new SelectCoursePopupWindowRvAdapter(mList);
+		mAdapter.setOnItemClickListener(new SelectCoursePopupWindowRvAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClicked(String text) {
+				mTvSelectCourse.setText(text);
+				mCustomPopupWindow.dismiss();
+			}
+		});
 		mRv.setAdapter(mAdapter);
 	}
 }

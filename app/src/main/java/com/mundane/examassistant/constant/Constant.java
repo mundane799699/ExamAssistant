@@ -1,5 +1,7 @@
 package com.mundane.examassistant.constant;
 
+import com.mundane.examassistant.BuildConfig;
+
 /**
  * @author : mundane
  * @time : 2017/4/11 19:41
@@ -14,4 +16,7 @@ public interface Constant {
 	int TYPE_EXAM = 4;
 	int TYPE_MY_FAVORITATE = 5;
 	int TYPE_MY_MISTAKE = 6;
+	boolean isDebug = BuildConfig.DEBUG;
+//	boolean isDebug = true;
+	String LOG_TAG = "mundane";
 }

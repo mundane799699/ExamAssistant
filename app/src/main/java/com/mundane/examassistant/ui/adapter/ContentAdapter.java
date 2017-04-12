@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.bean.ContentItem;
 import com.mundane.examassistant.constant.Constant;
+import com.mundane.examassistant.ui.activity.SectionPracticeActivity;
 import com.mundane.examassistant.widget.view.SimpleDotIndicater;
 
 import java.util.ArrayList;
@@ -33,14 +34,24 @@ public class ContentAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder>
 
 	private List<ContentItem> mList;
 
+	public interface OnItemClickListener {
+		void onItemClicked(Class clazz);
+	}
+
+	private OnItemClickListener mOnItemClickListener;
+
+	public void setOnItemClickListener(OnItemClickListener listener) {
+		this.mOnItemClickListener = listener;
+	}
+
 	public ContentAdapter() {
 		mList = new ArrayList<>();
-		mList.add(new ContentItem(Constant.TYPE_HEADER, null, 0));
-		mList.add(new ContentItem(Constant.TYPE_SECTION_PRACTICE, "章节练习", R.drawable.home_section_test));
-		mList.add(new ContentItem(Constant.TYPE_PRACTICE_HISTORY, "练习记录", R.drawable.home_history));
-		mList.add(new ContentItem(Constant.TYPE_EXAM, "模拟考试", R.drawable.home_exam));
-		mList.add(new ContentItem(Constant.TYPE_MY_FAVORITATE, "我的收藏", R.drawable.home_collection));
-		mList.add(new ContentItem(Constant.TYPE_MY_MISTAKE, "我的错题", R.drawable.home_wrong));
+		mList.add(new ContentItem(Constant.TYPE_HEADER, null, 0, null));
+		mList.add(new ContentItem(Constant.TYPE_SECTION_PRACTICE, "章节练习", R.drawable.home_section_test, SectionPracticeActivity.class));
+		mList.add(new ContentItem(Constant.TYPE_PRACTICE_HISTORY, "练习记录", R.drawable.home_history, null));
+		mList.add(new ContentItem(Constant.TYPE_EXAM, "模拟考试", R.drawable.home_exam, null));
+		mList.add(new ContentItem(Constant.TYPE_MY_FAVORITATE, "我的收藏", R.drawable.home_collection, null));
+		mList.add(new ContentItem(Constant.TYPE_MY_MISTAKE, "我的错题", R.drawable.home_wrong, null));
 	}
 
 	@Override
@@ -84,8 +95,18 @@ public class ContentAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder>
 	}
 
 	@Override
-	public void onBindViewHolder(TypeAbstractViewHolder holder, int position) {
-		holder.bindHolder(mList.get(position));
+	public void onBindViewHolder(TypeAbstractViewHolder holder, final int position) {
+		ContentItem item = mList.get(position);
+		final Class clazz = item.clazz;
+		holder.itemView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mOnItemClickListener != null) {
+					mOnItemClickListener.onItemClicked(clazz);
+				}
+			}
+		});
+		holder.bindHolder(item);
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 /**
@@ -123,6 +124,58 @@ public class FileUtils {
 		try {
 			bis = new BufferedInputStream(new FileInputStream(src));
 			int len;
+			byte[] buffer = new byte[1024 * 8];
+			while ((len = bis.read(buffer)) != -1) {
+				sb.append(new String(buffer, 0, len));
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bis != null) {
+				try {
+					bis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+		return sb.toString();
+	}
+
+	public static String readStringFromInputStream(InputStream inputStream) {
+		BufferedReader br = null;
+		String line;
+		StringBuilder sb = new StringBuilder();
+		try {
+			br = new BufferedReader(new InputStreamReader(inputStream));
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	public static String readStringFromInputStream2(InputStream inputStream) {
+		BufferedInputStream bis = null;
+
+		//StringBuilder比StringBuffer效率高
+		StringBuilder sb = new StringBuilder();
+		try {
+			bis = new BufferedInputStream(inputStream);
+			int len = -1;
 			byte[] buffer = new byte[1024 * 8];
 			while ((len = bis.read(buffer)) != -1) {
 				sb.append(new String(buffer, 0, len));

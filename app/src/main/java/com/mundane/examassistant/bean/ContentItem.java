@@ -14,10 +14,12 @@ public class ContentItem {
 	public String name;
 	@DrawableRes
 	public int resId;
+	public Class clazz;
 
-	public ContentItem(int type, String name, @DrawableRes int resId) {
+	public ContentItem(int type, String name, @DrawableRes int resId, Class clazz) {
 		this.type = type;
 		this.name = name;
 		this.resId = resId;
+		this.clazz = clazz;
 	}
 }

@@ -9,8 +9,10 @@ package com.mundane.examassistant.bean;
 
 public class CourseItem {
 	public String name;
+	public boolean isSelected;
 
-	public CourseItem(String name) {
+	public CourseItem(String name, boolean isSelected) {
 		this.name = name;
+		this.isSelected = isSelected;
 	}
 }
