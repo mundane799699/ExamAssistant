@@ -31,7 +31,7 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 	}
 
 	public interface OnItemClickListener {
-		void onItemClicked(String text);
+		void onItemClicked(CourseItem item);
 	}
 
 	private OnItemClickListener mOnItemClickListener;
@@ -50,10 +50,10 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 
 	@Override
 	public void onBindViewHolder(CustomPopupWindowRvViewHolder holder, final int position) {
-		CourseItem courseItem = mList.get(position);
-		final String name = courseItem.name;
+		final CourseItem item = mList.get(position);
+		final String name = item.name;
 		holder.tv.setText(name);
-		if (courseItem.isSelected) {
+		if (item.isSelected) {
 			holder.tv.setTextColor(holder.tv.getResources().getColor(R.color.colorPrimary));
 			mLastSelectedPosition = position;
 		} else {
@@ -68,7 +68,7 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 
 				mList.get(position).isSelected = true;
 				if (mOnItemClickListener != null) {
-					mOnItemClickListener.onItemClicked(name);
+					mOnItemClickListener.onItemClicked(item);
 				}
 				SelectCoursePopupWindowRvAdapter.this.notifyDataSetChanged();
 			}

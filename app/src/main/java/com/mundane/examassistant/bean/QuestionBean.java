@@ -9,7 +9,7 @@ import java.util.List;
  * @file : ProblemBean.java
  */
 
-public class ProblemBean {
+public class QuestionBean {
 
 	public PlistBean plist;
 

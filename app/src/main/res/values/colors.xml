@@ -6,4 +6,5 @@
     <color name="white">#FFFFFF</color>
     <color name="purple">#C279E4</color>
     <color name="colorSelectCourse">#F2F2F2</color>
+    <color name="commonGray">#dfdfdf</color>
 </resources>

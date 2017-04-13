@@ -8,11 +8,13 @@
     android:layout_height="match_parent"
     tools:context="com.mundane.examassistant.ui.activity.SectionPracticeActivity">
 
-    <TextView
-        android:text="输出"
-        android:textSize="40sp"
-        android:id="@+id/tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <include layout="@layout/activity_main_title"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

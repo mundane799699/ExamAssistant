@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity {
 	@BindView(R.id.rv_content)
 	RecyclerView mRvContent;
 	private RecyclerView mRv;
-	private List<CourseItem> mList = new ArrayList<>();
+	private List<CourseItem> mCourseList = new ArrayList<>();
 	private SelectCoursePopupWindowRvAdapter mAdapter;
 	private SelectCoursePopupWindow mCoursePopupWindow;
 	private ContentAdapter mContentAdapter;
@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private final String TAG = "MainActivity";
+	public static final String PARCELABLE = "parcelable";
 
 	private void init() {
 		StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -68,11 +69,22 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onItemClicked(Class clazz) {
 				if (clazz != null) {
-					startActivity(new Intent(MainActivity.this, clazz));
+					Intent intent = new Intent(MainActivity.this, clazz);
+					intent.putExtra(PARCELABLE, mCurrentCourseItem);
+					startActivity(intent);
 				}
 			}
 		});
 		mRvContent.setAdapter(mContentAdapter);
+
+		if (mCourseList.isEmpty()) {
+			mCourseList.add(new CourseItem("近代史", true));
+			mCourseList.add(new CourseItem("思修", false));
+			mCourseList.add(new CourseItem("马克思", false));
+			mCourseList.add(new CourseItem("毛概下", false));
+		}
+		mCurrentCourseItem = mCourseList.get(0);
+		mTvSelectCourse.setText(mCurrentCourseItem.name);
 	}
 
 	@OnClick({R.id.tv_select_course, R.id.iv_arrow, R.id.iv_setting})
@@ -132,23 +144,24 @@ public class MainActivity extends BaseActivity {
 		return mCustomPopupWindow;
 	}
 
+	private CourseItem mCurrentCourseItem;
+
 	private void initView(View view) {
 		mRv = (RecyclerView) view.findViewById(R.id.rv);
 		mRv.setLayoutManager(new GridLayoutManager(this, 4));
-		if (mList.isEmpty()) {
-			mList.add(new CourseItem("近代史", true));
-			mList.add(new CourseItem("思修", false));
-			mList.add(new CourseItem("马克思", false));
-			mList.add(new CourseItem("毛概下", false));
-		}
-		mAdapter = new SelectCoursePopupWindowRvAdapter(mList);
+
+
+		mAdapter = new SelectCoursePopupWindowRvAdapter(mCourseList);
 		mAdapter.setOnItemClickListener(new SelectCoursePopupWindowRvAdapter.OnItemClickListener() {
+
 			@Override
-			public void onItemClicked(String text) {
-				mTvSelectCourse.setText(text);
+			public void onItemClicked(CourseItem item) {
+				mCurrentCourseItem = item;
+				mTvSelectCourse.setText(item.name);
 				mCustomPopupWindow.dismiss();
 			}
 		});
 		mRv.setAdapter(mAdapter);
 	}
+
 }
