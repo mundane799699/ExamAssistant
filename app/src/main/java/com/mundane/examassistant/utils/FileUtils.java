@@ -168,6 +168,7 @@ public class FileUtils {
 		return sb.toString();
 	}
 
+	//	这个方法读取文本有问题, 有的地方有乱码
 	public static String readStringFromInputStream2(InputStream inputStream) {
 		BufferedInputStream bis = null;
 
@@ -175,7 +176,7 @@ public class FileUtils {
 		StringBuilder sb = new StringBuilder();
 		try {
 			bis = new BufferedInputStream(inputStream);
-			int len = -1;
+			int len;
 			byte[] buffer = new byte[1024 * 8];
 			while ((len = bis.read(buffer)) != -1) {
 				sb.append(new String(buffer, 0, len));
