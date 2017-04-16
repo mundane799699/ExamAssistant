@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.bean.ContentItem;
-import com.mundane.examassistant.constant.Constant;
+import com.mundane.examassistant.global.Constant;
 import com.mundane.examassistant.ui.activity.SectionPracticeActivity;
 import com.mundane.examassistant.widget.view.SimpleDotIndicater;
 

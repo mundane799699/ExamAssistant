@@ -1,4 +1,4 @@
-package com.mundane.examassistant.constant;
+package com.mundane.examassistant.global;
 
 import com.mundane.examassistant.BuildConfig;
 

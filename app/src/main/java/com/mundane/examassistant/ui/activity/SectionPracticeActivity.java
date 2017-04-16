@@ -10,30 +10,27 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.bean.QuestionBean;
 import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
-import com.mundane.examassistant.db.entity.Question;
-import com.mundane.examassistant.db.entity.QuestionDao;
+import com.mundane.examassistant.db.entity.SiXiuQuestion;
+import com.mundane.examassistant.db.entity.SiXiuQuestionDao;
 import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.FileUtils;
 import com.mundane.examassistant.utils.GsonUtil;
 import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class SectionPracticeActivity extends BaseActivity {
 	@BindView(R.id.iv_back)
@@ -48,11 +45,11 @@ public class SectionPracticeActivity extends BaseActivity {
 	RelativeLayout mRlTitle;
 	@BindView(R.id.rv)
 	RecyclerView mRv;
-	private CourseItem mCourseItem;
-	private List<SectionBean> mSectionList;
-	private SectionAdapter mSectionAdapter;
-	private QuestionDao mQuestionDao;
-	private List<Question> mQuestionList;
+	private CourseItem          mCourseItem;
+	private List<SectionBean>   mSectionList;
+	private SectionAdapter      mSectionAdapter;
+	private SiXiuQuestionDao    mSiXiuQuestionDao;
+	private List<SiXiuQuestion> mSiXiuQuestionList;
 
 //	@BindView(R.id.tv)
 //	TextView mTv;
@@ -96,9 +93,9 @@ public class SectionPracticeActivity extends BaseActivity {
 	}
 
 	private void checkData() {
-		mQuestionDao = DbHelper.getQuestionDao();
-		mQuestionList = mQuestionDao.loadAll();
-		if (mQuestionList.isEmpty()) {
+		mSiXiuQuestionDao = DbHelper.getSiXiuQuestionDao();
+		mSiXiuQuestionList = mSiXiuQuestionDao.loadAll();
+		if (mSiXiuQuestionList.isEmpty()) {
 			loadData();
 		}
 
@@ -120,7 +117,7 @@ public class SectionPracticeActivity extends BaseActivity {
 //			LogUtils.d(locale);
 //		}
 		try {
-			InputStream inputStream = assetManager.open("resource/思修单选1.txt");
+			InputStream inputStream = assetManager.open("resource/思修单选一.txt");
 			String text = FileUtils.readStringFromInputStream(inputStream);
 			long t2 = System.nanoTime();
 			QuestionBean questionBean = GsonUtil.parseJsonToBean(text, QuestionBean.class);
@@ -136,13 +133,13 @@ public class SectionPracticeActivity extends BaseActivity {
 			List<QuestionBean.PlistBean.ArrayBean.DictBean> dictBeanList = questionBean.plist.array.dict;
 			for (int i = 0; i < dictBeanList.size(); i++) {
 				QuestionBean.PlistBean.ArrayBean.DictBean dictBean = dictBeanList.get(i);
-//				List<String> key = dictBean.key;
+				List<String> key = dictBean.key;
 				List<String> string = dictBean.string;
-				Question question = new Question((long) (i+1), string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4));
-				mQuestionDao.insert(question);
+				SiXiuQuestion question = new SiXiuQuestion((long) (i+1), string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4), false, false);
+				mSiXiuQuestionDao.insert(question);
 			}
 			Toast.makeText(this, "数据导入完成", Toast.LENGTH_SHORT).show();
-//			mQuestionList = mQuestionDao.loadAll();
+//			mSiXiuQuestionList = mSiXiuQuestionDao.loadAll();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

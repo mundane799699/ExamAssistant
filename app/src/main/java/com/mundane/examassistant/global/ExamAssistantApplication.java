@@ -1,7 +1,8 @@
-package com.mundane.examassistant.app;
+package com.mundane.examassistant.global;
 
 import android.app.Application;
 
+import android.content.Context;
 import com.facebook.stetho.Stetho;
 
 /**
@@ -14,16 +15,18 @@ import com.facebook.stetho.Stetho;
 
 public class ExamAssistantApplication extends Application {
 
-	private static Application sApplication;
+    private static Context sContext;
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		sApplication = this;
-		//		chrome://inspect/#devices
+        sContext = getApplicationContext();
+        //		chrome://inspect/#devices
 		Stetho.initializeWithDefaults(this);
 	}
 
-	public static Application getApplication() {
-		return sApplication;
-	}
+
+    public static Context getContext() {
+        return sContext;
+    }
+
 }

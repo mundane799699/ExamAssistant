@@ -3,7 +3,7 @@ package com.mundane.examassistant.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.mundane.examassistant.constant.Constant;
+import com.mundane.examassistant.global.Constant;
 
 public class LogUtils {
 
