@@ -6,6 +6,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -195,6 +196,26 @@ public class FileUtils {
 
 		}
 		return sb.toString();
+	}
+
+	public static String readStringFromInputStream3(InputStream inputStream) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			int i = -1;
+			while ((i = inputStream.read()) != -1) {
+				baos.write(i);
+			}
+			return baos.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return baos.toString();
 	}
 
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.ui.adapter.ContentAdapter;
 import com.mundane.examassistant.ui.adapter.SelectCoursePopupWindowRvAdapter;
+import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.SelectCoursePopupWindow;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.mundane.examassistant.global.Constant.*;
 
 public class MainActivity extends BaseActivity {
 
@@ -78,13 +82,25 @@ public class MainActivity extends BaseActivity {
 		mRvContent.setAdapter(mContentAdapter);
 
 		if (mCourseList.isEmpty()) {
-			mCourseList.add(new CourseItem("近代史", true));
+			mCourseList.add(new CourseItem("近代史", false));
 			mCourseList.add(new CourseItem("思修", false));
 			mCourseList.add(new CourseItem("马克思", false));
 			mCourseList.add(new CourseItem("毛概下", false));
 		}
-		mCurrentCourseItem = mCourseList.get(0);
+		String currentCourse = SPUtils.getString(KEY_CURRENT_COURSE);
+		if (TextUtils.isEmpty(currentCourse)) {
+			mCurrentCourseItem = mCourseList.get(0);
+		} else {
+			for (CourseItem courseItem : mCourseList) {
+				if (TextUtils.equals(currentCourse, courseItem.name)) {
+					mCurrentCourseItem = courseItem;
+					break;
+				}
+			}
+		}
+		mCurrentCourseItem.isSelected = true;
 		mTvSelectCourse.setText(mCurrentCourseItem.name);
+		SPUtils.putString(KEY_CURRENT_COURSE, mCurrentCourseItem.name);
 	}
 
 	@OnClick({R.id.tv_select_course, R.id.iv_arrow, R.id.iv_setting})
@@ -156,8 +172,10 @@ public class MainActivity extends BaseActivity {
 
 			@Override
 			public void onItemClicked(CourseItem item) {
+				item.isSelected = true;
 				mCurrentCourseItem = item;
 				mTvSelectCourse.setText(item.name);
+				SPUtils.putString(KEY_CURRENT_COURSE, item.name);
 				mCustomPopupWindow.dismiss();
 			}
 		});

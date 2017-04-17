@@ -10,43 +10,53 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class History {
-    @Id(autoincrement = true)
-    private Long id;
-    private String section;
-    private long index;
-    private String description;
-    @Generated(hash = 1695396410)
-    public History(Long id, String section, long index, String description) {
-        this.id = id;
-        this.section = section;
-        this.index = index;
-        this.description = description;
-    }
-    @Generated(hash = 869423138)
-    public History() {
-    }
-    public Long getId() {
-        return this.id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getSection() {
-        return this.section;
-    }
-    public void setSection(String section) {
-        this.section = section;
-    }
-    public long getIndex() {
-        return this.index;
-    }
-    public void setIndex(long index) {
-        this.index = index;
-    }
-    public String getDescription() {
-        return this.description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	@Id(autoincrement = true)
+	private Long id;
+	private String course;
+	private String type;
+	private long index;
+	private String description;
+	@Generated(hash = 866954118)
+	public History(Long id, String course, String type, long index,
+			String description) {
+		this.id = id;
+		this.course = course;
+		this.type = type;
+		this.index = index;
+		this.description = description;
+	}
+	@Generated(hash = 869423138)
+	public History() {
+	}
+	public Long getId() {
+		return this.id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getCourse() {
+		return this.course;
+	}
+	public void setCourse(String course) {
+		this.course = course;
+	}
+	public String getType() {
+		return this.type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public long getIndex() {
+		return this.index;
+	}
+	public void setIndex(long index) {
+		this.index = index;
+	}
+	public String getDescription() {
+		return this.description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 }

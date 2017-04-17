@@ -1,12 +1,10 @@
 package com.mundane.examassistant.db;
 
 import android.content.Context;
+
 import com.mundane.examassistant.db.entity.DaoMaster;
 import com.mundane.examassistant.db.entity.DaoSession;
-import com.mundane.examassistant.db.entity.JinDaiShiQuestionDao;
-import com.mundane.examassistant.db.entity.MaKeSiQuestionDao;
-import com.mundane.examassistant.db.entity.MaoGaiXiaQuestionDao;
-import com.mundane.examassistant.db.entity.SiXiuQuestionDao;
+import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.global.CommonUtils;
 
 /**
@@ -38,22 +36,26 @@ public class DbManager {
 		mDaoSession = daoMaster.newSession();
 	}
 
-	public SiXiuQuestionDao getSiXiuQuestionDao() {
-		return mDaoSession.getSiXiuQuestionDao();
+	public QuestionDao getQuestionDao() {
+		return mDaoSession.getQuestionDao();
 	}
 
-    public MaKeSiQuestionDao getMaKeSiQuestionDao() {
-        return mDaoSession.getMaKeSiQuestionDao();
-    }
-
-    public MaoGaiXiaQuestionDao getMaoGaiXiaQuestionDao() {
-        return mDaoSession.getMaoGaiXiaQuestionDao();
-    }
-
-
-    public JinDaiShiQuestionDao getJinDaiShiQuestionDao() {
-        return mDaoSession.getJinDaiShiQuestionDao();
-    }
+//	public SiXiuQuestionDao getSiXiuQuestionDao() {
+//		return mDaoSession.getSiXiuQuestionDao();
+//	}
+//
+//    public MaKeSiQuestionDao getMaKeSiQuestionDao() {
+//        return mDaoSession.getMaKeSiQuestionDao();
+//    }
+//
+//    public MaoGaiXiaQuestionDao getMaoGaiXiaQuestionDao() {
+//        return mDaoSession.getMaoGaiXiaQuestionDao();
+//    }
+//
+//
+//    public JinDaiShiQuestionDao getJinDaiShiQuestionDao() {
+//        return mDaoSession.getJinDaiShiQuestionDao();
+//    }
 
 
 

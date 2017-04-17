@@ -30,6 +30,16 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 		mList = list;
 	}
 
+	public interface OnItemClickListener{
+		void onItemClick(SectionBean section);
+	}
+
+	private OnItemClickListener mOnItemClickListener;
+
+	public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+		this.mOnItemClickListener = onItemClickListener;
+	}
+
 	@Override
 	public TypeAbstractViewHolder<SectionBean> onCreateViewHolder(ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -40,7 +50,16 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 
 	@Override
 	public void onBindViewHolder(TypeAbstractViewHolder<SectionBean> holder, int position) {
-		holder.bindHolder(mList.get(position));
+		final SectionBean section = mList.get(position);
+		holder.bindHolder(section);
+		holder.itemView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mOnItemClickListener != null) {
+					mOnItemClickListener.onItemClick(section);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -64,8 +83,8 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 
 		@Override
 		public void bindHolder(SectionBean sectionBean) {
-			mTvName.setText(sectionBean.chooseItem);
-			mTvNum.setText(sectionBean.questionNum);
+			mTvName.setText(sectionBean.questionType);
+			mTvNum.setText(String.format("%d题", sectionBean.questionNum));
 			switch (sectionBean.type) {
 				case 1:
 					mIvIcon.setImageResource(R.drawable.list_one);

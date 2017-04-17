@@ -28,6 +28,11 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 
 	public SelectCoursePopupWindowRvAdapter(List<CourseItem> list) {
 		mList = list;
+		for (int i = 0; i < mList.size(); i++) {
+			if (mList.get(i).isSelected) {
+				mLastSelectedPosition = i;
+			}
+		}
 	}
 
 	public interface OnItemClickListener {
@@ -66,7 +71,7 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 					mList.get(mLastSelectedPosition).isSelected = false;
 				}
 
-				mList.get(position).isSelected = true;
+//				mList.get(position).isSelected = true;
 				if (mOnItemClickListener != null) {
 					mOnItemClickListener.onItemClicked(item);
 				}

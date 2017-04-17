@@ -1,10 +1,7 @@
 package com.mundane.examassistant.db;
 
 
-import com.mundane.examassistant.db.entity.JinDaiShiQuestionDao;
-import com.mundane.examassistant.db.entity.MaKeSiQuestionDao;
-import com.mundane.examassistant.db.entity.MaoGaiXiaQuestionDao;
-import com.mundane.examassistant.db.entity.SiXiuQuestionDao;
+import com.mundane.examassistant.db.entity.QuestionDao;
 
 /**
  * @author : mundane
@@ -15,24 +12,28 @@ import com.mundane.examassistant.db.entity.SiXiuQuestionDao;
 
 public class DbHelper {
 
-	public static SiXiuQuestionDao getSiXiuQuestionDao() {
-		return DbManager.getInstance().getSiXiuQuestionDao();
+//	public static SiXiuQuestionDao getSiXiuQuestionDao() {
+//		return DbManager.getInstance().getSiXiuQuestionDao();
+//	}
+//
+//
+//    public static JinDaiShiQuestionDao getJinDaiShiQuestionDao() {
+//        return DbManager.getInstance().getJinDaiShiQuestionDao();
+//    }
+//
+//
+//    public static MaKeSiQuestionDao getMaKeSiQuestionDao() {
+//        return DbManager.getInstance().getMaKeSiQuestionDao();
+//    }
+//
+//
+//    public static MaoGaiXiaQuestionDao getMaoGaiXiaQuestionDao() {
+//        return DbManager.getInstance().getMaoGaiXiaQuestionDao();
+//    }
+
+	public static QuestionDao getQuestionDao() {
+		return DbManager.getInstance().getQuestionDao();
 	}
-
-
-    public static JinDaiShiQuestionDao getJinDaiShiQuestionDao() {
-        return DbManager.getInstance().getJinDaiShiQuestionDao();
-    }
-
-
-    public static MaKeSiQuestionDao getMaKeSiQuestionDao() {
-        return DbManager.getInstance().getMaKeSiQuestionDao();
-    }
-
-
-    public static MaoGaiXiaQuestionDao getMaoGaiXiaQuestion() {
-        return DbManager.getInstance().getMaoGaiXiaQuestionDao();
-    }
 
 
 

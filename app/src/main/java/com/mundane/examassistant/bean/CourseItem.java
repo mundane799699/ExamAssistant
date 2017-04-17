@@ -11,7 +11,7 @@ import android.os.Parcelable;
  */
 
 public class CourseItem implements Parcelable {
-	public String name;
+	public String name;//	课程名字, 比如近代史, 思修, 马克思, 毛概下
 	public boolean isSelected;
 
 	public CourseItem(String name, boolean isSelected) {

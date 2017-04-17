@@ -19,4 +19,5 @@ public interface Constant {
 	boolean isDebug = BuildConfig.DEBUG;
 //	boolean isDebug = true;
 	String LOG_TAG = "mundane";
+	String KEY_CURRENT_COURSE = "current_course";
 }
