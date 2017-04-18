@@ -173,6 +173,7 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onItemClicked(CourseItem item) {
 				item.isSelected = true;
+				mAdapter.notifyDataSetChanged();
 				mCurrentCourseItem = item;
 				mTvSelectCourse.setText(item.name);
 				SPUtils.putString(KEY_CURRENT_COURSE, item.name);

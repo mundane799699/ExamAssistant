@@ -27,6 +27,11 @@ public class RecycleViewDivider extends RecyclerView.ItemDecoration {
 	private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
 	private int rightOffset;
 	private int leftOffset;
+	private boolean drawLastDivider = true;
+
+	public void setIsDrawLastDivider(boolean shouldDrawLastDivider) {
+		drawLastDivider = shouldDrawLastDivider;
+	}
 
 	public void setRightOffset(int rightOffset) {
 		this.rightOffset = rightOffset;
@@ -111,10 +116,14 @@ public class RecycleViewDivider extends RecyclerView.ItemDecoration {
 		final int right = parent.getMeasuredWidth() - parent.getPaddingRight();
 		final int childSize = parent.getChildCount();
 		for (int i = 0; i < childSize; i++) {
+			if (!drawLastDivider && i == childSize - 1) {
+				return;
+			}
 			final View child = parent.getChildAt(i);
 			RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) child.getLayoutParams();
 			final int top = child.getBottom() + layoutParams.bottomMargin;
 			final int bottom = top + mDividerHeight;
+
 			if (mDivider != null) {
 				mDivider.setBounds(left + leftOffset, top, right - rightOffset, bottom);
 				mDivider.draw(canvas);

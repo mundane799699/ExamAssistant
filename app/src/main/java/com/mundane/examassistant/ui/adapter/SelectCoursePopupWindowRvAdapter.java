@@ -1,6 +1,5 @@
 package com.mundane.examassistant.ui.adapter;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,13 +55,11 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 	@Override
 	public void onBindViewHolder(CustomPopupWindowRvViewHolder holder, final int position) {
 		final CourseItem item = mList.get(position);
-		final String name = item.name;
+		String name = item.name;
 		holder.tv.setText(name);
+		holder.tv.setSelected(item.isSelected);
 		if (item.isSelected) {
-			holder.tv.setTextColor(holder.tv.getResources().getColor(R.color.colorPrimary));
 			mLastSelectedPosition = position;
-		} else {
-			holder.tv.setTextColor(Color.parseColor("#6F6F6F"));
 		}
 		holder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -70,12 +67,10 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 				if (mLastSelectedPosition > -1) {
 					mList.get(mLastSelectedPosition).isSelected = false;
 				}
-
-//				mList.get(position).isSelected = true;
 				if (mOnItemClickListener != null) {
 					mOnItemClickListener.onItemClicked(item);
 				}
-				SelectCoursePopupWindowRvAdapter.this.notifyDataSetChanged();
+//				SelectCoursePopupWindowRvAdapter.this.notifyDataSetChanged();
 			}
 		});
 	}
@@ -89,6 +84,7 @@ public class SelectCoursePopupWindowRvAdapter extends RecyclerView.Adapter<Selec
 
 		@BindView(R.id.tv)
 		TextView tv;
+
 		public CustomPopupWindowRvViewHolder(View itemView) {
 			super(itemView);
 			ButterKnife.bind(this, itemView);

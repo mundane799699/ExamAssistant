@@ -7,4 +7,7 @@
     <color name="purple">#C279E4</color>
     <color name="colorSelectCourse">#F2F2F2</color>
     <color name="commonGray">#dfdfdf</color>
+    <color name="black">#ff000000</color>
+    <color name="gray_efefef">#efefef</color>
+    <color name="normalTextColor">#6F6F6F</color>
 </resources>

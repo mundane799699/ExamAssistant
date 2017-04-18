@@ -10,11 +10,26 @@
 
     <include layout="@layout/activity_main_title"/>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </android.support.v4.view.ViewPager>
+        </android.support.v4.view.ViewPager>
+
+        <!--阴影-->
+        <ImageView
+            android:id="@+id/iv_shadow"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_shadow"/>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
