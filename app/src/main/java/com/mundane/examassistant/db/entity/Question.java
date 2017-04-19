@@ -2,6 +2,7 @@ package com.mundane.examassistant.db.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -17,6 +18,7 @@ public class Question {
 	private Long id;
 	private String course;// 近代史, 思修, 马克思, 毛概下
 	private String type;//	单选一, 单选二, 多选一, 多选二
+	@Unique
 	private String question;//	问题的题目描述
 	private String optionA;
 	private String optionB;
@@ -26,10 +28,25 @@ public class Question {
 	private String answer;
 	private boolean isCollected;//	是否被收藏了
 	private boolean isAnsweredWrong;//	是否被收录到错题集中
-	@Generated(hash = 411055870)
+	private boolean haveBeenAnswered;//	该问题是否已经被回答过
+	private boolean showOptionA;	//	是否显示A选项为正确或者错误答案
+	private boolean showOptionB;	//	是否显示B选项为正确或者错误答案
+	private boolean showOptionC;	//	是否显示C选项为正确或者错误答案
+	private boolean showOptionD;	//	是否显示D选项为正确或者错误答案
+	private boolean showOptionE;	//	是否显示E选项为正确或者错误答案
+	private boolean isOptionACorrect;	//	A选项是否是正确答案
+	private boolean isOptionBCorrect;	//	B选项是否是正确答案
+	private boolean isOptionCCorrect;	//	C选项是否是正确答案
+	private boolean isOptionDCorrect;	//	D选项是否是正确答案
+	private boolean isOptionECorrect;	//	E选项是否是正确答案
+	@Generated(hash = 732367781)
 	public Question(Long id, String course, String type, String question,
 			String optionA, String optionB, String optionC, String optionD,
-			String optionE, String answer, boolean isCollected, boolean isAnsweredWrong) {
+			String optionE, String answer, boolean isCollected, boolean isAnsweredWrong,
+			boolean haveBeenAnswered, boolean showOptionA, boolean showOptionB,
+			boolean showOptionC, boolean showOptionD, boolean showOptionE,
+			boolean isOptionACorrect, boolean isOptionBCorrect, boolean isOptionCCorrect,
+			boolean isOptionDCorrect, boolean isOptionECorrect) {
 		this.id = id;
 		this.course = course;
 		this.type = type;
@@ -42,6 +59,17 @@ public class Question {
 		this.answer = answer;
 		this.isCollected = isCollected;
 		this.isAnsweredWrong = isAnsweredWrong;
+		this.haveBeenAnswered = haveBeenAnswered;
+		this.showOptionA = showOptionA;
+		this.showOptionB = showOptionB;
+		this.showOptionC = showOptionC;
+		this.showOptionD = showOptionD;
+		this.showOptionE = showOptionE;
+		this.isOptionACorrect = isOptionACorrect;
+		this.isOptionBCorrect = isOptionBCorrect;
+		this.isOptionCCorrect = isOptionCCorrect;
+		this.isOptionDCorrect = isOptionDCorrect;
+		this.isOptionECorrect = isOptionECorrect;
 	}
 	@Generated(hash = 1868476517)
 	public Question() {
@@ -117,6 +145,72 @@ public class Question {
 	}
 	public void setIsAnsweredWrong(boolean isAnsweredWrong) {
 		this.isAnsweredWrong = isAnsweredWrong;
+	}
+	public boolean getHaveBeenAnswered() {
+		return this.haveBeenAnswered;
+	}
+	public void setHaveBeenAnswered(boolean haveBeenAnswered) {
+		this.haveBeenAnswered = haveBeenAnswered;
+	}
+	public boolean getShowOptionA() {
+		return this.showOptionA;
+	}
+	public void setShowOptionA(boolean showOptionA) {
+		this.showOptionA = showOptionA;
+	}
+	public boolean getShowOptionB() {
+		return this.showOptionB;
+	}
+	public void setShowOptionB(boolean showOptionB) {
+		this.showOptionB = showOptionB;
+	}
+	public boolean getShowOptionC() {
+		return this.showOptionC;
+	}
+	public void setShowOptionC(boolean showOptionC) {
+		this.showOptionC = showOptionC;
+	}
+	public boolean getShowOptionD() {
+		return this.showOptionD;
+	}
+	public void setShowOptionD(boolean showOptionD) {
+		this.showOptionD = showOptionD;
+	}
+	public boolean getShowOptionE() {
+		return this.showOptionE;
+	}
+	public void setShowOptionE(boolean showOptionE) {
+		this.showOptionE = showOptionE;
+	}
+	public boolean getIsOptionACorrect() {
+		return this.isOptionACorrect;
+	}
+	public void setIsOptionACorrect(boolean isOptionACorrect) {
+		this.isOptionACorrect = isOptionACorrect;
+	}
+	public boolean getIsOptionBCorrect() {
+		return this.isOptionBCorrect;
+	}
+	public void setIsOptionBCorrect(boolean isOptionBCorrect) {
+		this.isOptionBCorrect = isOptionBCorrect;
+	}
+	public boolean getIsOptionCCorrect() {
+		return this.isOptionCCorrect;
+	}
+	public void setIsOptionCCorrect(boolean isOptionCCorrect) {
+		this.isOptionCCorrect = isOptionCCorrect;
+	}
+	public boolean getIsOptionDCorrect() {
+		return this.isOptionDCorrect;
+	}
+	public void setIsOptionDCorrect(boolean isOptionDCorrect) {
+		this.isOptionDCorrect = isOptionDCorrect;
+	}
+	public boolean getIsOptionECorrect() {
+		return this.isOptionECorrect;
+	}
+	public void setIsOptionECorrect(boolean isOptionECorrect) {
+		this.isOptionECorrect = isOptionECorrect;
 	}
 
 }

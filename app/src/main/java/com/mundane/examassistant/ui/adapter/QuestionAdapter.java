@@ -16,7 +16,6 @@ import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,33 +52,49 @@ public class QuestionAdapter extends PagerAdapter {
 		return view;
 	}
 
-	private void setUpView(View view, Question question) {
+	private void setUpView(View view, final Question question) {
 		TextView tvQuestion = (TextView) view.findViewById(R.id.tv_question);
-		RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
-		rvOption.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-		List<String> optionList = new ArrayList<>();
-		String optionA = question.getOptionA();
-		String optionB = question.getOptionB();
-		String optionC = question.getOptionC();
-		String optionD = question.getOptionD();
-		String optionE = question.getOptionE();
-		if (!TextUtils.isEmpty(optionA)) {
-			optionList.add(optionA);
-		}
-		if (!TextUtils.isEmpty(optionB)) {
-			optionList.add(optionB);
-		}
-		if (!TextUtils.isEmpty(optionC)) {
-			optionList.add(optionC);
-		}
-		if (!TextUtils.isEmpty(optionD)) {
-			optionList.add(optionD);
-		}
-		if (!TextUtils.isEmpty(optionE)) {
-			optionList.add(optionE);
-		}
 		tvQuestion.setText(question.getQuestion());
-		OptionRvAdapter optionRvAdapter = new OptionRvAdapter(optionList);
+		final RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
+		rvOption.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+//		final List<OptionBean> optionList = new ArrayList<>();
+//		String optionA = question.getOptionA();
+//		String optionB = question.getOptionB();
+//		String optionC = question.getOptionC();
+//		String optionD = question.getOptionD();
+//		String optionE = question.getOptionE();
+//		String answer = question.getAnswer();
+//		if (!TextUtils.isEmpty(optionA)) {
+//			optionList.add(new OptionBean(optionA, answer.contains("A"), question.getShowOptionA()));
+//		}
+//		if (!TextUtils.isEmpty(optionB)) {
+//			optionList.add(new OptionBean(optionB, answer.contains("B"), question.getShowOptionB()));
+//		}
+//		if (!TextUtils.isEmpty(optionC)) {
+//			optionList.add(new OptionBean(optionC, answer.contains("C"), question.getShowOptionC()));
+//		}
+//		if (!TextUtils.isEmpty(optionD)) {
+//			optionList.add(new OptionBean(optionD, answer.contains("D"), question.getShowOptionD()));
+//		}
+//		if (!TextUtils.isEmpty(optionE)) {
+//			optionList.add(new OptionBean(optionD, answer.contains("E"), question.getShowOptionE()));
+//		}
+
+
+		final OptionRvAdapter optionRvAdapter = new OptionRvAdapter(question);
+		optionRvAdapter.setOnItemClickListener(new OptionRvAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClicked(int position) {
+				if (question.getType().startsWith("单选")) {    //	单选
+					showSelectedOption(position, question);		//	显示被选中的条目是正确答案还是错误答案
+					showCorrectAnswer(question);				//	显示正确答案
+					optionRvAdapter.notifyDataSetChanged();
+					optionRvAdapter.setOnItemClickListener(null);
+				} else {//	多选
+
+				}
+			}
+		});
 		Context context = view.getContext();
 		rvOption.setLayoutManager(new LinearLayoutManager(context));
 		RecycleViewDivider divider = new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL, DensityUtils.dp2px(context, 1), ContextCompat.getColor(context, R.color.gray_efefef));
@@ -87,6 +102,44 @@ public class QuestionAdapter extends PagerAdapter {
 		divider.setLeftOffset(DensityUtils.dp2px(context, 14));
 		rvOption.addItemDecoration(divider);
 		rvOption.setAdapter(optionRvAdapter);
+	}
+
+	private void showSelectedOption(int position, Question question) {
+		switch (position) {
+			case 0:
+				question.setShowOptionA(true);
+				break;
+			case 1:
+				question.setShowOptionB(true);
+				break;
+			case 2:
+				question.setShowOptionC(true);
+				break;
+			case 3:
+				question.setShowOptionD(true);
+				break;
+			case 4:
+				question.setShowOptionE(true);
+				break;
+		}
+	}
+
+	private void showCorrectAnswer(Question question) {
+		if (!TextUtils.isEmpty(question.getOptionA()) && question.getIsOptionACorrect()) {
+			question.setShowOptionA(true);
+		}
+		if (!TextUtils.isEmpty(question.getOptionB()) && question.getIsOptionBCorrect()) {
+			question.setShowOptionB(true);
+		}
+		if (!TextUtils.isEmpty(question.getOptionC()) && question.getIsOptionCCorrect()) {
+			question.setShowOptionC(true);
+		}
+		if (!TextUtils.isEmpty(question.getOptionD()) && question.getIsOptionDCorrect()) {
+			question.setShowOptionD(true);
+		}
+		if (!TextUtils.isEmpty(question.getOptionE()) && question.getIsOptionECorrect()) {
+			question.setShowOptionE(true);
+		}
 	}
 
 	private final String TAG = "QuestionAdapter";

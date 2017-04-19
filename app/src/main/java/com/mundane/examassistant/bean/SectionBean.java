@@ -15,6 +15,7 @@ public class SectionBean implements Parcelable {
 	public String questionType;//	单选一, 单选二, 多选一, 多选二...
 	public int questionNum;
 	public int type;
+	public boolean isSelected;
 
 	public SectionBean(String courseName, String questionType, int questionNum) {
 		this.courseName = courseName;
@@ -59,6 +60,7 @@ public class SectionBean implements Parcelable {
 		dest.writeString(this.questionType);
 		dest.writeInt(this.questionNum);
 		dest.writeInt(this.type);
+		dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
 	}
 
 	protected SectionBean(Parcel in) {
@@ -66,6 +68,7 @@ public class SectionBean implements Parcelable {
 		this.questionType = in.readString();
 		this.questionNum = in.readInt();
 		this.type = in.readInt();
+		this.isSelected = in.readByte() != 0;
 	}
 
 	public static final Parcelable.Creator<SectionBean> CREATOR = new Parcelable.Creator<SectionBean>() {

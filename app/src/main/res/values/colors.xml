@@ -10,4 +10,5 @@
     <color name="black">#ff000000</color>
     <color name="gray_efefef">#efefef</color>
     <color name="normalTextColor">#6F6F6F</color>
+    <color name="sectionSelected">#DFDFDF</color>
 </resources>

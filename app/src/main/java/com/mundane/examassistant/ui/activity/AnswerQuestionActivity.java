@@ -21,6 +21,7 @@ import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.ui.adapter.QuestionAdapter;
 import com.mundane.examassistant.utils.FileUtils;
+import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.utils.ToastUtils;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 
@@ -74,7 +75,7 @@ public class AnswerQuestionActivity extends BaseActivity {
 			switch (msg.what) {
 				case 0:
 					dismissProgressDialog();
-					ToastUtils.shwoToast("数据导入完成");
+					ToastUtils.toast("数据导入完成");
 					mList.addAll(getConditionList());
 					refreshView();
 					break;
@@ -96,6 +97,7 @@ public class AnswerQuestionActivity extends BaseActivity {
 			@Override
 			public void onPageSelected(int position) {
 				mTvJump.setText(String.format("%d/%d", mViewPager.getCurrentItem() + 1, mList.size()));
+				SPUtils.putInt(mSection.courseName + mSection.questionType, position);
 			}
 
 			@Override
@@ -104,7 +106,7 @@ public class AnswerQuestionActivity extends BaseActivity {
 			}
 		});
 		mViewPager.setPageTransformer(true, new SlidingPageTransformer());
-
+		mViewPager.setCurrentItem(SPUtils.getInt(mSection.courseName + mSection.questionType));
 	}
 
 	private QuestionDao mQuestionDao;
@@ -149,11 +151,13 @@ public class AnswerQuestionActivity extends BaseActivity {
 		if (mQuestionDao == null) {
 			mQuestionDao = DbHelper.getQuestionDao();
 		}
+		mQuestionDao = DbHelper.getQuestionDao();
 		Query<Question> query = mQuestionDao
 				.queryBuilder()
 				.where(QuestionDao.Properties.Course.eq(mSection.courseName), QuestionDao.Properties.Type.eq(mSection.questionType))
 				.build();
-		return query.list();
+		List<Question> list = query.list();
+		return list;
 	}
 
 	private class DbThread extends Thread {
@@ -171,41 +175,45 @@ public class AnswerQuestionActivity extends BaseActivity {
 						for (QuestionBean.PlistBean.ArrayBean.DictBean dictBean : dict) {
 							List<String> string = dictBean.string;
 							int size = string.size();
-							Question question;
-							if (size == 6) {
-//								question = new Question(null, mSection.courseName, mSection.questionType, string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4), false, false);
-								question = new Question();
-								question.setCourse(mSection.courseName);
-								question.setType(mSection.questionType);
-								question.setQuestion(string.get(size - 1));
-								question.setOptionA(string.get(0));
-								question.setOptionB(string.get(1));
-								question.setOptionC(string.get(2));
-								question.setOptionD(string.get(3));
-								question.setAnswer(string.get(size-2));
-							} else if (size == 4) {
-//								question = new Question(null, mSection.courseName, mSection.questionType, string.get(3), string.get(0), string.get(1), null, null, string.get(2), false, false);
-								question = new Question();
-								question.setCourse(mSection.courseName);
-								question.setType(mSection.questionType);
-								question.setQuestion(string.get(size - 1));
-								question.setOptionA(string.get(0));
-								question.setOptionB(string.get(1));
-								question.setAnswer(string.get(size-2));
+							Question question = new Question();
+							question.setCourse(mSection.courseName);
+							question.setType(mSection.questionType);
+							question.setQuestion(string.get(size - 1));
+							question.setAnswer(string.get(size - 2));
+							String answer = question.getAnswer();
 
-							} else {//	size == 7
-								question = new Question();
-								question.setCourse(mSection.courseName);
-								question.setType(mSection.questionType);
-								question.setQuestion(string.get(size - 1));
-								question.setOptionA(string.get(0));
-								question.setOptionB(string.get(1));
+							question.setOptionA(string.get(0));
+							question.setIsOptionACorrect(answer.contains("A"));
+
+							question.setOptionB(string.get(1));
+							question.setIsOptionBCorrect(answer.contains("B"));
+							if (size == 6) {        //	ABCD
+
 								question.setOptionC(string.get(2));
+								question.setIsOptionCCorrect(answer.contains("C"));
+
 								question.setOptionD(string.get(3));
+								question.setIsOptionDCorrect(answer.contains("D"));
+							} else if (size == 4) {        //	AB
+
+							} else {//	size == 7 ABCDE
+								question.setOptionC(string.get(2));
+								question.setIsOptionCCorrect(answer.contains("C"));
+
+								question.setOptionD(string.get(3));
+								question.setIsOptionDCorrect(answer.contains("D"));
+
 								question.setOptionE(string.get(4));
-								question.setAnswer(string.get(size-2));
+								question.setIsOptionECorrect(answer.contains("E"));
 							}
-							mQuestionDao.insert(question);
+
+							try {
+								//因为我在实体类的里给queston添加了唯一约束,
+								// 重复添加相同的question时会报错, 所以这里要try...catch掉, 防止插入重复的question
+								mQuestionDao.insert(question);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 						break;
 					}

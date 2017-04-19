@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mundane.examassistant.R;
@@ -31,7 +32,7 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 	}
 
 	public interface OnItemClickListener{
-		void onItemClick(SectionBean section);
+		void onItemClick(SectionBean section, int position);
 	}
 
 	private OnItemClickListener mOnItemClickListener;
@@ -48,15 +49,23 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 		return new SectionViewHolder(view);
 	}
 
+	private int mLastSelectedPosition = -1;
+
 	@Override
-	public void onBindViewHolder(TypeAbstractViewHolder<SectionBean> holder, int position) {
+	public void onBindViewHolder(TypeAbstractViewHolder<SectionBean> holder, final int position) {
 		final SectionBean section = mList.get(position);
 		holder.bindHolder(section);
+		if (section.isSelected) {
+			mLastSelectedPosition = position;
+		}
 		holder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (mLastSelectedPosition > -1) {
+					mList.get(mLastSelectedPosition).isSelected = false;
+				}
 				if (mOnItemClickListener != null) {
-					mOnItemClickListener.onItemClick(section);
+					mOnItemClickListener.onItemClick(section, position);
 				}
 			}
 		});
@@ -75,6 +84,8 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 		TextView mTvName;
 		@BindView(R.id.tv_num)
 		TextView mTvNum;
+		@BindView(R.id.ll_bg)
+		LinearLayout mLlBg;
 
 		public SectionViewHolder(View itemView) {
 			super(itemView);
@@ -85,6 +96,7 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 		public void bindHolder(SectionBean sectionBean) {
 			mTvName.setText(sectionBean.questionType);
 			mTvNum.setText(String.format("%d题", sectionBean.questionNum));
+			mLlBg.setSelected(sectionBean.isSelected);
 			switch (sectionBean.type) {
 				case 1:
 					mIvIcon.setImageResource(R.drawable.list_one);

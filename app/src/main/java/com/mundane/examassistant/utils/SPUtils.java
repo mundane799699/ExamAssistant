@@ -56,6 +56,11 @@ public class SPUtils {
         return sp.getInt(key, DEFAULT_INT_VALUE);
     }
 
+	public static int getInt(String key, int defaultValue) {
+		SharedPreferences sp = getSp();
+		return sp.getInt(key, defaultValue);
+	}
+
 
     public static void put(String key, Object object) {
         SharedPreferences.Editor editor = getEditor();

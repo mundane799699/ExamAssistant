@@ -9,7 +9,7 @@ import com.mundane.examassistant.global.CommonUtils;
 
 public class ToastUtils {
     private static Toast sToast;
-    public static void shwoToast(String text){
+    public static void toast(String text){
         if(sToast ==null){
             //创建toast
             sToast = Toast.makeText(CommonUtils.getContext(),text,Toast.LENGTH_SHORT);

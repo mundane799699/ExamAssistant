@@ -19,6 +19,7 @@ public class DbManager {
 	private static Context context;
 	private static final String DB_NAME = "examassistant.db";
 	private DaoSession mDaoSession;
+	private final DaoMaster mDaoMaster;
 
 	private static class SingletonHolder {
 		private static final DbManager INSTANCE = new DbManager();
@@ -32,32 +33,13 @@ public class DbManager {
 	private DbManager() {
 		context = CommonUtils.getContext();
 		MyOpenHelper openHelper = new MyOpenHelper(context, DB_NAME);
-		DaoMaster daoMaster = new DaoMaster(openHelper.getWritableDb());
-		mDaoSession = daoMaster.newSession();
+		mDaoMaster = new DaoMaster(openHelper.getWritableDb());
+//		mDaoSession = mDaoMaster.newSession();//	不能这么写, 每次查询session都要new出来, 否则还是上次的数据
 	}
 
 	public QuestionDao getQuestionDao() {
-		return mDaoSession.getQuestionDao();
+		return mDaoMaster.newSession().getQuestionDao();
 	}
-
-//	public SiXiuQuestionDao getSiXiuQuestionDao() {
-//		return mDaoSession.getSiXiuQuestionDao();
-//	}
-//
-//    public MaKeSiQuestionDao getMaKeSiQuestionDao() {
-//        return mDaoSession.getMaKeSiQuestionDao();
-//    }
-//
-//    public MaoGaiXiaQuestionDao getMaoGaiXiaQuestionDao() {
-//        return mDaoSession.getMaoGaiXiaQuestionDao();
-//    }
-//
-//
-//    public JinDaiShiQuestionDao getJinDaiShiQuestionDao() {
-//        return mDaoSession.getJinDaiShiQuestionDao();
-//    }
-
-
 
 	public static DbManager getInstance() {
 		return SingletonHolder.INSTANCE;

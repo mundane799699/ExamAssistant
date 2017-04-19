@@ -17,6 +17,7 @@ import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
+import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class SectionPracticeActivity extends BaseActivity {
 	private CourseItem          mCourseItem;
 	private List<SectionBean>   mSectionList;
 	private SectionAdapter      mSectionAdapter;
+	private final String KEY_POSTFIX = "lastSectionPosition";
 
 //	@BindView(R.id.tv)
 //	TextView mTv;
@@ -64,11 +66,24 @@ public class SectionPracticeActivity extends BaseActivity {
 		mTvSelectCourse.setText(String.format("%s章节练习", mCourseItem.name));
 
 		mSectionList = new ArrayList<>();
+
 		ResUtil.importData(mSectionList, mCourseItem.name);
+		int lastSectionPosition = SPUtils.getInt(mCourseItem.name + KEY_POSTFIX, -1);
+		if (lastSectionPosition > -1) {
+			for (int i = 0; i < mSectionList.size(); i++) {
+				if (i == lastSectionPosition) {
+					mSectionList.get(i).isSelected = true;
+					break;
+				}
+			}
+		}
 		mSectionAdapter = new SectionAdapter(mSectionList);
 		mSectionAdapter.setOnItemClickListener(new SectionAdapter.OnItemClickListener() {
 			@Override
-			public void onItemClick(SectionBean section) {
+			public void onItemClick(SectionBean section, int position) {
+				section.isSelected = true;
+				mSectionAdapter.notifyDataSetChanged();
+				SPUtils.putInt(mCourseItem.name + KEY_POSTFIX, position);
 				Intent intent = new Intent(SectionPracticeActivity.this, AnswerQuestionActivity.class);
 				intent.putExtra(KEY_SECTION_ITEM, section);
 				startActivity(intent);
