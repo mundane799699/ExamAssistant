@@ -85,14 +85,23 @@ public class QuestionAdapter extends PagerAdapter {
 		optionRvAdapter.setOnItemClickListener(new OptionRvAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClicked(int position) {
+				//	如果该问题已经被回答过, 不产生任何反应
+				if (question.getHaveBeenAnswered()) {
+					return;
+				}
+				//	如果该问题还没有被回答过
+				question.setHaveBeenAnswered(true);    //	将该问题标记为已经被回答过
+
 				if (question.getType().startsWith("单选")) {    //	单选
-					showSelectedOption(position, question);		//	显示被选中的条目是正确答案还是错误答案
-					showCorrectAnswer(question);				//	显示正确答案
+					showSelectedOption(position, question);        //	显示被选中的条目是正确答案还是错误答案
+					showCorrectAnswer(question);                //	显示正确答案
 					optionRvAdapter.notifyDataSetChanged();
-					optionRvAdapter.setOnItemClickListener(null);
+					optionRvAdapter.setOnItemClickListener(null);    //	其实这句代码可以去掉了
 				} else {//	多选
 
 				}
+
+
 			}
 		});
 		Context context = view.getContext();

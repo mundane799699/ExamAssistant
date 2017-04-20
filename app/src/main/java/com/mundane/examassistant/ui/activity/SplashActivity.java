@@ -1,126 +1,122 @@
 package com.mundane.examassistant.ui.activity;
 
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+
+import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
+import com.mundane.examassistant.db.DbHelper;
+import com.mundane.examassistant.db.entity.Question;
+import com.mundane.examassistant.db.entity.QuestionDao;
+import com.mundane.examassistant.utils.FileUtils;
+import com.mundane.examassistant.utils.ToastUtils;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
 
 public class SplashActivity extends BaseActivity {
 
-//    private SiXiuQuestionDao    mSiXiuQuestionDao;
-//    private List<SiXiuQuestion> mSiXiuQuestionList;
-//    private Handler mHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case 0:
-//                    Toast.makeText(SplashActivity.this, "数据导入完成", Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//                    finish();
-//                    break;
-//            }
-//        }
-//    };
-//
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_splash);
-//
-////        checkData();
-//
-//    }
-//
-//
-//    @Override
-//    protected void onDestroy() {
-//        if (mHandler != null) {
-//            mHandler.removeCallbacksAndMessages(null);
-//            mHandler = null;
-//        }
-//        super.onDestroy();
-//    }
-//
-//
-////    private void checkData() {
-////        mSiXiuQuestionDao = DbHelper.getSiXiuQuestionDao();
-////        mSiXiuQuestionList = mSiXiuQuestionDao.loadAll();
-////        if (mSiXiuQuestionList.isEmpty()) {
-////            new DbThread().start();
-////        } else {
-////            startActivity(new Intent(this, MainActivity.class));
-////            finish();
-////        }
-////    }
-////
-////    private class DbThread extends Thread {
-////        @Override
-////        public void run() {
-////            AssetManager assetManager = getAssets();
-////            try {
-////                String[] arr = assetManager.list("resource");
-////                for (String fileName : arr) {
-////                    inputDataToDB(assetManager, fileName);
-////                }
-////                mHandler.sendEmptyMessage(0);
-////            } catch (Exception e) {
-////                e.printStackTrace();
-////            }
-////        }
-////    }
-////
-////    private void inputDataToDB(AssetManager assetManager, String fileName) throws Exception {
-////            InputStream inputStream = assetManager.open("resource/" + fileName);
-////            String text = FileUtils.readStringFromInputStream(inputStream);
-////            //LogUtils.d(text);
-////            //LogUtils.d(fileName);
-////            QuestionBean questionBean = GsonUtil.parseJsonToBean(text, QuestionBean.class);
-////            List<QuestionBean.PlistBean.ArrayBean.DictBean> dictBeanList = questionBean.plist.array.dict;
-////            String firstChar = fileName.substring(0, 1);
-////            for (int i = 0; i < dictBeanList.size(); i++) {
-////                inputDataToDbByFirstChar(firstChar, dictBeanList.get(i), i);
-////            }
-////
-////    }
-//
-//    private void inputDataToDbByFirstChar(String firstChar, QuestionBean.PlistBean.ArrayBean.DictBean dictBean, int index) {
-////        List<String> string = dictBean.string;
-////        switch (firstChar) {
-////            case "思":
-////                SiXiuQuestion siXiuQuestion;
-////                if (string.size() == 6) {
-////                    siXiuQuestion = new SiXiuQuestion(null, string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4), false, false);
-////                } else {
-////                    siXiuQuestion = new SiXiuQuestion(null, string.get(3), string.get(0), string.get(1), null, null, string.get(2), false, false);
-////                }
-////                mSiXiuQuestionDao.insert(siXiuQuestion);
-////                break;
-////            case "毛":
-////                MaoGaiXiaQuestion maoGaiXiaQuestion;
-////                if (string.size() == 6) {
-////                    maoGaiXiaQuestion = new MaoGaiXiaQuestion(null, string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4), false, false);
-////                } else {
-////                    maoGaiXiaQuestion = new MaoGaiXiaQuestion(null, string.get(3), string.get(0), string.get(1), null, null, string.get(2), false, false);
-////                }
-////                DbHelper.getMaoGaiXiaQuestionDao().insert(maoGaiXiaQuestion);
-////                break;
-////            case "近":
-////                JinDaiShiQuestion jinDaiShiQuestion;
-////                if (string.size() == 6) {
-////
-////                    jinDaiShiQuestion = new JinDaiShiQuestion(null, string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4), false, false);
-////                } else {
-////                    jinDaiShiQuestion = new JinDaiShiQuestion(null, string.get(3), string.get(0), string.get(1), null, null, string.get(2), false, false);
-////                }
-////                DbHelper.getJinDaiShiQuestionDao().insert(jinDaiShiQuestion);
-////                break;
-////            case "马":
-////                MaKeSiQuestion maKeSiQuestion;
-////                if (string.size() == 6) {
-////                    maKeSiQuestion = new MaKeSiQuestion(null, string.get(5), string.get(0), string.get(1), string.get(2), string.get(3), string.get(4), false, false);
-////                } else {
-////                    maKeSiQuestion = new MaKeSiQuestion(null, string.get(3), string.get(0), string.get(1), null, null, string.get(2), false, false);
-////                }
-////                DbHelper.getMaKeSiQuestionDao().insert(maKeSiQuestion);
-////                break;
-////        }
-//    }
+	private final String DB_PATH = "/data/data/com.mundane.examassistant/databases/";
+	private final String DB_NAME = "examassistant.db";
+	private Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+				case 0:
+					dismissProgressDialog();
+					ToastUtils.toast("数据导入完成");
+					startActivity(new Intent(SplashActivity.this, MainActivity.class));
+					finish();
+					break;
+			}
+		}
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_splash);
+		checkData();
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (mHandler != null) {
+			mHandler.removeCallbacksAndMessages(null);
+			mHandler = null;
+		}
+		super.onDestroy();
+	}
+
+	private void checkData() {
+
+		QuestionDao questionDao = DbHelper.getQuestionDao();
+		List<Question> list = questionDao.loadAll();
+		if (list.isEmpty()) {
+			showProgressDialog("正在导入数据中, 请稍后");
+			new CopyFileThread().start();
+		} else {
+			startActivity(new Intent(this, MainActivity.class));
+			finish();
+		}
+	}
+
+	private class CopyFileThread extends Thread {
+		@Override
+		public void run() {
+			File dbFolder = new File(DB_PATH);
+			if (!dbFolder.mkdirs()) {
+				dbFolder.mkdirs();
+			}
+			File dbFile = new File(dbFolder, DB_NAME);
+			if (dbFile.exists()) {
+				dbFile.delete();
+			}
+			AssetManager assetManager = getAssets();
+			try {
+				InputStream is = assetManager.open(DB_NAME);
+				FileUtils.copy(is, dbFile);
+//				FileOutputStream fos = new FileOutputStream(dbFile);
+//				byte[] buffer = new byte[1024 * 8];
+//				int len;
+//				while ((len = is.read(buffer)) != -1) {
+//					fos.write(buffer, 0, len);
+//				}
+//				fos.close();
+//				is.close();
+				mHandler.sendEmptyMessage(0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+//			try {
+//				String outFileName = DB_PATH + DB_NAME;
+//				File file = new File(DB_PATH);
+//				if (!file.mkdirs()) {
+//					file.mkdirs();
+//				}
+//				File dataFile = new File(outFileName);
+//				if (dataFile.exists()) {
+//					dataFile.delete();
+//				}
+//				InputStream myInput;
+//				myInput = getApplicationContext().getAssets().open(DB_NAME);
+//				OutputStream myOutput = new FileOutputStream(outFileName);
+//				byte[] buffer = new byte[1024];
+//				int length;
+//				while ((length = myInput.read(buffer)) > 0) {
+//					myOutput.write(buffer, 0, length);
+//				}
+//				myOutput.flush();
+//				myOutput.close();
+//				myInput.close();
+//				mHandler.sendEmptyMessage(0);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+		}
+	}
 }
