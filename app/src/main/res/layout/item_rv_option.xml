@@ -2,26 +2,46 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:padding="10dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:padding="10dp">
 
-    <ImageView
-        android:id="@+id/iv_option"
-        tools:src="@drawable/option_a"
-        android:layout_gravity="center_vertical"
-        android:layout_width="30dp"
-        android:layout_height="30dp"/>
+
+    <FrameLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical">
+
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/tv_abcde"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/shape_tv_bg_abcde"
+            android:gravity="center"
+            tools:text="A"/>
+
+        <ImageView
+            android:id="@+id/iv_option"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            tools:src="@drawable/icon_choice_bg_right"/>
+
+    </FrameLayout>
+
 
     <TextView
-        android:textSize="16sp"
         android:id="@+id/tv_option"
-        android:layout_marginLeft="10dp"
-        tools:text="15日和10日"
-        android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:textSize="16sp"
+        tools:text="15日和10日"/>
 
 </LinearLayout>

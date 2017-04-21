@@ -57,60 +57,42 @@ public class QuestionAdapter extends PagerAdapter {
 		tvQuestion.setText(question.getQuestion());
 		final RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
 		rvOption.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-//		final List<OptionBean> optionList = new ArrayList<>();
-//		String optionA = question.getOptionA();
-//		String optionB = question.getOptionB();
-//		String optionC = question.getOptionC();
-//		String optionD = question.getOptionD();
-//		String optionE = question.getOptionE();
-//		String answer = question.getAnswer();
-//		if (!TextUtils.isEmpty(optionA)) {
-//			optionList.add(new OptionBean(optionA, answer.contains("A"), question.getShowOptionA()));
-//		}
-//		if (!TextUtils.isEmpty(optionB)) {
-//			optionList.add(new OptionBean(optionB, answer.contains("B"), question.getShowOptionB()));
-//		}
-//		if (!TextUtils.isEmpty(optionC)) {
-//			optionList.add(new OptionBean(optionC, answer.contains("C"), question.getShowOptionC()));
-//		}
-//		if (!TextUtils.isEmpty(optionD)) {
-//			optionList.add(new OptionBean(optionD, answer.contains("D"), question.getShowOptionD()));
-//		}
-//		if (!TextUtils.isEmpty(optionE)) {
-//			optionList.add(new OptionBean(optionD, answer.contains("E"), question.getShowOptionE()));
-//		}
+		if (question.getType().startsWith("单选")) {        //	单选
+			final OptionSingleRvAdapter optionSingleRvAdapter = new OptionSingleRvAdapter(question);
+			optionSingleRvAdapter.setOnItemClickListener(new OptionSingleRvAdapter.OnItemClickListener() {
+				@Override
+				public void onItemClicked(int position) {
+					//	如果该问题已经被回答过, 不产生任何反应
+					if (question.getHaveBeenAnswered()) {
+						return;
+					}
+					//	如果该问题还没有被回答过
+					question.setHaveBeenAnswered(true);    //	将该问题标记为已经被回答过
 
-
-		final OptionRvAdapter optionRvAdapter = new OptionRvAdapter(question);
-		optionRvAdapter.setOnItemClickListener(new OptionRvAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClicked(int position) {
-				//	如果该问题已经被回答过, 不产生任何反应
-				if (question.getHaveBeenAnswered()) {
-					return;
-				}
-				//	如果该问题还没有被回答过
-				question.setHaveBeenAnswered(true);    //	将该问题标记为已经被回答过
-
-				if (question.getType().startsWith("单选")) {    //	单选
 					showSelectedOption(position, question);        //	显示被选中的条目是正确答案还是错误答案
 					showCorrectAnswer(question);                //	显示正确答案
-					optionRvAdapter.notifyDataSetChanged();
-					optionRvAdapter.setOnItemClickListener(null);    //	其实这句代码可以去掉了
-				} else {//	多选
-
+					optionSingleRvAdapter.notifyDataSetChanged();
+//				optionSingleRvAdapter.setOnItemClickListener(null);    //	其实这句代码可以去掉了
 				}
+			});
+			Context context = view.getContext();
+			rvOption.setLayoutManager(new LinearLayoutManager(context));
+			RecycleViewDivider divider = new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL, DensityUtils.dp2px(context, 1), ContextCompat.getColor(context, R.color.gray_efefef));
+			divider.setIsDrawLastDivider(false);
+			divider.setLeftOffset(DensityUtils.dp2px(context, 14));
+			rvOption.addItemDecoration(divider);
+			rvOption.setAdapter(optionSingleRvAdapter);
+		} else {    //	多选
+			OptionMultiRvAdapter optionMultiRvAdapter = new OptionMultiRvAdapter(question);
+			Context context = view.getContext();
+			rvOption.setLayoutManager(new LinearLayoutManager(context));
+			RecycleViewDivider divider = new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL, DensityUtils.dp2px(context, 1), ContextCompat.getColor(context, R.color.gray_efefef));
+			divider.setIsDrawLastDivider(false);
+			divider.setLeftOffset(DensityUtils.dp2px(context, 14));
+			rvOption.addItemDecoration(divider);
+			rvOption.setAdapter(optionMultiRvAdapter);
+		}
 
-
-			}
-		});
-		Context context = view.getContext();
-		rvOption.setLayoutManager(new LinearLayoutManager(context));
-		RecycleViewDivider divider = new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL, DensityUtils.dp2px(context, 1), ContextCompat.getColor(context, R.color.gray_efefef));
-		divider.setIsDrawLastDivider(false);
-		divider.setLeftOffset(DensityUtils.dp2px(context, 14));
-		rvOption.addItemDecoration(divider);
-		rvOption.setAdapter(optionRvAdapter);
 	}
 
 	private void showSelectedOption(int position, Question question) {

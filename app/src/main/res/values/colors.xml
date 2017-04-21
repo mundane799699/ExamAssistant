@@ -11,4 +11,7 @@
     <color name="gray_efefef">#efefef</color>
     <color name="normalTextColor">#6F6F6F</color>
     <color name="sectionSelected">#DFDFDF</color>
+    <color name="answerTextCorrect">#09C800</color>
+    <color name="answerTextWrong">#FF2925</color>
+    <color name="answerTextNormal">#6C6C6C</color>
 </resources>

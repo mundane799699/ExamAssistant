@@ -1,5 +1,6 @@
 package com.mundane.examassistant.ui.adapter;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,10 +19,10 @@ import butterknife.ButterKnife;
  * @author : mundane
  * @time : 2017/4/18 10:42
  * @description :
- * @file : OptionRvAdapter.java
+ * @file : OptionSingleRvAdapter.java
  */
 
-public class OptionRvAdapter extends RecyclerView.Adapter<OptionRvAdapter.OptionRvViewHolder> {
+public class OptionSingleRvAdapter extends RecyclerView.Adapter<OptionSingleRvAdapter.OptionRvViewHolder> {
 
 	private Question mQuestion;
 
@@ -35,7 +36,7 @@ public class OptionRvAdapter extends RecyclerView.Adapter<OptionRvAdapter.Option
 		mOnItemClickListener = onItemClickListener;
 	}
 
-	public OptionRvAdapter(Question question) {
+	public OptionSingleRvAdapter(Question question) {
 		this.mQuestion = question;
 	}
 
@@ -49,44 +50,49 @@ public class OptionRvAdapter extends RecyclerView.Adapter<OptionRvAdapter.Option
 	public void onBindViewHolder(OptionRvViewHolder holder, final int position) {
 		switch (position) {
 			case 0:
+				holder.mTvOption.setText(mQuestion.getOptionA());
 				if (mQuestion.getShowOptionA()) {
 					showIcon(holder, mQuestion.getIsOptionACorrect());
 				} else {
-					holder.mIvOption.setImageResource(R.drawable.option_a);
+					holder.mTvAbcde.setText("A");
+					setTextColorNormal(holder);
 				}
-				holder.mTvOption.setText(mQuestion.getOptionA());
 				break;
 			case 1:
+				holder.mTvOption.setText(mQuestion.getOptionB());
 				if (mQuestion.getShowOptionB()) {
 					showIcon(holder, mQuestion.getIsOptionBCorrect());
 				} else {
-					holder.mIvOption.setImageResource(R.drawable.optoin_b);
+					holder.mTvAbcde.setText("B");
+					setTextColorNormal(holder);
 				}
-				holder.mTvOption.setText(mQuestion.getOptionB());
 				break;
 			case 2:
+				holder.mTvOption.setText(mQuestion.getOptionC());
 				if (mQuestion.getShowOptionC()) {
 					showIcon(holder, mQuestion.getIsOptionCCorrect());
 				} else {
-					holder.mIvOption.setImageResource(R.drawable.option_c);
+					holder.mTvAbcde.setText("C");
+					setTextColorNormal(holder);
 				}
-				holder.mTvOption.setText(mQuestion.getOptionC());
 				break;
 			case 3:
+				holder.mTvOption.setText(mQuestion.getOptionD());
 				if (mQuestion.getShowOptionD()) {
 					showIcon(holder, mQuestion.getIsOptionDCorrect());
 				} else {
-					holder.mIvOption.setImageResource(R.drawable.option_d);
+					holder.mTvAbcde.setText("D");
+					setTextColorNormal(holder);
 				}
-				holder.mTvOption.setText(mQuestion.getOptionD());
 				break;
 			case 4:
+				holder.mTvOption.setText(mQuestion.getOptionE());
 				if (mQuestion.getShowOptionE()) {
 					showIcon(holder, mQuestion.getIsOptionECorrect());
 				} else {
-					holder.mIvOption.setImageResource(R.drawable.option_e);
+					holder.mTvAbcde.setText("E");
+					setTextColorNormal(holder);
 				}
-				holder.mTvOption.setText(mQuestion.getOptionE());
 			default:
 				break;
 		}
@@ -101,8 +107,20 @@ public class OptionRvAdapter extends RecyclerView.Adapter<OptionRvAdapter.Option
 		});
 	}
 
+	private void setTextColorNormal(OptionRvViewHolder holder) {
+		Resources resources = holder.mTvOption.getResources();
+		holder.mTvAbcde.setVisibility(View.VISIBLE);
+		holder.mIvOption.setVisibility(View.GONE);
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextNormal));
+		holder.mTvAbcde.setTextColor(resources.getColor(R.color.answerTextNormal));
+	}
+
 	private void showIcon(OptionRvViewHolder holder, boolean isOptonCorrect) {
-		holder.mIvOption.setImageResource(isOptonCorrect ? R.drawable.answer_correct : R.drawable.answer_wrong);
+		holder.mTvAbcde.setVisibility(View.GONE);
+		holder.mIvOption.setVisibility(View.VISIBLE);
+		Resources resources = holder.mIvOption.getResources();
+		holder.mIvOption.setImageResource(isOptonCorrect ? R.drawable.icon_choice_bg_right : R.drawable.icon_choice_bg_wrong);
+		holder.mTvOption.setTextColor(isOptonCorrect ? resources.getColor(R.color.answerTextCorrect) : resources.getColor(R.color.answerTextWrong));
 	}
 
 	@Override
@@ -124,6 +142,8 @@ public class OptionRvAdapter extends RecyclerView.Adapter<OptionRvAdapter.Option
 		ImageView mIvOption;
 		@BindView(R.id.tv_option)
 		TextView mTvOption;
+		@BindView(R.id.tv_abcde)
+		TextView mTvAbcde;
 
 		public OptionRvViewHolder(View itemView) {
 			super(itemView);
