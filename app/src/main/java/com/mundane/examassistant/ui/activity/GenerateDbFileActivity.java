@@ -127,8 +127,8 @@ public class GenerateDbFileActivity extends BaseActivity {
 						}
 
 						try {
-							//因为我在实体类的里给queston添加了唯一约束,
-							// 重复添加相同的question时会报错, 所以这里要try...catch掉, 防止插入重复的question
+							//	因为在实体类的里给queston添加了唯一约束,
+							// 	重复添加相同的question时会报错, 所以这里要try...catch掉, 防止插入重复的question
 							mQuestionDao.insert(question);
 						} catch (Exception e) {
 							e.printStackTrace();

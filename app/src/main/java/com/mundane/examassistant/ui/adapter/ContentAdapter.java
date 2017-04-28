@@ -106,7 +106,7 @@ public class ContentAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder>
 				}
 			}
 		});
-		holder.bindHolder(item, position);
+		holder.bindHolder(item);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class ContentAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder>
 		}
 
 		@Override
-		public void bindHolder(ContentItem contentItem, int position) {
+		public void bindHolder(ContentItem contentItem) {
 			mIv.setImageResource(contentItem.resId);
 			mTv.setText(contentItem.name);
 		}
@@ -163,7 +163,7 @@ public class ContentAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder>
 		}
 
 		@Override
-		public void bindHolder(ContentItem contentItem, int position) {
+		public void bindHolder(ContentItem contentItem) {
 			mBannerAdapter = new BannerAdapter(mViewPager);
 			mViewPager.setAdapter(mBannerAdapter);
 			mSimpleIndicater.setDotsCount(mBannerAdapter.getDrawableCount());

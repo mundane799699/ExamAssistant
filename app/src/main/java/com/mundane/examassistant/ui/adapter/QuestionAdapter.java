@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.utils.DensityUtils;
+import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
 
 import java.util.List;
@@ -47,12 +48,13 @@ public class QuestionAdapter extends PagerAdapter {
 	public Object instantiateItem(ViewGroup container, int position) {
 		LayoutInflater inflater = LayoutInflater.from(container.getContext());
 		View view = inflater.inflate(R.layout.layout_answer_question_page, container, false);
-		setUpView(view, mList.get(position));
+		setUpView(view, mList.get(position), position);
 		container.addView(view);
 		return view;
 	}
 
-	private void setUpView(View view, final Question question) {
+	private void setUpView(View view, final Question question, final int position) {
+		LogUtils.d("instantiateItem position = " + position);
 		TextView tvQuestion = (TextView) view.findViewById(R.id.tv_question);
 		tvQuestion.setText(question.getQuestion());
 		final RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
@@ -61,7 +63,8 @@ public class QuestionAdapter extends PagerAdapter {
 			final OptionSingleRvAdapter optionSingleRvAdapter = new OptionSingleRvAdapter(question);
 			optionSingleRvAdapter.setOnItemClickListener(new OptionSingleRvAdapter.OnItemClickListener() {
 				@Override
-				public void onItemClicked(int position) {
+				public void onItemClicked(int pos) {
+					LogUtils.d("single list position = " + position);
 					//	如果该问题已经被回答过, 不产生任何反应
 					if (question.getHaveBeenAnswered()) {
 						return;
@@ -69,7 +72,7 @@ public class QuestionAdapter extends PagerAdapter {
 					//	如果该问题还没有被回答过
 					question.setHaveBeenAnswered(true);    //	将该问题标记为已经被回答过
 
-					showSelectedOption(position, question);        //	显示被选中的条目是正确答案还是错误答案
+					setOptionStatus(pos, question);        //	显示被选中的条目是正确答案还是错误答案
 					showCorrectAnswer(question);                //	显示正确答案
 					optionSingleRvAdapter.notifyDataSetChanged();
 //				optionSingleRvAdapter.setOnItemClickListener(null);    //	其实这句代码可以去掉了
@@ -83,7 +86,31 @@ public class QuestionAdapter extends PagerAdapter {
 			rvOption.addItemDecoration(divider);
 			rvOption.setAdapter(optionSingleRvAdapter);
 		} else {    //	多选
-			OptionMultiRvAdapter optionMultiRvAdapter = new OptionMultiRvAdapter(question);
+			final OptionMultiRvAdapter optionMultiRvAdapter = new OptionMultiRvAdapter(question);
+			optionMultiRvAdapter.setOnItemClickListener(new OptionMultiRvAdapter.OnItemClickListener() {
+				@Override
+				public void onItemClicked(int pos) {
+					//	如果该问题已经被回答过, 不产生任何反应
+					if (question.getHaveBeenAnswered()) {
+						return;
+					}
+					LogUtils.d("multi list position = " + position);
+					setMultiOptionStatus(pos, question);
+					optionMultiRvAdapter.notifyDataSetChanged();
+				}
+
+				@Override
+				public void onSubmitButtonClicked() {
+					//	如果该问题已经被回答过, 不产生任何反应
+					if (question.getHaveBeenAnswered()) {
+						return;
+					}
+					//	如果该问题还没有被回答过
+					question.setHaveBeenAnswered(true);
+					submitAnswer(question);
+					optionMultiRvAdapter.notifyDataSetChanged();
+				}
+			});
 			Context context = view.getContext();
 			rvOption.setLayoutManager(new LinearLayoutManager(context));
 			RecycleViewDivider divider = new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL, DensityUtils.dp2px(context, 1), ContextCompat.getColor(context, R.color.gray_efefef));
@@ -95,41 +122,144 @@ public class QuestionAdapter extends PagerAdapter {
 
 	}
 
-	private void showSelectedOption(int position, Question question) {
+	private void submitAnswer(Question question) {
+		if (!TextUtils.isEmpty(question.getOptionA())) {
+			if (question.getOptionAStatus() == 0 && question.getIsOptionACorrect()) {
+				question.setOptionAStatus(4);
+			} else if (question.getOptionAStatus() == 0 && !question.getIsOptionACorrect()) {
+				question.setOptionAStatus(0);
+			} else if (question.getOptionAStatus() == 3 && question.getIsOptionACorrect()) {
+				question.setOptionAStatus(1);
+			} else if (question.getOptionAStatus() == 3 && !question.getIsOptionACorrect()) {
+				question.setOptionAStatus(2);
+			}
+		}
+
+		if (!TextUtils.isEmpty(question.getOptionB())) {
+			if (question.getOptionBStatus() == 0 && question.getIsOptionBCorrect()) {
+				question.setOptionBStatus(4);
+			} else if (question.getOptionBStatus() == 0 && !question.getIsOptionBCorrect()) {
+				question.setOptionBStatus(0);
+			} else if (question.getOptionBStatus() == 3 && question.getIsOptionBCorrect()) {
+				question.setOptionBStatus(1);
+			} else if (question.getOptionBStatus() == 3 && !question.getIsOptionBCorrect()) {
+				question.setOptionBStatus(2);
+			}
+		}
+
+		if (!TextUtils.isEmpty(question.getOptionC())) {
+			if (question.getOptionCStatus() == 0 && question.getIsOptionCCorrect()) {
+				question.setOptionCStatus(4);
+			} else if (question.getOptionCStatus() == 0 && !question.getIsOptionCCorrect()) {
+				question.setOptionCStatus(0);
+			} else if (question.getOptionCStatus() == 3 && question.getIsOptionCCorrect()) {
+				question.setOptionCStatus(1);
+			} else if (question.getOptionCStatus() == 3 && !question.getIsOptionCCorrect()) {
+				question.setOptionCStatus(2);
+			}
+		}
+
+		if (!TextUtils.isEmpty(question.getOptionD())) {
+			if (question.getOptionDStatus() == 0 && question.getIsOptionDCorrect()) {
+				question.setOptionDStatus(4);
+			} else if (question.getOptionDStatus() == 0 && !question.getIsOptionDCorrect()) {
+				question.setOptionDStatus(0);
+			} else if (question.getOptionDStatus() == 3 && question.getIsOptionDCorrect()) {
+				question.setOptionDStatus(1);
+			} else if (question.getOptionDStatus() == 3 && !question.getIsOptionDCorrect()) {
+				question.setOptionDStatus(2);
+			}
+		}
+
+		if (!TextUtils.isEmpty(question.getOptionE())) {
+			if (question.getOptionEStatus() == 0 && question.getIsOptionECorrect()) {
+				question.setOptionEStatus(4);
+			} else if (question.getOptionEStatus() == 0 && !question.getIsOptionECorrect()) {
+				question.setOptionEStatus(0);
+			} else if (question.getOptionEStatus() == 3 && question.getIsOptionECorrect()) {
+				question.setOptionEStatus(1);
+			} else if (question.getOptionEStatus() == 3 && !question.getIsOptionECorrect()) {
+				question.setOptionEStatus(2);
+			}
+		}
+
+	}
+
+	private void setMultiOptionStatus(int position, Question question) {
 		switch (position) {
 			case 0:
-				question.setShowOptionA(true);
+				if (question.getOptionAStatus() == 0) {
+					question.setOptionAStatus(3);
+				} else if (question.getOptionAStatus() == 3) {
+					question.setOptionAStatus(0);
+				}
 				break;
 			case 1:
-				question.setShowOptionB(true);
+				if (question.getOptionBStatus() == 0) {
+					question.setOptionBStatus(3);
+				} else if (question.getOptionBStatus() == 3) {
+					question.setOptionBStatus(0);
+				}
 				break;
 			case 2:
-				question.setShowOptionC(true);
+				if (question.getOptionCStatus() == 0) {
+					question.setOptionCStatus(3);
+				} else if (question.getOptionCStatus() == 3) {
+					question.setOptionCStatus(0);
+				}
 				break;
 			case 3:
-				question.setShowOptionD(true);
+				if (question.getOptionDStatus() == 0) {
+					question.setOptionDStatus(3);
+				} else if (question.getOptionDStatus() == 3) {
+					question.setOptionDStatus(0);
+				}
 				break;
 			case 4:
-				question.setShowOptionE(true);
+				if (question.getOptionEStatus() == 0) {
+					question.setOptionEStatus(3);
+				} else if (question.getOptionEStatus() == 3) {
+					question.setOptionEStatus(0);
+				}
+				break;
+		}
+	}
+
+	private void setOptionStatus(int position, Question question) {
+		switch (position) {
+			case 0:
+				question.setOptionAStatus(question.getIsOptionACorrect() ? 1 : 2);
+				break;
+			case 1:
+				question.setOptionBStatus(question.getIsOptionBCorrect() ? 1 : 2);
+				break;
+			case 2:
+				question.setOptionCStatus(question.getIsOptionCCorrect() ? 1 : 2);
+				break;
+			case 3:
+				question.setOptionDStatus(question.getIsOptionDCorrect() ? 1 : 2);
+				break;
+			case 4:
+				question.setOptionEStatus(question.getIsOptionECorrect() ? 1 : 2);
 				break;
 		}
 	}
 
 	private void showCorrectAnswer(Question question) {
 		if (!TextUtils.isEmpty(question.getOptionA()) && question.getIsOptionACorrect()) {
-			question.setShowOptionA(true);
+			question.setOptionAStatus(1);
 		}
 		if (!TextUtils.isEmpty(question.getOptionB()) && question.getIsOptionBCorrect()) {
-			question.setShowOptionB(true);
+			question.setOptionBStatus(1);
 		}
 		if (!TextUtils.isEmpty(question.getOptionC()) && question.getIsOptionCCorrect()) {
-			question.setShowOptionC(true);
+			question.setOptionCStatus(1);
 		}
 		if (!TextUtils.isEmpty(question.getOptionD()) && question.getIsOptionDCorrect()) {
-			question.setShowOptionD(true);
+			question.setOptionDStatus(1);
 		}
 		if (!TextUtils.isEmpty(question.getOptionE()) && question.getIsOptionECorrect()) {
-			question.setShowOptionE(true);
+			question.setOptionEStatus(1);
 		}
 	}
 

@@ -51,48 +51,23 @@ public class OptionSingleRvAdapter extends RecyclerView.Adapter<OptionSingleRvAd
 		switch (position) {
 			case 0:
 				holder.mTvOption.setText(mQuestion.getOptionA());
-				if (mQuestion.getShowOptionA()) {
-					showIcon(holder, mQuestion.getIsOptionACorrect());
-				} else {
-					holder.mTvAbcde.setText("A");
-					setTextColorNormal(holder);
-				}
+				setStatus(mQuestion.getOptionAStatus(), holder, position);
 				break;
 			case 1:
 				holder.mTvOption.setText(mQuestion.getOptionB());
-				if (mQuestion.getShowOptionB()) {
-					showIcon(holder, mQuestion.getIsOptionBCorrect());
-				} else {
-					holder.mTvAbcde.setText("B");
-					setTextColorNormal(holder);
-				}
+				setStatus(mQuestion.getOptionBStatus(), holder, position);
 				break;
 			case 2:
 				holder.mTvOption.setText(mQuestion.getOptionC());
-				if (mQuestion.getShowOptionC()) {
-					showIcon(holder, mQuestion.getIsOptionCCorrect());
-				} else {
-					holder.mTvAbcde.setText("C");
-					setTextColorNormal(holder);
-				}
+				setStatus(mQuestion.getOptionCStatus(), holder, position);
 				break;
 			case 3:
 				holder.mTvOption.setText(mQuestion.getOptionD());
-				if (mQuestion.getShowOptionD()) {
-					showIcon(holder, mQuestion.getIsOptionDCorrect());
-				} else {
-					holder.mTvAbcde.setText("D");
-					setTextColorNormal(holder);
-				}
+				setStatus(mQuestion.getOptionDStatus(), holder, position);
 				break;
 			case 4:
 				holder.mTvOption.setText(mQuestion.getOptionE());
-				if (mQuestion.getShowOptionE()) {
-					showIcon(holder, mQuestion.getIsOptionECorrect());
-				} else {
-					holder.mTvAbcde.setText("E");
-					setTextColorNormal(holder);
-				}
+				setStatus(mQuestion.getOptionEStatus(), holder, position);
 			default:
 				break;
 		}
@@ -107,20 +82,65 @@ public class OptionSingleRvAdapter extends RecyclerView.Adapter<OptionSingleRvAd
 		});
 	}
 
-	private void setTextColorNormal(OptionRvViewHolder holder) {
-		Resources resources = holder.mTvOption.getResources();
-		holder.mTvAbcde.setVisibility(View.VISIBLE);
-		holder.mIvOption.setVisibility(View.GONE);
-		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextNormal));
-		holder.mTvAbcde.setTextColor(resources.getColor(R.color.answerTextNormal));
+	private void setStatus(int status, OptionRvViewHolder holder, int position) {
+		switch (status) {
+			case 0:
+				setNormalStatus(holder, position);
+				break;
+			case 1:
+				setCorrectStatus(holder);
+				break;
+			case 2:
+				setWrongStatus(holder);
+				break;
+		}
 	}
 
-	private void showIcon(OptionRvViewHolder holder, boolean isOptonCorrect) {
+	private void setWrongStatus(OptionRvViewHolder holder) {
+		Resources resources = holder.mIvOption.getResources();
 		holder.mTvAbcde.setVisibility(View.GONE);
 		holder.mIvOption.setVisibility(View.VISIBLE);
+		holder.mIvOption.setImageResource(R.drawable.icon_choice_bg_wrong);
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextWrong));
+	}
+
+	private void setCorrectStatus(OptionRvViewHolder holder) {
 		Resources resources = holder.mIvOption.getResources();
-		holder.mIvOption.setImageResource(isOptonCorrect ? R.drawable.icon_choice_bg_right : R.drawable.icon_choice_bg_wrong);
-		holder.mTvOption.setTextColor(isOptonCorrect ? resources.getColor(R.color.answerTextCorrect) : resources.getColor(R.color.answerTextWrong));
+		holder.mTvAbcde.setVisibility(View.GONE);
+		holder.mIvOption.setVisibility(View.VISIBLE);
+		holder.mIvOption.setImageResource(R.drawable.icon_choice_bg_right);
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextCorrect));
+	}
+
+	private void setLetterByPosition(OptionRvViewHolder holder, int position) {
+		switch (position) {
+			case 0:
+				holder.mTvAbcde.setText("A");
+				break;
+			case 1:
+				holder.mTvAbcde.setText("B");
+				break;
+			case 2:
+				holder.mTvAbcde.setText("C");
+				break;
+			case 3:
+				holder.mTvAbcde.setText("D");
+				break;
+			case 4:
+				holder.mTvAbcde.setText("E");
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void setNormalStatus(OptionRvViewHolder holder, int position) {
+		setLetterByPosition(holder, position);
+		Resources resources = holder.mTvOption.getResources();
+		holder.mIvOption.setVisibility(View.GONE);
+		holder.mTvAbcde.setVisibility(View.VISIBLE);
+		holder.mTvAbcde.setTextColor(resources.getColor(R.color.answerTextNormal));
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextNormal));
 	}
 
 	@Override

@@ -14,4 +14,5 @@
     <color name="answerTextCorrect">#09C800</color>
     <color name="answerTextWrong">#FF2925</color>
     <color name="answerTextNormal">#6C6C6C</color>
+    <color name="blue0094f6">#0094F6</color>
 </resources>

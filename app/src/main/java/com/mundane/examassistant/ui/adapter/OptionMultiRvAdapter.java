@@ -1,5 +1,6 @@
 package com.mundane.examassistant.ui.adapter;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
  * @file : OptionMultiRvAdapter.java
  */
 
-public class OptionMultiRvAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder> {
+public class OptionMultiRvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private Question mQuestion;
 
@@ -33,7 +34,7 @@ public class OptionMultiRvAdapter extends RecyclerView.Adapter<TypeAbstractViewH
 	public interface OnItemClickListener{
 		void onItemClicked(int position);
 
-		void onSubmitButtonClicked(int position);
+		void onSubmitButtonClicked();
 	}
 
 	private OnItemClickListener mOnItemClickListener;
@@ -56,7 +57,7 @@ public class OptionMultiRvAdapter extends RecyclerView.Adapter<TypeAbstractViewH
 	}
 
 	@Override
-	public TypeAbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 		switch (viewType) {
 			case 0:		//	footer
@@ -68,8 +69,143 @@ public class OptionMultiRvAdapter extends RecyclerView.Adapter<TypeAbstractViewH
 	}
 
 	@Override
-	public void onBindViewHolder(TypeAbstractViewHolder holder, int position) {
-		holder.bindHolder(mQuestion, position);
+	public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+		if (holder instanceof FootViewHolder) {    //	footer
+			FootViewHolder footViewHolder = (FootViewHolder) holder;
+			if (mQuestion.getHaveBeenAnswered()) {
+				footViewHolder.mBtnSubmit.setVisibility(View.GONE);
+			}
+			footViewHolder.mBtnSubmit.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (mOnItemClickListener != null) {
+						mOnItemClickListener.onSubmitButtonClicked();
+					}
+				}
+			});
+		} else {	//	normal
+			NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
+			switch (position) {
+				case 0:
+					normalViewHolder.mTvOption.setText(mQuestion.getOptionA());
+					setStatus(mQuestion.getOptionAStatus(), normalViewHolder, position);
+					break;
+				case 1:
+					normalViewHolder.mTvOption.setText(mQuestion.getOptionB());
+					setStatus(mQuestion.getOptionBStatus(), normalViewHolder, position);
+					break;
+				case 2:
+					normalViewHolder.mTvOption.setText(mQuestion.getOptionC());
+					setStatus(mQuestion.getOptionCStatus(), normalViewHolder, position);
+					break;
+				case 3:
+					normalViewHolder.mTvOption.setText(mQuestion.getOptionD());
+					setStatus(mQuestion.getOptionDStatus(), normalViewHolder, position);
+					break;
+				case 4:
+					normalViewHolder.mTvOption.setText(mQuestion.getOptionE());
+					setStatus(mQuestion.getOptionEStatus(), normalViewHolder, position);
+					break;
+			}
+			normalViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (mOnItemClickListener != null) {
+						mOnItemClickListener.onItemClicked(position);
+					}
+				}
+			});
+		}
+
+	}
+
+	private void setStatus(int status, NormalViewHolder holder, int position) {
+		switch (status) {
+			case 0:
+				setNormalStatus(holder, position);
+				break;
+			case 1:
+				setCorrectStatus(holder);
+				break;
+			case 2:
+				setWrongStatus(holder);
+				break;
+			case 3:
+				setSelectingStatus(holder, position);
+				break;
+			case 4:
+				setHaveNotSelectedStatus(holder, position);
+				break;
+
+		}
+	}
+
+	private void setHaveNotSelectedStatus(NormalViewHolder holder, int position) {
+		setLetterByPosition(holder, position);
+		Resources resources = holder.mTvAbcde.getResources();
+		holder.mIvOption.setVisibility(View.GONE);
+		holder.mTvAbcde.setVisibility(View.VISIBLE);
+		holder.mTvAbcde.setBackgroundResource(R.drawable.shape_tv_bg_green);
+		holder.mTvAbcde.setTextColor(resources.getColor(R.color.white));
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextCorrect));
+	}
+
+	private void setSelectingStatus(NormalViewHolder holder, int position) {
+		setLetterByPosition(holder, position);
+		Resources resources = holder.mTvAbcde.getResources();
+		holder.mIvOption.setVisibility(View.GONE);
+		holder.mTvAbcde.setVisibility(View.VISIBLE);
+		holder.mTvAbcde.setBackgroundResource(R.drawable.shape_tv_bg_blue);
+		holder.mTvAbcde.setTextColor(resources.getColor(R.color.white));
+		holder.mTvOption.setTextColor(resources.getColor(R.color.blue0094f6));
+	}
+
+	private void setWrongStatus(NormalViewHolder holder) {
+		Resources resources = holder.mIvOption.getResources();
+		holder.mTvAbcde.setVisibility(View.GONE);
+		holder.mIvOption.setVisibility(View.VISIBLE);
+		holder.mIvOption.setImageResource(R.drawable.icon_choice_bg_wrong);
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextWrong));
+	}
+
+	private void setCorrectStatus(NormalViewHolder holder) {
+		Resources resources = holder.mIvOption.getResources();
+		holder.mTvAbcde.setVisibility(View.GONE);
+		holder.mIvOption.setVisibility(View.VISIBLE);
+		holder.mIvOption.setImageResource(R.drawable.icon_choice_bg_right);
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextCorrect));
+	}
+
+	private void setNormalStatus(NormalViewHolder holder, int position) {
+		setLetterByPosition(holder, position);
+		Resources resources = holder.mTvOption.getResources();
+		holder.mIvOption.setVisibility(View.GONE);
+		holder.mTvAbcde.setVisibility(View.VISIBLE);
+		holder.mTvAbcde.setBackgroundResource(R.drawable.shape_tv_bg_abcde);
+		holder.mTvAbcde.setTextColor(resources.getColor(R.color.answerTextNormal));
+		holder.mTvOption.setTextColor(resources.getColor(R.color.answerTextNormal));
+	}
+
+	private void setLetterByPosition(NormalViewHolder holder, int position) {
+		switch (position) {
+			case 0:
+				holder.mTvAbcde.setText("A");
+				break;
+			case 1:
+				holder.mTvAbcde.setText("B");
+				break;
+			case 2:
+				holder.mTvAbcde.setText("C");
+				break;
+			case 3:
+				holder.mTvAbcde.setText("D");
+				break;
+			case 4:
+				holder.mTvAbcde.setText("E");
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
@@ -85,7 +221,7 @@ public class OptionMultiRvAdapter extends RecyclerView.Adapter<TypeAbstractViewH
 		}
 	}
 
-	static class NormalViewHolder extends TypeAbstractViewHolder<Question> {
+	static class NormalViewHolder extends RecyclerView.ViewHolder {
 
 		@BindView(R.id.iv_option)
 		ImageView mIvOption;
@@ -98,105 +234,17 @@ public class OptionMultiRvAdapter extends RecyclerView.Adapter<TypeAbstractViewH
 			ButterKnife.bind(this, itemView);
 		}
 
-		@Override
-		public void bindHolder(Question question, int position) {
-			switch (position) {
-				case 0:
-					mTvOption.setText(question.getOptionA());
-					if (question.getShowOptionA()) {
-						if (question.getIsOptionACorrect()) {
-							showCorrectItem("A");
-						} else {
-							showNormalItem("A");
-						}
-
-					} else {
-						showNormalItem("A");
-					}
-					break;
-				case 1:
-					mTvOption.setText(question.getOptionB());
-					if (question.getShowOptionB()) {
-						if (question.getIsOptionACorrect()) {
-							showCorrectItem("B");
-						} else {
-							showNormalItem("B");
-						}
-					} else {
-						showNormalItem("B");
-					}
-					break;
-				case 2:
-					mTvOption.setText(question.getOptionC());
-					if (question.getShowOptionC()) {
-						if (question.getIsOptionACorrect()) {
-							showCorrectItem("C");
-						} else {
-							showNormalItem("C");
-						}
-					} else {
-						showNormalItem("C");
-					}
-					break;
-				case 3:
-					mTvOption.setText(question.getOptionD());
-					if (question.getShowOptionD()) {
-						if (question.getIsOptionACorrect()) {
-							showCorrectItem("D");
-						} else {
-							showNormalItem("D");
-						}
-					} else {
-						showNormalItem("D");
-					}
-					break;
-				case 4:
-					mTvOption.setText(question.getOptionE());
-					if (question.getShowOptionE()) {
-						if (question.getIsOptionACorrect()) {
-							showCorrectItem("E");
-						} else {
-							showNormalItem("E");
-						}
-					} else {
-						showNormalItem("E");
-					}
-					break;
-				default:
-					break;
-			}
-		}
-
-		private void showCorrectItem(String letter) {
-			mTvAbcde.setText(letter);
-			mIvOption.setVisibility(View.GONE);
-			mTvAbcde.setVisibility(View.VISIBLE);
-			mTvAbcde.setBackgroundResource(R.drawable.shape_tv_bg_green);
-			mTvOption.setTextColor(mTvOption.getResources().getColor(R.color.answerTextCorrect));
-			mTvAbcde.setTextColor(mTvOption.getResources().getColor(R.color.white));
-		}
-
-		private void showNormalItem(String letter) {
-			mTvAbcde.setText(letter);
-			mIvOption.setVisibility(View.GONE);
-			mTvAbcde.setVisibility(View.VISIBLE);
-			mTvOption.setTextColor(mTvOption.getResources().getColor(R.color.answerTextNormal));
-			mTvAbcde.setTextColor(mTvOption.getResources().getColor(R.color.answerTextNormal));
-		}
 	}
 
-	static class FootViewHolder extends TypeAbstractViewHolder<Question> {
+
+
+	static class FootViewHolder extends RecyclerView.ViewHolder {
 
 		@BindView(R.id.btn_submit)
 		Button mBtnSubmit;
 		public FootViewHolder(View itemView) {
 			super(itemView);
 			ButterKnife.bind(this, itemView);
-		}
-
-		@Override
-		public void bindHolder(Question question, int position) {
-
 		}
 	}
 }

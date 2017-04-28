@@ -16,12 +16,13 @@
 
 
         <TextView
-            android:layout_gravity="center"
             android:id="@+id/tv_abcde"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_gravity="center"
             android:background="@drawable/shape_tv_bg_abcde"
             android:gravity="center"
+            android:textColor="@color/answerTextNormal"
             tools:text="A"/>
 
         <ImageView

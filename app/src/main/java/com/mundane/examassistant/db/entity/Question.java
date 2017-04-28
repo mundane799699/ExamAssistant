@@ -29,24 +29,31 @@ public class Question {
 	private boolean isCollected;//	是否被收藏了
 	private boolean isAnsweredWrong;//	是否被收录到错题集中
 	private boolean haveBeenAnswered;//	该问题是否已经被回答过
-	private boolean showOptionA;	//	是否显示A选项为正确或者错误答案
-	private boolean showOptionB;	//	是否显示B选项为正确或者错误答案
-	private boolean showOptionC;	//	是否显示C选项为正确或者错误答案
-	private boolean showOptionD;	//	是否显示D选项为正确或者错误答案
-	private boolean showOptionE;	//	是否显示E选项为正确或者错误答案
 	private boolean isOptionACorrect;	//	A选项是否是正确答案
 	private boolean isOptionBCorrect;	//	B选项是否是正确答案
 	private boolean isOptionCCorrect;	//	C选项是否是正确答案
 	private boolean isOptionDCorrect;	//	D选项是否是正确答案
 	private boolean isOptionECorrect;	//	E选项是否是正确答案
-	@Generated(hash = 732367781)
+
+	//	选项的显示状态
+	// 0:默认显示状态, 图标灰色字母, 文字是普通灰色;
+	// 1:选择正确的状态, 图标是绿色对勾, 文字是绿色;
+	// 2:选择错误的状态, 图标是红色叉叉, 文字是红色;
+	// 3:多选模式中正在选择还未点提交按钮的选项的状态, 图标是蓝色字母, 文字是蓝色;
+	// 4:多选中属于正确选项但是用户未发现这项, 图标是绿色字母, 文字是绿色
+	private int optionAStatus;
+	private int optionBStatus;
+	private int optionCStatus;
+	private int optionDStatus;
+	private int optionEStatus;
+	@Generated(hash = 1820527641)
 	public Question(Long id, String course, String type, String question,
 			String optionA, String optionB, String optionC, String optionD,
 			String optionE, String answer, boolean isCollected, boolean isAnsweredWrong,
-			boolean haveBeenAnswered, boolean showOptionA, boolean showOptionB,
-			boolean showOptionC, boolean showOptionD, boolean showOptionE,
-			boolean isOptionACorrect, boolean isOptionBCorrect, boolean isOptionCCorrect,
-			boolean isOptionDCorrect, boolean isOptionECorrect) {
+			boolean haveBeenAnswered, boolean isOptionACorrect, boolean isOptionBCorrect,
+			boolean isOptionCCorrect, boolean isOptionDCorrect, boolean isOptionECorrect,
+			int optionAStatus, int optionBStatus, int optionCStatus, int optionDStatus,
+			int optionEStatus) {
 		this.id = id;
 		this.course = course;
 		this.type = type;
@@ -60,16 +67,16 @@ public class Question {
 		this.isCollected = isCollected;
 		this.isAnsweredWrong = isAnsweredWrong;
 		this.haveBeenAnswered = haveBeenAnswered;
-		this.showOptionA = showOptionA;
-		this.showOptionB = showOptionB;
-		this.showOptionC = showOptionC;
-		this.showOptionD = showOptionD;
-		this.showOptionE = showOptionE;
 		this.isOptionACorrect = isOptionACorrect;
 		this.isOptionBCorrect = isOptionBCorrect;
 		this.isOptionCCorrect = isOptionCCorrect;
 		this.isOptionDCorrect = isOptionDCorrect;
 		this.isOptionECorrect = isOptionECorrect;
+		this.optionAStatus = optionAStatus;
+		this.optionBStatus = optionBStatus;
+		this.optionCStatus = optionCStatus;
+		this.optionDStatus = optionDStatus;
+		this.optionEStatus = optionEStatus;
 	}
 	@Generated(hash = 1868476517)
 	public Question() {
@@ -152,36 +159,6 @@ public class Question {
 	public void setHaveBeenAnswered(boolean haveBeenAnswered) {
 		this.haveBeenAnswered = haveBeenAnswered;
 	}
-	public boolean getShowOptionA() {
-		return this.showOptionA;
-	}
-	public void setShowOptionA(boolean showOptionA) {
-		this.showOptionA = showOptionA;
-	}
-	public boolean getShowOptionB() {
-		return this.showOptionB;
-	}
-	public void setShowOptionB(boolean showOptionB) {
-		this.showOptionB = showOptionB;
-	}
-	public boolean getShowOptionC() {
-		return this.showOptionC;
-	}
-	public void setShowOptionC(boolean showOptionC) {
-		this.showOptionC = showOptionC;
-	}
-	public boolean getShowOptionD() {
-		return this.showOptionD;
-	}
-	public void setShowOptionD(boolean showOptionD) {
-		this.showOptionD = showOptionD;
-	}
-	public boolean getShowOptionE() {
-		return this.showOptionE;
-	}
-	public void setShowOptionE(boolean showOptionE) {
-		this.showOptionE = showOptionE;
-	}
 	public boolean getIsOptionACorrect() {
 		return this.isOptionACorrect;
 	}
@@ -212,5 +189,34 @@ public class Question {
 	public void setIsOptionECorrect(boolean isOptionECorrect) {
 		this.isOptionECorrect = isOptionECorrect;
 	}
-
+	public int getOptionAStatus() {
+		return this.optionAStatus;
+	}
+	public void setOptionAStatus(int optionAStatus) {
+		this.optionAStatus = optionAStatus;
+	}
+	public int getOptionBStatus() {
+		return this.optionBStatus;
+	}
+	public void setOptionBStatus(int optionBStatus) {
+		this.optionBStatus = optionBStatus;
+	}
+	public int getOptionCStatus() {
+		return this.optionCStatus;
+	}
+	public void setOptionCStatus(int optionCStatus) {
+		this.optionCStatus = optionCStatus;
+	}
+	public int getOptionDStatus() {
+		return this.optionDStatus;
+	}
+	public void setOptionDStatus(int optionDStatus) {
+		this.optionDStatus = optionDStatus;
+	}
+	public int getOptionEStatus() {
+		return this.optionEStatus;
+	}
+	public void setOptionEStatus(int optionEStatus) {
+		this.optionEStatus = optionEStatus;
+	}
 }

@@ -54,7 +54,7 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 	@Override
 	public void onBindViewHolder(TypeAbstractViewHolder<SectionBean> holder, final int position) {
 		final SectionBean section = mList.get(position);
-		holder.bindHolder(section, position);
+		holder.bindHolder(section);
 		if (section.isSelected) {
 			mLastSelectedPosition = position;
 		}
@@ -93,7 +93,7 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 		}
 
 		@Override
-		public void bindHolder(SectionBean sectionBean, int position) {
+		public void bindHolder(SectionBean sectionBean) {
 			mTvName.setText(sectionBean.questionType);
 			mTvNum.setText(String.format("%d题", sectionBean.questionNum));
 			mLlBg.setSelected(sectionBean.isSelected);

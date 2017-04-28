@@ -17,6 +17,7 @@ public class DbManager {
 
 	private static Context context;
 	private static final String DB_NAME = "examassistant.db";
+	private QuestionDao mQuestionDao;
 
 	private static class SingletonHolder {
 		private static final DbManager INSTANCE = new DbManager();
