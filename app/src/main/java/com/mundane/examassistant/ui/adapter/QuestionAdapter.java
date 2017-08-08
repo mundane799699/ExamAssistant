@@ -10,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.mundane.examassistant.R;
+import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
+import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
-
 import java.util.List;
 
 /**
@@ -28,13 +28,16 @@ import java.util.List;
 
 public class QuestionAdapter extends PagerAdapter {
 
-	private List<Question> mList;
+    private QuestionDao mQuestionDao;
+    private List<Question> mList;
 
-	public QuestionAdapter(List<Question> list) {
-		mList = list;
-	}
+    public QuestionAdapter(List<Question> list, QuestionDao questionDao) {
+        mList = list;
+        mQuestionDao = DbHelper.getQuestionDao();
+    }
 
-	@Override
+
+    @Override
 	public int getCount() {
 		return mList.size();
 	}
@@ -243,6 +246,8 @@ public class QuestionAdapter extends PagerAdapter {
 				question.setOptionEStatus(question.getIsOptionECorrect() ? 1 : 2);
 				break;
 		}
+		// 更新
+        mQuestionDao.update(question);
 	}
 
 	private void showCorrectAnswer(Question question) {
@@ -261,6 +266,8 @@ public class QuestionAdapter extends PagerAdapter {
 		if (!TextUtils.isEmpty(question.getOptionE()) && question.getIsOptionECorrect()) {
 			question.setOptionEStatus(1);
 		}
+		// 更新
+		mQuestionDao.update(question);
 	}
 
 	private final String TAG = "QuestionAdapter";

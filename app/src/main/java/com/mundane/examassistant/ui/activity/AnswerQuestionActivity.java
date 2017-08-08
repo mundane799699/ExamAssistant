@@ -88,7 +88,7 @@ public class AnswerQuestionActivity extends BaseActivity {
 
 	private void refreshView() {
 		mTvJump.setText(String.format("%d/%d", 1, mList.size()));
-		mQuestionAdapter = new QuestionAdapter(mList);
+		mQuestionAdapter = new QuestionAdapter(mList, mQuestionDao);
 		mViewPager.setAdapter(mQuestionAdapter);
 		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
