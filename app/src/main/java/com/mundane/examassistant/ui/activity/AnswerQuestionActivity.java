@@ -4,7 +4,9 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -233,6 +235,12 @@ public class AnswerQuestionActivity extends BaseActivity {
 
 		mIvBack.setVisibility(View.VISIBLE);
 		mLlJump.setVisibility(View.VISIBLE);
+		mLlJump.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showBottomSheetDialog();
+			}
+		});
 		mTvJump.setText(String.format("%d/%d", 1, mList.size()));
 		mLlMode.setVisibility(View.VISIBLE);
 		mLlCollect.setVisibility(View.VISIBLE);
@@ -245,5 +253,12 @@ public class AnswerQuestionActivity extends BaseActivity {
 		if (!mList.isEmpty()) {
 			refreshView();
 		}
+	}
+
+	private void showBottomSheetDialog() {
+		BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+		View view = LayoutInflater.from(this).inflate(R.layout.dialog_layout, mLlJump, false);
+		bottomSheetDialog.setContentView(view);
+		bottomSheetDialog.show();
 	}
 }

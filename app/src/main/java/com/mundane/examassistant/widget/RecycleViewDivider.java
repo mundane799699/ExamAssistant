@@ -125,6 +125,7 @@ public class RecycleViewDivider extends RecyclerView.ItemDecoration {
 			final int bottom = top + mDividerHeight;
 
 			if (mDivider != null) {
+				//	这两行代码其实不需要
 				mDivider.setBounds(left + leftOffset, top, right - rightOffset, bottom);
 				mDivider.draw(canvas);
 			}
