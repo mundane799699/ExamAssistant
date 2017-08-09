@@ -128,63 +128,84 @@ public class QuestionAdapter extends PagerAdapter {
 	}
 
 	private void submitAnswer(Question question) {
+		question.setIsAnsweredWrong(false);
 		if (!TextUtils.isEmpty(question.getOptionA())) {
 			if (question.getOptionAStatus() == 0 && question.getIsOptionACorrect()) {
 				question.setOptionAStatus(4);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			} else if (question.getOptionAStatus() == 0 && !question.getIsOptionACorrect()) {
 				question.setOptionAStatus(0);
 			} else if (question.getOptionAStatus() == 3 && question.getIsOptionACorrect()) {
 				question.setOptionAStatus(1);
 			} else if (question.getOptionAStatus() == 3 && !question.getIsOptionACorrect()) {
 				question.setOptionAStatus(2);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			}
 		}
 
 		if (!TextUtils.isEmpty(question.getOptionB())) {
 			if (question.getOptionBStatus() == 0 && question.getIsOptionBCorrect()) {
 				question.setOptionBStatus(4);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			} else if (question.getOptionBStatus() == 0 && !question.getIsOptionBCorrect()) {
 				question.setOptionBStatus(0);
 			} else if (question.getOptionBStatus() == 3 && question.getIsOptionBCorrect()) {
 				question.setOptionBStatus(1);
 			} else if (question.getOptionBStatus() == 3 && !question.getIsOptionBCorrect()) {
 				question.setOptionBStatus(2);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			}
 		}
 
 		if (!TextUtils.isEmpty(question.getOptionC())) {
 			if (question.getOptionCStatus() == 0 && question.getIsOptionCCorrect()) {
 				question.setOptionCStatus(4);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			} else if (question.getOptionCStatus() == 0 && !question.getIsOptionCCorrect()) {
 				question.setOptionCStatus(0);
 			} else if (question.getOptionCStatus() == 3 && question.getIsOptionCCorrect()) {
 				question.setOptionCStatus(1);
 			} else if (question.getOptionCStatus() == 3 && !question.getIsOptionCCorrect()) {
 				question.setOptionCStatus(2);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			}
 		}
 
 		if (!TextUtils.isEmpty(question.getOptionD())) {
 			if (question.getOptionDStatus() == 0 && question.getIsOptionDCorrect()) {
 				question.setOptionDStatus(4);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			} else if (question.getOptionDStatus() == 0 && !question.getIsOptionDCorrect()) {
 				question.setOptionDStatus(0);
 			} else if (question.getOptionDStatus() == 3 && question.getIsOptionDCorrect()) {
 				question.setOptionDStatus(1);
 			} else if (question.getOptionDStatus() == 3 && !question.getIsOptionDCorrect()) {
 				question.setOptionDStatus(2);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			}
 		}
 
 		if (!TextUtils.isEmpty(question.getOptionE())) {
 			if (question.getOptionEStatus() == 0 && question.getIsOptionECorrect()) {
 				question.setOptionEStatus(4);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			} else if (question.getOptionEStatus() == 0 && !question.getIsOptionECorrect()) {
 				question.setOptionEStatus(0);
 			} else if (question.getOptionEStatus() == 3 && question.getIsOptionECorrect()) {
 				question.setOptionEStatus(1);
 			} else if (question.getOptionEStatus() == 3 && !question.getIsOptionECorrect()) {
 				question.setOptionEStatus(2);
+				// 标记为回答错误
+				question.setIsAnsweredWrong(true);
 			}
 		}
 
