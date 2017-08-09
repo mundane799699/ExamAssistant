@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,10 +23,12 @@ import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
+import com.mundane.examassistant.ui.adapter.BottomSheetRvAdapter;
 import com.mundane.examassistant.ui.adapter.QuestionAdapter;
 import com.mundane.examassistant.utils.FileUtils;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.utils.ToastUtils;
+import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 
 import org.greenrobot.greendao.query.Query;
@@ -256,8 +260,40 @@ public class AnswerQuestionActivity extends BaseActivity {
 	}
 
 	private void showBottomSheetDialog() {
-		BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+		final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
 		View view = LayoutInflater.from(this).inflate(R.layout.dialog_layout, mLlJump, false);
+		RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv);
+		TextView tvRight = (TextView) view.findViewById(R.id.tv_right);
+		TextView tvWrong = (TextView) view.findViewById(R.id.tv_wrong);
+		TextView tvUndo = (TextView) view.findViewById(R.id.tv_undo);
+		int rightQuestionCount = 0;
+		int wrongQuestionCount = 0;
+		int undoQuestionCount = 0;
+		for (Question question : mList) {
+			if (question.getHaveBeenAnswered()) {
+				if (question.getIsAnsweredWrong()) {
+					wrongQuestionCount++;
+				} else {
+					rightQuestionCount++;
+				}
+			} else {
+				undoQuestionCount++;
+			}
+		}
+		tvRight.setText(String.format("%d", rightQuestionCount));
+		tvWrong.setText(String.format("%d", wrongQuestionCount));
+		tvUndo.setText(String.format("%d", undoQuestionCount));
+		rv.setLayoutManager(new GridLayoutManager(this, 6));
+		rv.addItemDecoration(new BottomSheetItemDecoration(this));
+		BottomSheetRvAdapter adapter = new BottomSheetRvAdapter(mList);
+		adapter.setOnItemClickListener(new BottomSheetRvAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClicked(int position) {
+				mViewPager.setCurrentItem(position, true);
+				bottomSheetDialog.dismiss();
+			}
+		});
+        rv.setAdapter(adapter);
 		bottomSheetDialog.setContentView(view);
 		bottomSheetDialog.show();
 	}

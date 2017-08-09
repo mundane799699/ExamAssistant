@@ -10,13 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.mundane.examassistant.R;
-import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
+
 import java.util.List;
 
 /**
@@ -33,7 +34,8 @@ public class QuestionAdapter extends PagerAdapter {
 
     public QuestionAdapter(List<Question> list, QuestionDao questionDao) {
         mList = list;
-        mQuestionDao = DbHelper.getQuestionDao();
+//        mQuestionDao = DbHelper.getQuestionDao();
+        mQuestionDao = questionDao;
     }
 
 
@@ -186,6 +188,9 @@ public class QuestionAdapter extends PagerAdapter {
 			}
 		}
 
+		// 更新
+		mQuestionDao.update(question);
+
 	}
 
 	private void setMultiOptionStatus(int position, Question question) {
@@ -232,18 +237,28 @@ public class QuestionAdapter extends PagerAdapter {
 		switch (position) {
 			case 0:
 				question.setOptionAStatus(question.getIsOptionACorrect() ? 1 : 2);
+				// 是否回答错误, 需要被收录到错题集中
+				question.setIsAnsweredWrong(!question.getIsOptionACorrect());
 				break;
 			case 1:
 				question.setOptionBStatus(question.getIsOptionBCorrect() ? 1 : 2);
+				// 是否回答错误, 需要被收录到错题集中
+				question.setIsAnsweredWrong(!question.getIsOptionBCorrect());
 				break;
 			case 2:
 				question.setOptionCStatus(question.getIsOptionCCorrect() ? 1 : 2);
+				// 是否回答错误, 需要被收录到错题集中
+				question.setIsAnsweredWrong(!question.getIsOptionCCorrect());
 				break;
 			case 3:
 				question.setOptionDStatus(question.getIsOptionDCorrect() ? 1 : 2);
+				// 是否回答错误, 需要被收录到错题集中
+				question.setIsAnsweredWrong(!question.getIsOptionDCorrect());
 				break;
 			case 4:
 				question.setOptionEStatus(question.getIsOptionECorrect() ? 1 : 2);
+				// 是否回答错误, 需要被收录到错题集中
+				question.setIsAnsweredWrong(!question.getIsOptionECorrect());
 				break;
 		}
 		// 更新

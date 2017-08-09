@@ -1,19 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="570dp"
+    android:orientation="vertical"
     >
 
-
-    <TextView
-        android:text="分享"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:textSize="20sp"/>
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="答对"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_right"
+            android:layout_marginLeft="2dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/answerTextCorrect"
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="答错"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_wrong"
+            android:layout_marginLeft="2dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/answerTextWrong"
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="未答"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_undo"
+            android:layout_marginLeft="2dp"
+            android:layout_gravity="center_vertical"
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:background="@drawable/shape_bg_clear"
+            android:textColor="@color/white"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:text="清空记录"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"/>
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_efefef"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 
 
 
-</FrameLayout>
+</LinearLayout>

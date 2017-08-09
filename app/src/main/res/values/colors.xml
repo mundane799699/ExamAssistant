@@ -8,11 +8,14 @@
     <color name="colorSelectCourse">#F2F2F2</color>
     <color name="commonGray">#dfdfdf</color>
     <color name="black">#ff000000</color>
+    <!--分割线的颜色-->
     <color name="gray_efefef">#efefef</color>
     <color name="normalTextColor">#6F6F6F</color>
     <color name="sectionSelected">#DFDFDF</color>
     <color name="answerTextCorrect">#09C800</color>
+    <color name="transparentGreen">#D1F6D2</color>
     <color name="answerTextWrong">#FF2925</color>
+    <color name="transparentRed">#FDD3D3</color>
     <color name="answerTextNormal">#6C6C6C</color>
     <color name="blue0094f6">#0094F6</color>
 </resources>
