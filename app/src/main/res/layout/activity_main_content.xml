@@ -7,12 +7,14 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main">
 
-    <ImageView
-        android:id="@+id/iv"
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/banner"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        style="@style/BannerDefaultStyle"
+        app:banner_indicatorGravity="bottom|right"
+        app:banner_transitionEffect="alpha"
         app:layout_constraintDimensionRatio="640:400"
-        android:src="@drawable/home_scroll1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,9 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="231dp"
-        app:layout_constraintGuide_percent="0.6015625"/>
+        app:layout_constraintGuide_percent="0.6"/>
 
     <android.support.constraint.Guideline
         android:orientation="horizontal"
@@ -33,8 +33,7 @@
         app:layout_constraintGuide_percent="0.85"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteY="414dp"
-        tools:layout_editor_absoluteX="0dp"/>
+        />
 
     <View
         android:id="@+id/view1"
@@ -64,7 +63,7 @@
         app:layout_constraintBottom_toTopOf="@+id/view1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideLine"
-        app:layout_constraintTop_toBottomOf="@+id/iv">
+        app:layout_constraintTop_toBottomOf="@+id/banner">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -93,7 +92,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/frameLayout_section_practice"
         app:layout_constraintLeft_toLeftOf="@+id/view2"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv">
+        app:layout_constraintTop_toBottomOf="@+id/banner">
 
         <FrameLayout
             android:layout_above="@+id/view"
