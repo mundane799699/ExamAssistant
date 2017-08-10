@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.CourseItem;
-import com.mundane.examassistant.ui.adapter.ContentAdapter;
 import com.mundane.examassistant.ui.adapter.SelectCoursePopupWindowRvAdapter;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.SelectCoursePopupWindow;
@@ -31,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.mundane.examassistant.global.Constant.*;
+import static com.mundane.examassistant.global.Constant.KEY_CURRENT_COURSE;
 
 public class MainActivity extends BaseActivity {
 
@@ -45,13 +43,12 @@ public class MainActivity extends BaseActivity {
 	FrameLayout mFlBg;
 	@BindView(R.id.rl_title)
 	RelativeLayout mRlTitle;
-	@BindView(R.id.rv_content)
-	RecyclerView mRvContent;
+	@BindView(R.id.frameLayout_section_practice)
+	FrameLayout mFlSectionPractice;
 	private RecyclerView mRv;
 	private List<CourseItem> mCourseList = new ArrayList<>();
 	private SelectCoursePopupWindowRvAdapter mAdapter;
 	private SelectCoursePopupWindow mCoursePopupWindow;
-	private ContentAdapter mContentAdapter;
 	private SelectCoursePopupWindow mCustomPopupWindow;
 
 	@Override
@@ -66,20 +63,14 @@ public class MainActivity extends BaseActivity {
 	public static final String PARCELABLE = "parcelable";
 
 	private void init() {
-		StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-		mRvContent.setLayoutManager(manager);
-		mContentAdapter = new ContentAdapter();
-		mContentAdapter.setOnItemClickListener(new ContentAdapter.OnItemClickListener() {
+		mFlSectionPractice.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onItemClicked(Class clazz) {
-				if (clazz != null) {
-					Intent intent = new Intent(MainActivity.this, clazz);
-					intent.putExtra(PARCELABLE, mCurrentCourseItem);
-					startActivity(intent);
-				}
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, SectionPracticeActivity.class);
+				intent.putExtra(PARCELABLE, mCurrentCourseItem);
+				startActivity(intent);
 			}
 		});
-		mRvContent.setAdapter(mContentAdapter);
 
 		if (mCourseList.isEmpty()) {
 			mCourseList.add(new CourseItem("近代史", false));
