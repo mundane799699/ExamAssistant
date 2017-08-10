@@ -52,7 +52,13 @@ public class BottomSheetItemDecoration extends RecyclerView.ItemDecoration {
 	private boolean isLastRow(RecyclerView parent, int pos, int spanCount, int childCount) {
 		RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
 		if (layoutManager instanceof GridLayoutManager) {
-			int maxNotLastRawPosition = childCount - childCount % spanCount;
+			int remainder = childCount % spanCount;
+			int maxNotLastRawPosition;
+			if (remainder == 0) {
+                maxNotLastRawPosition = childCount - spanCount;
+			} else {
+				maxNotLastRawPosition = childCount - remainder;
+			}
 			if (pos >= maxNotLastRawPosition) {
 				return true;
 			}

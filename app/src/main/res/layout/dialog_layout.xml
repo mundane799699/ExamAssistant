@@ -59,6 +59,7 @@
             android:layout_height="match_parent"/>
 
         <Button
+            android:id="@+id/btn_clear"
             android:background="@drawable/shape_bg_clear"
             android:textColor="@color/white"
             android:layout_gravity="center_vertical"

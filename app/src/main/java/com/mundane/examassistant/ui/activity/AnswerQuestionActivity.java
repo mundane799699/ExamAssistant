@@ -1,15 +1,18 @@
 package com.mundane.examassistant.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -266,6 +269,32 @@ public class AnswerQuestionActivity extends BaseActivity {
 		TextView tvRight = (TextView) view.findViewById(R.id.tv_right);
 		TextView tvWrong = (TextView) view.findViewById(R.id.tv_wrong);
 		TextView tvUndo = (TextView) view.findViewById(R.id.tv_undo);
+		Button btnClear = (Button) view.findViewById(R.id.btn_clear);
+		btnClear.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(AnswerQuestionActivity.this);
+				builder.setTitle("确定要删除历史记录吗?")
+						.setMessage("将清空该章节的答题记录")
+						.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+							}
+						})
+						.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// 清除历史记录
+								clearHistory();
+								mViewPager.setCurrentItem(0, false);
+								bottomSheetDialog.dismiss();
+							}
+						})
+						.create()
+						.show();
+			}
+		});
 		int rightQuestionCount = 0;
 		int wrongQuestionCount = 0;
 		int undoQuestionCount = 0;
@@ -296,5 +325,18 @@ public class AnswerQuestionActivity extends BaseActivity {
         rv.setAdapter(adapter);
 		bottomSheetDialog.setContentView(view);
 		bottomSheetDialog.show();
+	}
+
+	private void clearHistory() {
+		for (Question question : mList) {
+			question.setIsAnsweredWrong(false);
+			question.setHaveBeenAnswered(false);
+			question.setOptionAStatus(0);
+			question.setOptionBStatus(0);
+			question.setOptionCStatus(0);
+			question.setOptionDStatus(0);
+			question.setOptionEStatus(0);
+		}
+        mQuestionDao.updateInTx(mList);
 	}
 }
