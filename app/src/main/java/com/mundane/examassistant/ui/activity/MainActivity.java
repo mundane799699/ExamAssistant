@@ -14,18 +14,22 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import cn.bingoogolapple.bgabanner.BGABanner;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.ui.adapter.SelectCoursePopupWindowRvAdapter;
 import com.mundane.examassistant.utils.SPUtils;
+import com.mundane.examassistant.widget.GlideImageLoader;
 import com.mundane.examassistant.widget.SelectCoursePopupWindow;
+import com.youth.banner.Banner;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.mundane.examassistant.global.Constant.KEY_CURRENT_COURSE;
 
@@ -44,7 +48,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.frameLayout_section_practice)
     FrameLayout    mFlSectionPractice;
     @BindView(R.id.banner)
-    BGABanner      mBanner;
+	Banner mBanner;
     private RecyclerView mRv;
     private List<CourseItem> mCourseList = new ArrayList<>();
     private SelectCoursePopupWindowRvAdapter mAdapter;
@@ -66,8 +70,13 @@ public class MainActivity extends BaseActivity {
 
 
     private void init() {
-        // fixme: 这里有个bug, 只有当图片大于2张的时候才能自动轮播, 当图片等于两张的时候是不会自动轮播的, 也不能无限循环
-        mBanner.setData(R.drawable.home_scroll1, R.drawable.home_scroll2, R.drawable.home_scroll1, R.drawable.home_scroll2);
+		List<Integer> list=new ArrayList<>();
+		list.add(R.drawable.home_scroll1);
+		list.add(R.drawable.home_scroll2);
+
+		mBanner.setImages(list)
+				.setImageLoader(new GlideImageLoader())
+				.start();
         mFlSectionPractice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
