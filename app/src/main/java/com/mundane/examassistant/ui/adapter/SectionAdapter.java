@@ -97,29 +97,7 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 			mTvName.setText(sectionBean.questionType);
 			mTvNum.setText(String.format("%d题", sectionBean.questionNum));
 			mLlBg.setSelected(sectionBean.isSelected);
-			switch (sectionBean.type) {
-				case 1:
-					mIvIcon.setImageResource(R.drawable.list_one);
-					break;
-				case 2:
-					mIvIcon.setImageResource(R.drawable.list_two);
-					break;
-				case 3:
-					mIvIcon.setImageResource(R.drawable.list_three);
-					break;
-				case 4:
-					mIvIcon.setImageResource(R.drawable.list_four);
-					break;
-				case 5:
-					mIvIcon.setImageResource(R.drawable.list_five);
-					break;
-				case 6:
-					mIvIcon.setImageResource(R.drawable.list_six);
-					break;
-				case 7:
-					mIvIcon.setImageResource(R.drawable.list_seven);
-					break;
-			}
+			mIvIcon.setImageResource(sectionBean.type);
 		}
 	}
 

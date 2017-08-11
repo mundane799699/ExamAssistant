@@ -3,6 +3,8 @@ package com.mundane.examassistant.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.mundane.examassistant.R;
+
 /**
  * @author : mundane
  * @time : 2017/4/13 11:17
@@ -24,25 +26,25 @@ public class SectionBean implements Parcelable {
 		String lastChar = questionType.substring(questionType.length() - 1, questionType.length());
 		switch (lastChar) {
 			case "一":
-				type = 1;
+				type = R.drawable.list_one;
 				break;
 			case "二":
-				type = 2;
+				type = R.drawable.list_two;
 				break;
 			case "三":
-				type = 3;
+				type = R.drawable.list_three;
 				break;
 			case "四":
-				type = 4;
+				type = R.drawable.list_four;
 				break;
 			case "五":
-				type = 5;
+				type = R.drawable.list_five;
 				break;
 			case "六":
-				type = 6;
+				type = R.drawable.list_six;
 				break;
 			case "七":
-				type = 7;
+				type = R.drawable.list_seven;
 				break;
 			default:
 				break;

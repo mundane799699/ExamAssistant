@@ -29,17 +29,17 @@ import java.util.List;
 
 public class QuestionAdapter extends PagerAdapter {
 
-    private QuestionDao mQuestionDao;
-    private List<Question> mList;
+	private QuestionDao mQuestionDao;
+	private List<Question> mList;
 
-    public QuestionAdapter(List<Question> list, QuestionDao questionDao) {
-        mList = list;
+	public QuestionAdapter(List<Question> list, QuestionDao questionDao) {
+		mList = list;
 //        mQuestionDao = DbHelper.getQuestionDao();
-        mQuestionDao = questionDao;
-    }
+		mQuestionDao = questionDao;
+	}
 
 
-    @Override
+	@Override
 	public int getCount() {
 		return mList.size();
 	}
@@ -62,6 +62,7 @@ public class QuestionAdapter extends PagerAdapter {
 		LogUtils.d("instantiateItem position = " + position);
 		TextView tvQuestion = (TextView) view.findViewById(R.id.tv_question);
 		tvQuestion.setText(question.getQuestion());
+		tvQuestion.setText("呵呵");
 		final RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
 		rvOption.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
 		if (question.getType().startsWith("单选")) {        //	单选
@@ -283,7 +284,7 @@ public class QuestionAdapter extends PagerAdapter {
 				break;
 		}
 		// 更新
-        mQuestionDao.update(question);
+		mQuestionDao.update(question);
 	}
 
 	private void showCorrectAnswer(Question question) {

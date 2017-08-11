@@ -60,4 +60,21 @@ public class ResUtil {
 				break;
 		}
 	}
+
+	public static void initData(List<SectionBean> list, String courseName) {
+		list.add(new SectionBean(courseName, "单选一", 0));
+		list.add(new SectionBean(courseName, "单选二", 0));
+		list.add(new SectionBean(courseName, "单选三", 0));
+		list.add(new SectionBean(courseName, "单选四", 0));
+		list.add(new SectionBean(courseName, "单选五", 0));
+		list.add(new SectionBean(courseName, "单选六", 0));
+		list.add(new SectionBean(courseName, "单选七", 0));
+		list.add(new SectionBean(courseName, "多选一", 0));
+		list.add(new SectionBean(courseName, "多选二", 0));
+		list.add(new SectionBean(courseName, "多选三", 0));
+		list.add(new SectionBean(courseName, "多选四", 0));
+		list.add(new SectionBean(courseName, "多选五", 0));
+		list.add(new SectionBean(courseName, "多选六", 0));
+		list.add(new SectionBean(courseName, "多选七", 0));
+	}
 }

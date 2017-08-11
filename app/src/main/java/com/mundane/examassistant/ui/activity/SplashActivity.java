@@ -80,43 +80,10 @@ public class SplashActivity extends BaseActivity {
 			try {
 				InputStream is = assetManager.open(DB_NAME);
 				FileUtils.copy(is, dbFile);
-//				FileOutputStream fos = new FileOutputStream(dbFile);
-//				byte[] buffer = new byte[1024 * 8];
-//				int len;
-//				while ((len = is.read(buffer)) != -1) {
-//					fos.write(buffer, 0, len);
-//				}
-//				fos.close();
-//				is.close();
 				mHandler.sendEmptyMessage(0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-//			try {
-//				String outFileName = DB_PATH + DB_NAME;
-//				File file = new File(DB_PATH);
-//				if (!file.mkdirs()) {
-//					file.mkdirs();
-//				}
-//				File dataFile = new File(outFileName);
-//				if (dataFile.exists()) {
-//					dataFile.delete();
-//				}
-//				InputStream myInput;
-//				myInput = getApplicationContext().getAssets().open(DB_NAME);
-//				OutputStream myOutput = new FileOutputStream(outFileName);
-//				byte[] buffer = new byte[1024];
-//				int length;
-//				while ((length = myInput.read(buffer)) > 0) {
-//					myOutput.write(buffer, 0, length);
-//				}
-//				myOutput.flush();
-//				myOutput.close();
-//				myInput.close();
-//				mHandler.sendEmptyMessage(0);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
 		}
 	}
 }

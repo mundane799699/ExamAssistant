@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -14,13 +15,19 @@ import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.bean.SectionBean;
+import com.mundane.examassistant.db.DbHelper;
+import com.mundane.examassistant.db.entity.Question;
+import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
 
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +51,7 @@ public class SectionPracticeActivity extends BaseActivity {
 	private List<SectionBean>   mSectionList;
 	private SectionAdapter      mSectionAdapter;
 	private final String KEY_POSTFIX = "lastSectionPosition";
+	private QuestionDao mQuestionDao;
 
 //	@BindView(R.id.tv)
 //	TextView mTv;
@@ -67,7 +75,30 @@ public class SectionPracticeActivity extends BaseActivity {
 
 		mSectionList = new ArrayList<>();
 
-		ResUtil.importData(mSectionList, mCourseItem.name);
+//		ResUtil.importData(mSectionList, mCourseItem.name);
+		ResUtil.initData(mSectionList, mCourseItem.name);
+		mQuestionDao = DbHelper.getQuestionDao();
+		Query<Question> query = mQuestionDao
+				.queryBuilder()
+				.where(QuestionDao.Properties.Course.eq(mCourseItem.name))
+				.build();
+		// 符合course的集合， 比如所有马克思的题目
+		List<Question> CourseQuestionList = query.list();
+
+		for (Question question : CourseQuestionList) {
+			for (SectionBean sectionBean : mSectionList) {
+				if (TextUtils.equals(question.getType(), sectionBean.questionType)) {
+					sectionBean.questionNum++;
+				}
+			}
+		}
+		Iterator<SectionBean> iterator = mSectionList.iterator();
+		while(iterator.hasNext()){
+			SectionBean sectionBean = iterator.next();
+			if (sectionBean.questionNum == 0) {
+				iterator.remove();
+			}
+		}
 		int lastSectionPosition = SPUtils.getInt(mCourseItem.name + KEY_POSTFIX, -1);
 		if (lastSectionPosition > -1) {
 			for (int i = 0; i < mSectionList.size(); i++) {
