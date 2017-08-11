@@ -180,7 +180,7 @@ public class AnswerQuestionActivity extends BaseActivity {
 								// 清除历史记录
 								clearHistory();
 //								mViewPager.setCurrentItem(mList.size()-1, false);
-								//
+								// 第二个参数为false时有空白页的bug
 								mViewPager.setCurrentItem(0, true);
 								bottomSheetDialog.dismiss();
 							}
