@@ -2,6 +2,7 @@ package com.mundane.examassistant.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +11,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
+import com.mundane.examassistant.bean.CollectionItem;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
@@ -23,16 +27,10 @@ import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
-
-import org.greenrobot.greendao.query.Query;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import org.greenrobot.greendao.query.Query;
 
 public class SectionPracticeActivity extends BaseActivity {
 	@BindView(R.id.iv_back)
@@ -48,10 +46,13 @@ public class SectionPracticeActivity extends BaseActivity {
 	@BindView(R.id.rv)
 	RecyclerView mRv;
 	private CourseItem          mCourseItem;
+    private CollectionItem mCollectionItem;
 	private List<SectionBean>   mSectionList;
 	private SectionAdapter      mSectionAdapter;
+    private String mCourseName;
 	private final String KEY_POSTFIX = "lastSectionPosition";
 	private QuestionDao mQuestionDao;
+    private int mShowType; // 展示类型:0表示章节练习, 1表示我的收藏, 2表示我的错题
 
 //	@BindView(R.id.tv)
 //	TextView mTv;
@@ -61,31 +62,53 @@ public class SectionPracticeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_section_practice);
 		ButterKnife.bind(this);
-		mCourseItem = getIntent().getParcelableExtra(MainActivity.PARCELABLE);
-		init();
-	}
+        Parcelable parcelable = getIntent().getParcelableExtra(MainActivity.PARCELABLE);
+        if (parcelable instanceof CourseItem) {
+            mShowType = 0;
+            mCourseItem = getIntent().getParcelableExtra(MainActivity.PARCELABLE);
+            mCourseName = mCourseItem.name;
+        } else if (parcelable instanceof CollectionItem) {
+            mShowType = 1;
+            mCollectionItem = getIntent().getParcelableExtra(MainActivity.PARCELABLE);
+            mCourseName = mCollectionItem.name;
+        }
+        init();
+    }
 
 	private final String TAG = "SectionPracticeActivity";
 	public static final String KEY_SECTION_ITEM = "key_section_item";
+    public static final String KEY_SHOW_TYPE = "key_show_type";
 
 	private void init() {
 		mIvBack.setVisibility(View.VISIBLE);
 		mIvArrow.setVisibility(View.GONE);
-		mTvSelectCourse.setText(String.format("%s章节练习", mCourseItem.name));
 
-		mSectionList = new ArrayList<>();
+        mSectionList = new ArrayList<>();
 
-//		ResUtil.importData(mSectionList, mCourseItem.name);
-		ResUtil.initData(mSectionList, mCourseItem.name);
-		mQuestionDao = DbHelper.getQuestionDao();
-		Query<Question> query = mQuestionDao
-				.queryBuilder()
-				.where(QuestionDao.Properties.Course.eq(mCourseItem.name))
-				.build();
+        //		ResUtil.importData(mSectionList, mCourseItem.name);
+
+        ResUtil.initData(mSectionList, mCourseName);
+        mQuestionDao = DbHelper.getQuestionDao();
+        Query<Question> query = null;
+        if (mShowType == 0) {
+            mTvSelectCourse.setText(String.format("%s章节练习", mCourseName));
+            query = mQuestionDao
+                .queryBuilder()
+                .where(QuestionDao.Properties.Course.eq(mCourseName))
+                .build();
+        } else if (mShowType == 1) {
+            mTvSelectCourse.setText(String.format("%s收藏题目", mCourseName));
+            query = mQuestionDao
+                .queryBuilder()
+                .where(QuestionDao.Properties.Course.eq(mCourseName), QuestionDao.Properties.IsCollected.eq(true))
+                .build();
+        }
+
+
 		// 符合course的集合， 比如所有马克思的题目
-		List<Question> CourseQuestionList = query.list();
+		List<Question> questionList = query.list();
 
-		for (Question question : CourseQuestionList) {
+		for (Question question : questionList) {
 			for (SectionBean sectionBean : mSectionList) {
 				if (TextUtils.equals(question.getType(), sectionBean.questionType)) {
 					sectionBean.questionNum++;
@@ -99,7 +122,7 @@ public class SectionPracticeActivity extends BaseActivity {
 				iterator.remove();
 			}
 		}
-		int lastSectionPosition = SPUtils.getInt(mCourseItem.name + KEY_POSTFIX, -1);
+		int lastSectionPosition = SPUtils.getInt(mCourseName + KEY_POSTFIX, -1);
 		if (lastSectionPosition > -1) {
 			for (int i = 0; i < mSectionList.size(); i++) {
 				if (i == lastSectionPosition) {
@@ -114,10 +137,11 @@ public class SectionPracticeActivity extends BaseActivity {
 			public void onItemClick(SectionBean section, int position) {
 				section.isSelected = true;
 				mSectionAdapter.notifyDataSetChanged();
-				SPUtils.putInt(mCourseItem.name + KEY_POSTFIX, position);
+				SPUtils.putInt(mCourseName + KEY_POSTFIX, position);
 				Intent intent = new Intent(SectionPracticeActivity.this, AnswerQuestionActivity.class);
 				intent.putExtra(KEY_SECTION_ITEM, section);
-				startActivity(intent);
+                intent.putExtra(KEY_SHOW_TYPE, mShowType);
+                startActivity(intent);
 			}
 		});
 		mRv.setLayoutManager(new LinearLayoutManager(this));

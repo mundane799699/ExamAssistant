@@ -14,22 +14,20 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
+import com.mundane.examassistant.bean.CollectionItem;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.ui.adapter.SelectCoursePopupWindowRvAdapter;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.GlideImageLoader;
 import com.mundane.examassistant.widget.SelectCoursePopupWindow;
 import com.youth.banner.Banner;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.mundane.examassistant.global.Constant.KEY_CURRENT_COURSE;
 
@@ -48,7 +46,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.frameLayout_section_practice)
     FrameLayout    mFlSectionPractice;
     @BindView(R.id.banner)
-	Banner mBanner;
+    Banner         mBanner;
+    @BindView(R.id.fl_my_collect)
+    FrameLayout    mFlMyCollect;
     private RecyclerView mRv;
     private List<CourseItem> mCourseList = new ArrayList<>();
     private SelectCoursePopupWindowRvAdapter mAdapter;
@@ -70,19 +70,24 @@ public class MainActivity extends BaseActivity {
 
 
     private void init() {
-		List<Integer> list=new ArrayList<>();
-		list.add(R.drawable.home_scroll1);
-		list.add(R.drawable.home_scroll2);
+        List<Integer> list = new ArrayList<>();
+        list.add(R.drawable.home_scroll1);
+        list.add(R.drawable.home_scroll2);
 
-		mBanner.setImages(list)
-				.setImageLoader(new GlideImageLoader())
-                .setDelayTime(5000)
-				.start();
+        mBanner.setImages(list).setImageLoader(new GlideImageLoader()).setDelayTime(5000).start();
         mFlSectionPractice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SectionPracticeActivity.class);
                 intent.putExtra(PARCELABLE, mCurrentCourseItem);
+                startActivity(intent);
+            }
+        });
+        mFlMyCollect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SectionPracticeActivity.class);
+                intent.putExtra(PARCELABLE, new CollectionItem(mCurrentCourseItem.name));
                 startActivity(intent);
             }
         });

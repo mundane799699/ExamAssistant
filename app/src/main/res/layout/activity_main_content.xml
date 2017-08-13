@@ -53,37 +53,6 @@
         app:layout_constraintBottom_toTopOf="@+id/view1"
         />
 
-    <FrameLayout
-        android:id="@+id/frameLayout_section_practice"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/view1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guideLine"
-        app:layout_constraintTop_toBottomOf="@+id/banner">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/home_section_test"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="章节练习"/>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -166,6 +135,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
 
         <FrameLayout
+            android:id="@+id/fl_my_collect"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/second_view"
@@ -230,5 +200,37 @@
 
     </RelativeLayout>
 
+    <FrameLayout
+        android:id="@+id/frameLayout_section_practice"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/view1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideLine"
+        app:layout_constraintTop_toBottomOf="@+id/banner"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/home_section_test"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="章节练习"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
