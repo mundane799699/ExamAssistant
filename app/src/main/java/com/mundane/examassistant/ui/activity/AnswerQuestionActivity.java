@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -26,56 +28,52 @@ import com.mundane.examassistant.ui.adapter.QuestionAdapter;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
-
-import org.greenrobot.greendao.query.Query;
-
+import com.mundane.examassistant.widget.view.ScrollerViewPager;
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import org.greenrobot.greendao.query.Query;
 
 public class AnswerQuestionActivity extends BaseActivity {
 
 	@BindView(R.id.iv_back)
-	ImageView mIvBack;
+	ImageView         mIvBack;
 	@BindView(R.id.tv_select_course)
-	TextView mTvSelectCourse;
+	TextView          mTvSelectCourse;
 	@BindView(R.id.iv_jump)
-	ImageView mIvJump;
+	ImageView         mIvJump;
 	@BindView(R.id.tv_jump)
-	TextView mTvJump;
+	TextView          mTvJump;
 	@BindView(R.id.ll_jump)
-	LinearLayout mLlJump;
+	LinearLayout      mLlJump;
 	@BindView(R.id.iv_mode)
-	ImageView mIvMode;
+	ImageView         mIvMode;
 	@BindView(R.id.tv_mode)
-	TextView mTvMode;
+	TextView          mTvMode;
 	@BindView(R.id.ll_mode)
-	LinearLayout mLlMode;
+	LinearLayout      mLlMode;
 	@BindView(R.id.iv_collect)
-	ImageView mIvCollect;
+	ImageView         mIvCollect;
 	@BindView(R.id.tv_collect)
-	TextView mTvCollect;
+	TextView          mTvCollect;
 	@BindView(R.id.ll_collect)
-	LinearLayout mLlCollect;
+	LinearLayout      mLlCollect;
 	@BindView(R.id.iv_arrow)
-	ImageView mIvArrow;
+	ImageView         mIvArrow;
 	@BindView(R.id.iv_setting)
-	ImageView mIvSetting;
+	ImageView         mIvSetting;
 	@BindView(R.id.rl_title)
-	RelativeLayout mRlTitle;
+	RelativeLayout    mRlTitle;
 	@BindView(R.id.view_pager)
-	ViewPager mViewPager;
+    ScrollerViewPager mViewPager;
 	@BindView(R.id.iv_shadow)
-	ImageView mIvShadow;
-	private SectionBean mSection;
-	private QuestionAdapter mViewPagerQuestionAdapter;
+	ImageView         mIvShadow;
+	private SectionBean     mSection;
+	private QuestionAdapter mViewPagerAdapter;
 
 	private void refreshView() {
 		mTvJump.setText(String.format("%d/%d", 1, mList.size()));
-		mViewPagerQuestionAdapter = new QuestionAdapter(mList, mQuestionDao);
-		mViewPager.setAdapter(mViewPagerQuestionAdapter);
+		mViewPagerAdapter = new QuestionAdapter(mList, mQuestionDao);
+		mViewPager.setAdapter(mViewPagerAdapter);
 		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -142,6 +140,39 @@ public class AnswerQuestionActivity extends BaseActivity {
 		});
 		mTvJump.setText(String.format("%d/%d", 1, mList.size()));
 		mLlMode.setVisibility(View.VISIBLE);
+        mLlMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String modeText = mTvMode.getText().toString();
+                if (TextUtils.equals("答题模式", modeText)) {
+                    mTvMode.setText("开挂模式");
+                    mIvMode.setImageResource(R.drawable.answer_mode_show);
+                    for (Question question : mList) {
+                        question.setIsShowAnswer(true);
+                    }
+                } else {
+                    mTvMode.setText("答题模式");
+                    mIvMode.setImageResource(R.drawable.answer_mode_hide);
+                    for (Question question : mList) {
+                        question.setIsShowAnswer(false);
+                    }
+                }
+                // 刷新adapter
+                int linearLayoutCount = mViewPager.getChildCount();
+                for (int i = 0; i < linearLayoutCount; i++) {
+                    if (mViewPager.getChildAt(i) instanceof LinearLayout) {
+                        LinearLayout linearLayout = (LinearLayout) mViewPager.getChildAt(i);
+                        int viewCount = linearLayout.getChildCount();
+                        for (int j = 0; j < viewCount; j++) {
+                            if (linearLayout.getChildAt(j) instanceof RecyclerView) {
+                                RecyclerView rv = (RecyclerView) linearLayout.getChildAt(j);
+                                rv.getAdapter().notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+            }
+        });
 		mLlCollect.setVisibility(View.VISIBLE);
 		mIvBack.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -179,9 +210,11 @@ public class AnswerQuestionActivity extends BaseActivity {
 							public void onClick(DialogInterface dialog, int which) {
 								// 清除历史记录
 								clearHistory();
-//								mViewPager.setCurrentItem(mList.size()-1, false);
+								mViewPager.setCurrentItem(mList.size()-1, false);
 								// 第二个参数为false时有空白页的bug
+                                mViewPager.setNoDuration(true);
 								mViewPager.setCurrentItem(0, true);
+                                mViewPager.setNoDuration(false);
 								bottomSheetDialog.dismiss();
 							}
 						})

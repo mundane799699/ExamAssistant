@@ -23,7 +23,7 @@ import java.io.OutputStream;
  */
 
 public class FileUtils {
-	//	TODO Environment.getExternalStorageDirectory().getAbsolutePath()和Environment.getExternalStorageDirectory()会有不同吗?
+	//	Environment.getExternalStorageDirectory().getAbsolutePath()和Environment.getExternalStorageDirectory()会有不同吗?
 	private static String SDCardRoot = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
 
 	private static String SDStateString = Environment.getExternalStorageState();

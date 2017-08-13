@@ -72,7 +72,7 @@ public class RecycleViewDivider extends RecyclerView.ItemDecoration {
 	}
 
 
-	// TODO: 2017/4/11 他用的这个构造函数
+	// 他用的这个构造函数
 
 	/**
 	 * 自定义分割线

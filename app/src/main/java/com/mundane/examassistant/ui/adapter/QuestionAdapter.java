@@ -62,7 +62,6 @@ public class QuestionAdapter extends PagerAdapter {
 		LogUtils.d("instantiateItem position = " + position);
 		TextView tvQuestion = (TextView) view.findViewById(R.id.tv_question);
 		tvQuestion.setText(question.getQuestion());
-		tvQuestion.setText("呵呵");
 		final RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
 		rvOption.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
 		if (question.getType().startsWith("单选")) {        //	单选

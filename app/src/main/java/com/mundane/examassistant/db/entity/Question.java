@@ -26,6 +26,7 @@ public class Question {
 	private String optionD;
 	private String optionE;
 	private String answer;
+    private boolean isShowAnswer;// 是否显示正确答案, 开挂模式下显示, 答题模式下不显示
 	private boolean isCollected;//	是否被收藏了
 	private boolean isAnsweredWrong;//	是否被收录到错题集中
 	private boolean haveBeenAnswered;//	该问题是否已经被回答过
@@ -46,14 +47,14 @@ public class Question {
 	private int optionCStatus;
 	private int optionDStatus;
 	private int optionEStatus;
-	@Generated(hash = 1820527641)
+	@Generated(hash = 1439031157)
 	public Question(Long id, String course, String type, String question,
 			String optionA, String optionB, String optionC, String optionD,
-			String optionE, String answer, boolean isCollected, boolean isAnsweredWrong,
-			boolean haveBeenAnswered, boolean isOptionACorrect, boolean isOptionBCorrect,
-			boolean isOptionCCorrect, boolean isOptionDCorrect, boolean isOptionECorrect,
-			int optionAStatus, int optionBStatus, int optionCStatus, int optionDStatus,
-			int optionEStatus) {
+			String optionE, String answer, boolean isShowAnswer, boolean isCollected,
+			boolean isAnsweredWrong, boolean haveBeenAnswered, boolean isOptionACorrect,
+			boolean isOptionBCorrect, boolean isOptionCCorrect, boolean isOptionDCorrect,
+			boolean isOptionECorrect, int optionAStatus, int optionBStatus,
+			int optionCStatus, int optionDStatus, int optionEStatus) {
 		this.id = id;
 		this.course = course;
 		this.type = type;
@@ -64,6 +65,7 @@ public class Question {
 		this.optionD = optionD;
 		this.optionE = optionE;
 		this.answer = answer;
+		this.isShowAnswer = isShowAnswer;
 		this.isCollected = isCollected;
 		this.isAnsweredWrong = isAnsweredWrong;
 		this.haveBeenAnswered = haveBeenAnswered;
@@ -140,6 +142,12 @@ public class Question {
 	}
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+	public boolean getIsShowAnswer() {
+		return this.isShowAnswer;
+	}
+	public void setIsShowAnswer(boolean isShowAnswer) {
+		this.isShowAnswer = isShowAnswer;
 	}
 	public boolean getIsCollected() {
 		return this.isCollected;

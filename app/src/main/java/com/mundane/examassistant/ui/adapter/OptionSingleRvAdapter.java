@@ -48,41 +48,79 @@ public class OptionSingleRvAdapter extends RecyclerView.Adapter<OptionSingleRvAd
 
 	@Override
 	public void onBindViewHolder(OptionRvViewHolder holder, final int position) {
-		switch (position) {
-			case 0:
-				holder.mTvOption.setText(mQuestion.getOptionA());
-				setStatus(mQuestion.getOptionAStatus(), holder, position);
-				break;
-			case 1:
-				holder.mTvOption.setText(mQuestion.getOptionB());
-				setStatus(mQuestion.getOptionBStatus(), holder, position);
-				break;
-			case 2:
-				holder.mTvOption.setText(mQuestion.getOptionC());
-				setStatus(mQuestion.getOptionCStatus(), holder, position);
-				break;
-			case 3:
-				holder.mTvOption.setText(mQuestion.getOptionD());
-				setStatus(mQuestion.getOptionDStatus(), holder, position);
-				break;
-			case 4:
-				holder.mTvOption.setText(mQuestion.getOptionE());
-				setStatus(mQuestion.getOptionEStatus(), holder, position);
-			default:
-				break;
-		}
+        if (!mQuestion.getIsShowAnswer()) { // 答题模式
+            switch (position) {
+                case 0:
+                    holder.mTvOption.setText(mQuestion.getOptionA());
+                    setStatus(mQuestion.getOptionAStatus(), holder, position);
+                    break;
+                case 1:
+                    holder.mTvOption.setText(mQuestion.getOptionB());
+                    setStatus(mQuestion.getOptionBStatus(), holder, position);
+                    break;
+                case 2:
+                    holder.mTvOption.setText(mQuestion.getOptionC());
+                    setStatus(mQuestion.getOptionCStatus(), holder, position);
+                    break;
+                case 3:
+                    holder.mTvOption.setText(mQuestion.getOptionD());
+                    setStatus(mQuestion.getOptionDStatus(), holder, position);
+                    break;
+                case 4:
+                    holder.mTvOption.setText(mQuestion.getOptionE());
+                    setStatus(mQuestion.getOptionEStatus(), holder, position);
+                default:
+                    break;
+            }
 
-		holder.itemView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (mOnItemClickListener != null) {
-					mOnItemClickListener.onItemClicked(position);
-				}
-			}
-		});
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClicked(position);
+                    }
+                }
+            });
+        } else { // 开挂模式
+            switch (position) {
+                case 0:
+                    holder.mTvOption.setText(mQuestion.getOptionA());
+                    setShowAnswerStatus(mQuestion.getIsOptionACorrect(), holder, position);
+                    break;
+                case 1:
+                    holder.mTvOption.setText(mQuestion.getOptionB());
+                    setShowAnswerStatus(mQuestion.getIsOptionBCorrect(), holder, position);
+                    break;
+                case 2:
+                    holder.mTvOption.setText(mQuestion.getOptionC());
+                    setShowAnswerStatus(mQuestion.getIsOptionCCorrect(), holder, position);
+                    break;
+                case 3:
+                    holder.mTvOption.setText(mQuestion.getOptionD());
+                    setShowAnswerStatus(mQuestion.getIsOptionDCorrect(), holder, position);
+                    break;
+                case 4:
+                    holder.mTvOption.setText(mQuestion.getOptionE());
+                    setShowAnswerStatus(mQuestion.getIsOptionECorrect(), holder, position);
+                default:
+                    break;
+            }
+
+        }
+
 	}
 
-	private void setStatus(int status, OptionRvViewHolder holder, int position) {
+
+    private void setShowAnswerStatus(boolean isOptionCorrect, OptionRvViewHolder holder, int position) {
+        if (isOptionCorrect) {
+            setCorrectStatus(holder);
+        } else {
+            setNormalStatus(holder, position);
+        }
+    }
+
+
+    private void setStatus(int status, OptionRvViewHolder holder, int position) {
 		switch (status) {
 			case 0:
 				setNormalStatus(holder, position);

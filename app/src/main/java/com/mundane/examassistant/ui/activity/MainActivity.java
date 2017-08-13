@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity {
 
 		mBanner.setImages(list)
 				.setImageLoader(new GlideImageLoader())
+                .setDelayTime(5000)
 				.start();
         mFlSectionPractice.setOnClickListener(new View.OnClickListener() {
             @Override

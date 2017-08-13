@@ -14,12 +14,12 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v4.view.ViewPager
+        <com.mundane.examassistant.widget.view.ScrollerViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </android.support.v4.view.ViewPager>
+        </com.mundane.examassistant.widget.view.ScrollerViewPager>
 
         <!--阴影-->
         <ImageView
