@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -49,6 +50,10 @@ public class MainActivity extends BaseActivity {
     Banner         mBanner;
     @BindView(R.id.fl_my_collect)
     FrameLayout    mFlMyCollect;
+	@BindView(R.id.fl_practice_history)
+	FrameLayout mFlPracticeHistory;
+	@BindView(R.id.fl_exam)
+	FrameLayout mFlExam;
     private RecyclerView mRv;
     private List<CourseItem> mCourseList = new ArrayList<>();
     private SelectCoursePopupWindowRvAdapter mAdapter;
@@ -70,6 +75,19 @@ public class MainActivity extends BaseActivity {
 
 
     private void init() {
+		mFlPracticeHistory.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Toast.makeText(MainActivity.this, "练习记录还没有做", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		mFlExam.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Toast.makeText(MainActivity.this, "模拟考试也还没有做", Toast.LENGTH_SHORT).show();
+			}
+		});
         List<Integer> list = new ArrayList<>();
         list.add(R.drawable.home_scroll1);
         list.add(R.drawable.home_scroll2);
