@@ -61,10 +61,10 @@ public class SectionAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder<
 		holder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mLastSelectedPosition > -1) {
-					mList.get(mLastSelectedPosition).isSelected = false;
-				}
 				if (mOnItemClickListener != null) {
+                    if (mLastSelectedPosition > -1) {
+                        mList.get(mLastSelectedPosition).isSelected = false;
+                    }
 					mOnItemClickListener.onItemClick(section, position);
 				}
 			}

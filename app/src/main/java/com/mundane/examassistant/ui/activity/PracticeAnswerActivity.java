@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.greenrobot.greendao.query.Query;
 
-public class AnswerQuestionActivity extends BaseActivity {
+public class PracticeAnswerActivity extends BaseActivity {
 
     @BindView(R.id.iv_back)
     ImageView         mIvBack;
@@ -70,58 +70,11 @@ public class AnswerQuestionActivity extends BaseActivity {
     ImageView         mIvShadow;
     private SectionBean     mSection;
     private QuestionAdapter mViewPagerAdapter;
-    private final String TAG = "AnswerQuestionActivity";
-    private int mShowType;
+    private final String TAG = "PracticeAnswerActivity";
+    private final String POSTFIX = "practiceAnswer";
 
 
-    private void refreshView() {
-        mTvJump.setText(String.format("%d/%d", 1, mList.size()));
-        mViewPagerAdapter = new QuestionAdapter(mList, mQuestionDao);
-        mViewPager.setAdapter(mViewPagerAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                mIvShadow.setTranslationX(-positionOffsetPixels);
-            }
 
-
-            @Override
-            public void onPageSelected(int position) {
-                mTvJump.setText(String.format("%d/%d", mViewPager.getCurrentItem() + 1, mList.size()));
-                Log.d(TAG, "position = " + position);
-                SPUtils.putInt(mSection.courseName + mSection.questionType, position);
-                Question question = mList.get(position);
-                if (question.getIsCollected()) {
-                    mTvCollect.setText("已收藏");
-                    mIvCollect.setImageResource(R.drawable.answer_collection_true);
-                } else {
-                    mTvCollect.setText("收藏");
-                    mIvCollect.setImageResource(R.drawable.answer_collection_false);
-                }
-            }
-
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        mViewPager.setPageTransformer(true, new SlidingPageTransformer());
-        int lastPosition = SPUtils.getInt(mSection.courseName + mSection.questionType);
-        if (mShowType == 0) {
-            mViewPager.setCurrentItem(lastPosition);
-        } else if (mShowType == 1) {
-
-        }
-        Question lastQuestion = mList.get(lastPosition);
-        if (lastQuestion.getIsCollected()) {
-            mTvCollect.setText("已收藏");
-            mIvCollect.setImageResource(R.drawable.answer_collection_true);
-        } else {
-            mTvCollect.setText("收藏");
-            mIvCollect.setImageResource(R.drawable.answer_collection_false);
-        }
-    }
 
 
     private QuestionDao    mQuestionDao;
@@ -134,11 +87,6 @@ public class AnswerQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_answer_question);
         ButterKnife.bind(this);
         initData();
-        if (mList.isEmpty()) {
-            mIvArrow.setVisibility(View.GONE);
-            mIvSetting.setVisibility(View.GONE);
-            return;
-        }
         initView();
     }
 
@@ -146,24 +94,15 @@ public class AnswerQuestionActivity extends BaseActivity {
     private void initData() {
         mQuestionDao = DbHelper.getQuestionDao();
         mList = new ArrayList<>();
-        mSection = getIntent().getParcelableExtra(SectionPracticeActivity.KEY_SECTION_ITEM);
-        mShowType = getIntent().getIntExtra(SectionPracticeActivity.KEY_SHOW_TYPE, 0);
+        mSection = getIntent().getParcelableExtra(PracticeSelectActivity.KEY_PRACTICE_SELECT);
         mList.addAll(getConditionList());
     }
 
 
     private List<Question> getConditionList() {
-        Query<Question> query = null;
-        if (mShowType == 0) {
-            query = mQuestionDao.queryBuilder()
-                .where(QuestionDao.Properties.Course.eq(mSection.courseName), QuestionDao.Properties.Type.eq(mSection.questionType))
-                .build();
-        } else if (mShowType == 1) {
-            query = mQuestionDao.queryBuilder()
-                .where(QuestionDao.Properties.Course.eq(mSection.courseName), QuestionDao.Properties.Type.eq(mSection.questionType), QuestionDao.Properties.IsCollected.eq(true))
-                .build();
-        }
-
+        Query<Question> query = mQuestionDao.queryBuilder()
+            .where(QuestionDao.Properties.Course.eq(mSection.courseName), QuestionDao.Properties.Type.eq(mSection.questionType))
+            .build();
         List<Question> list = query.list();
         return list;
     }
@@ -244,6 +183,49 @@ public class AnswerQuestionActivity extends BaseActivity {
         refreshView();
     }
 
+    private void refreshView() {
+        mViewPagerAdapter = new QuestionAdapter(mList, mQuestionDao);
+        mViewPager.setAdapter(mViewPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                mIvShadow.setTranslationX(-positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mTvJump.setText(String.format("%d/%d", mViewPager.getCurrentItem() + 1, mList.size()));
+                Log.d(TAG, "position = " + position);
+                SPUtils.putInt(mSection.courseName + mSection.questionType + POSTFIX, position);
+                Question question = mList.get(position);
+                if (question.getIsCollected()) {
+                    mTvCollect.setText("已收藏");
+                    mIvCollect.setImageResource(R.drawable.answer_collection_true);
+                } else {
+                    mTvCollect.setText("收藏");
+                    mIvCollect.setImageResource(R.drawable.answer_collection_false);
+                }
+            }
+
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mViewPager.setPageTransformer(true, new SlidingPageTransformer());
+        int lastPosition = SPUtils.getInt(mSection.courseName + mSection.questionType + POSTFIX);
+        mViewPager.setCurrentItem(lastPosition);
+        Question lastQuestion = mList.get(lastPosition);
+        if (lastQuestion.getIsCollected()) {
+            mTvCollect.setText("已收藏");
+            mIvCollect.setImageResource(R.drawable.answer_collection_true);
+        } else {
+            mTvCollect.setText("收藏");
+            mIvCollect.setImageResource(R.drawable.answer_collection_false);
+        }
+    }
+
 
     private void showBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -256,7 +238,7 @@ public class AnswerQuestionActivity extends BaseActivity {
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(AnswerQuestionActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(PracticeAnswerActivity.this);
                 builder.setTitle("确定要删除历史记录吗?").setMessage("将清空该章节的答题记录").setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

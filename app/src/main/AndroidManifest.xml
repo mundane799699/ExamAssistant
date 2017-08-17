@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.mundane.examassistant">
+    package="com.mundane.examassistant">
 
     <application
         android:name=".global.ExamAssistantApplication"
@@ -10,13 +10,10 @@
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.MainActivity">
-        </activity>
-        <activity android:name=".ui.activity.SectionPracticeActivity"/>
-        <activity android:name=".ui.activity.GenerateDbFileActivity">
-        </activity>
-        <activity android:name=".ui.activity.AnswerQuestionActivity">
-        </activity>
+        <activity android:name=".ui.activity.MainActivity"/>
+        <activity android:name=".ui.activity.PracticeSelectActivity"/>
+        <activity android:name=".ui.activity.GenerateDbFileActivity"/>
+        <activity android:name=".ui.activity.PracticeAnswerActivity"/>
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -24,6 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.MyCollectionSelectActivity"/>
+        <activity android:name=".ui.activity.MyCollectionAnswerActivity"></activity>
     </application>
 
 </manifest>

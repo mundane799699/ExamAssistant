@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mundane.examassistant.ui.activity.PracticeSelectActivity">
+    tools:context="com.mundane.examassistant.ui.activity.MyCollectionSelectActivity">
 
     <include layout="@layout/activity_main_title"/>
 

@@ -2,6 +2,7 @@ package com.mundane.examassistant.utils;
 
 import com.mundane.examassistant.bean.SectionBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,8 +62,9 @@ public class ResUtil {
 		}
 	}
 
-	public static void initData(List<SectionBean> list, String courseName) {
-		list.add(new SectionBean(courseName, "单选一", 0));
+	public static List<SectionBean> initData(String courseName) {
+        List<SectionBean> list = new ArrayList<>();
+        list.add(new SectionBean(courseName, "单选一", 0));
 		list.add(new SectionBean(courseName, "单选二", 0));
 		list.add(new SectionBean(courseName, "单选三", 0));
 		list.add(new SectionBean(courseName, "单选四", 0));
@@ -76,5 +78,6 @@ public class ResUtil {
 		list.add(new SectionBean(courseName, "多选五", 0));
 		list.add(new SectionBean(courseName, "多选六", 0));
 		list.add(new SectionBean(courseName, "多选七", 0));
+        return list;
 	}
 }

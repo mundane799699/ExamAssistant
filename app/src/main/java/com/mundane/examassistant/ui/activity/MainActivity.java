@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
-import com.mundane.examassistant.bean.CollectionItem;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.ui.adapter.SelectCoursePopupWindowRvAdapter;
 import com.mundane.examassistant.utils.SPUtils;
@@ -50,15 +49,17 @@ public class MainActivity extends BaseActivity {
     Banner         mBanner;
     @BindView(R.id.fl_my_collect)
     FrameLayout    mFlMyCollect;
-	@BindView(R.id.fl_practice_history)
-	FrameLayout mFlPracticeHistory;
-	@BindView(R.id.fl_exam)
-	FrameLayout mFlExam;
+    @BindView(R.id.fl_practice_history)
+    FrameLayout    mFlPracticeHistory;
+    @BindView(R.id.fl_exam)
+    FrameLayout    mFlExam;
     private RecyclerView mRv;
     private List<CourseItem> mCourseList = new ArrayList<>();
     private SelectCoursePopupWindowRvAdapter mAdapter;
     private SelectCoursePopupWindow          mCoursePopupWindow;
-    private SelectCoursePopupWindow          mCustomPopupWindow;
+    private CourseItem                       mCurrentCourse;
+    private final       String TAG        = "MainActivity";
+    public static final String KEY_COURSE_NAME = "key_course_name";
 
 
     @Override
@@ -69,67 +70,87 @@ public class MainActivity extends BaseActivity {
         init();
     }
 
-
-    private final       String TAG        = "MainActivity";
-    public static final String PARCELABLE = "parcelable";
-
-
     private void init() {
-		mFlPracticeHistory.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Toast.makeText(MainActivity.this, "练习记录还没有做", Toast.LENGTH_SHORT).show();
-			}
-		});
-
-		mFlExam.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Toast.makeText(MainActivity.this, "模拟考试也还没有做", Toast.LENGTH_SHORT).show();
-			}
-		});
-        List<Integer> list = new ArrayList<>();
-        list.add(R.drawable.home_scroll1);
-        list.add(R.drawable.home_scroll2);
-
-        mBanner.setImages(list).setImageLoader(new GlideImageLoader()).setDelayTime(5000).start();
-        mFlSectionPractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SectionPracticeActivity.class);
-                intent.putExtra(PARCELABLE, mCurrentCourseItem);
-                startActivity(intent);
-            }
-        });
-        mFlMyCollect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SectionPracticeActivity.class);
-                intent.putExtra(PARCELABLE, new CollectionItem(mCurrentCourseItem.name));
-                startActivity(intent);
-            }
-        });
-
-        if (mCourseList.isEmpty()) {
-            mCourseList.add(new CourseItem("近代史", false));
-            mCourseList.add(new CourseItem("思修", false));
-            mCourseList.add(new CourseItem("马克思", false));
-            mCourseList.add(new CourseItem("毛概下", false));
-        }
+        // 顶部的四个菜单
+        mCourseList.add(new CourseItem("近代史", false));
+        mCourseList.add(new CourseItem("思修", false));
+        mCourseList.add(new CourseItem("马克思", false));
+        mCourseList.add(new CourseItem("毛概下", false));
         String currentCourse = SPUtils.getString(KEY_CURRENT_COURSE);
         if (TextUtils.isEmpty(currentCourse)) {
-            mCurrentCourseItem = mCourseList.get(0);
+            mCurrentCourse = mCourseList.get(0);
+            SPUtils.putString(KEY_CURRENT_COURSE, mCurrentCourse.name);
         } else {
             for (CourseItem courseItem : mCourseList) {
                 if (TextUtils.equals(currentCourse, courseItem.name)) {
-                    mCurrentCourseItem = courseItem;
+                    mCurrentCourse = courseItem;
                     break;
                 }
             }
         }
-        mCurrentCourseItem.isSelected = true;
-        mTvSelectCourse.setText(mCurrentCourseItem.name);
-        SPUtils.putString(KEY_CURRENT_COURSE, mCurrentCourseItem.name);
+        mCurrentCourse.isSelected = true;
+        mTvSelectCourse.setText(mCurrentCourse.name);
+        // 点击顶部按钮弹出的popupWindow
+        View view = View.inflate(this, R.layout.popupwindow_select_course, null);
+        mCoursePopupWindow = new SelectCoursePopupWindow(this, view);
+        mRv = (RecyclerView) view.findViewById(R.id.rv);
+        mRv.setLayoutManager(new GridLayoutManager(this, 4));
+        mAdapter = new SelectCoursePopupWindowRvAdapter(mCourseList);
+        mAdapter.setOnItemClickListener(new SelectCoursePopupWindowRvAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(CourseItem item) {
+                item.isSelected = true;
+                mCurrentCourse = item;
+                mTvSelectCourse.setText(item.name);
+                SPUtils.putString(KEY_CURRENT_COURSE, item.name);
+                mCoursePopupWindow.dismiss();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        mRv.setAdapter(mAdapter);
+        mCoursePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mFlBg.setVisibility(View.GONE);
+                rotateArrow(180, 0);
+            }
+        });
+        // 点击章节练习
+        mFlSectionPractice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PracticeSelectActivity.class);
+                intent.putExtra(KEY_COURSE_NAME, mCurrentCourse.name);
+                startActivity(intent);
+            }
+        });
+        // 点击我的收藏
+        mFlMyCollect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MyCollectionSelectActivity.class);
+                intent.putExtra(KEY_COURSE_NAME, mCurrentCourse.name);
+                startActivity(intent);
+            }
+        });
+        // 轮播图
+        List<Integer> list = new ArrayList<>();
+        list.add(R.drawable.home_scroll1);
+        list.add(R.drawable.home_scroll2);
+        mBanner.setImages(list).setImageLoader(new GlideImageLoader()).setDelayTime(5000).start();
+        // 练习记录和模拟考试还没有做
+        mFlPracticeHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "练习记录还没有做", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mFlExam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "模拟考试也还没有做", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -138,9 +159,6 @@ public class MainActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_select_course:
             case R.id.iv_arrow:
-                if (mCoursePopupWindow == null) {
-                    mCoursePopupWindow = createPopupWindow();
-                }
                 if (mCoursePopupWindow.isShowing()) {
                     mCoursePopupWindow.dismiss();
                 } else {
@@ -148,7 +166,6 @@ public class MainActivity extends BaseActivity {
                     mFlBg.setVisibility(View.VISIBLE);
                     rotateArrow(0, 180);
                 }
-
                 break;
             case R.id.iv_setting:
                 break;
@@ -161,61 +178,18 @@ public class MainActivity extends BaseActivity {
         rotate.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                setSelectCourse(false);
+                mTvSelectCourse.setClickable(false);
+                mIvArrow.setClickable(false);
             }
 
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                setSelectCourse(true);
+                mTvSelectCourse.setClickable(true);
+                mIvArrow.setClickable(true);
             }
         });
         rotate.start();
-    }
-
-
-    private void setSelectCourse(boolean isEnable) {
-        mTvSelectCourse.setClickable(isEnable);
-        mIvArrow.setClickable(isEnable);
-    }
-
-
-    private SelectCoursePopupWindow createPopupWindow() {
-        View view = View.inflate(this, R.layout.popupwindow_select_course, null);
-        initView(view);
-        mCustomPopupWindow = new SelectCoursePopupWindow(this, view);
-        mCustomPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                mFlBg.setVisibility(View.GONE);
-                rotateArrow(180, 0);
-            }
-        });
-        return mCustomPopupWindow;
-    }
-
-
-    private CourseItem mCurrentCourseItem;
-
-
-    private void initView(View view) {
-        mRv = (RecyclerView) view.findViewById(R.id.rv);
-        mRv.setLayoutManager(new GridLayoutManager(this, 4));
-
-        mAdapter = new SelectCoursePopupWindowRvAdapter(mCourseList);
-        mAdapter.setOnItemClickListener(new SelectCoursePopupWindowRvAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemClicked(CourseItem item) {
-                item.isSelected = true;
-                mAdapter.notifyDataSetChanged();
-                mCurrentCourseItem = item;
-                mTvSelectCourse.setText(item.name);
-                SPUtils.putString(KEY_CURRENT_COURSE, item.name);
-                mCustomPopupWindow.dismiss();
-            }
-        });
-        mRv.setAdapter(mAdapter);
     }
 
 }

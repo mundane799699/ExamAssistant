@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.bean.ContentItem;
 import com.mundane.examassistant.global.Constant;
-import com.mundane.examassistant.ui.activity.SectionPracticeActivity;
+import com.mundane.examassistant.ui.activity.PracticeSelectActivity;
 import com.mundane.examassistant.widget.view.SimpleDotIndicater;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class ContentAdapter extends RecyclerView.Adapter<TypeAbstractViewHolder>
 	public ContentAdapter() {
 		mList = new ArrayList<>();
 		mList.add(new ContentItem(Constant.TYPE_HEADER, null, 0, null));
-		mList.add(new ContentItem(Constant.TYPE_SECTION_PRACTICE, "章节练习", R.drawable.home_section_test, SectionPracticeActivity.class));
+		mList.add(new ContentItem(Constant.TYPE_SECTION_PRACTICE, "章节练习", R.drawable.home_section_test, PracticeSelectActivity.class));
 		mList.add(new ContentItem(Constant.TYPE_PRACTICE_HISTORY, "练习记录", R.drawable.home_history, null));
 		mList.add(new ContentItem(Constant.TYPE_EXAM, "模拟考试", R.drawable.home_exam, null));
 		mList.add(new ContentItem(Constant.TYPE_MY_FAVORITATE, "我的收藏", R.drawable.home_collection, null));
