@@ -11,9 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import android.widget.Toast;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -25,10 +24,16 @@ import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
+
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.greenrobot.greendao.query.Query;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MyCollectionSelectActivity extends BaseActivity {
 
@@ -68,6 +73,7 @@ public class MyCollectionSelectActivity extends BaseActivity {
     private final String KEY_POSTFIX = "mycollection";
     private SectionAdapter mSectionAdapter;
     public static final String KEY_MYCOLLECTION_SELECT = "key_mycollection_select";
+	private final int REQUEST_CODE = 100;
 
 
     @Override
@@ -130,7 +136,7 @@ public class MyCollectionSelectActivity extends BaseActivity {
 
                 Intent intent = new Intent(MyCollectionSelectActivity.this, MyCollectionAnswerActivity.class);
                 intent.putExtra(KEY_MYCOLLECTION_SELECT, section);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
         mRv.setLayoutManager(new LinearLayoutManager(this));
@@ -140,7 +146,22 @@ public class MyCollectionSelectActivity extends BaseActivity {
         mRv.addItemDecoration(divider);
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_select_course, R.id.iv_setting, R.id.rl_title})
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode != RESULT_OK) {
+			return;
+		}
+		switch (requestCode) {
+			case REQUEST_CODE:
+				Toast.makeText(this, "该刷新视图数据了", Toast.LENGTH_SHORT).show();
+				break;
+			default:
+				break;
+		}
+	}
+
+	@OnClick({R.id.iv_back, R.id.tv_select_course, R.id.iv_setting, R.id.rl_title})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:

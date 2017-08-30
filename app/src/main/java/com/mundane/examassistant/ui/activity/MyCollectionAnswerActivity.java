@@ -15,8 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -28,9 +27,14 @@ import com.mundane.examassistant.ui.adapter.QuestionAdapter;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 import com.mundane.examassistant.widget.view.ScrollerViewPager;
+
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.greendao.query.Query;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MyCollectionAnswerActivity extends BaseActivity {
 
@@ -145,6 +149,7 @@ public class MyCollectionAnswerActivity extends BaseActivity {
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+				setResult(RESULT_OK);
                 finish();
             }
         });
@@ -190,8 +195,13 @@ public class MyCollectionAnswerActivity extends BaseActivity {
         }
     }
 
+	@Override
+	public void onBackPressed() {
+		setResult(RESULT_OK);
+		super.onBackPressed();
+	}
 
-    private void refreshRvAdapter() {
+	private void refreshRvAdapter() {
         int linearLayoutCount = mViewPager.getChildCount();
         for (int i = 0; i < linearLayoutCount; i++) {
             if (mViewPager.getChildAt(i) instanceof LinearLayout) {
