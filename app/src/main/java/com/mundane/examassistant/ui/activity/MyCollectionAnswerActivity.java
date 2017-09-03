@@ -149,7 +149,6 @@ public class MyCollectionAnswerActivity extends BaseActivity {
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-				setResult(RESULT_OK);
                 finish();
             }
         });
@@ -195,11 +194,13 @@ public class MyCollectionAnswerActivity extends BaseActivity {
         }
     }
 
+
 	@Override
-	public void onBackPressed() {
+	public void finish() {
 		setResult(RESULT_OK);
-		super.onBackPressed();
+		super.finish();
 	}
+
 
 	private void refreshRvAdapter() {
         int linearLayoutCount = mViewPager.getChildCount();

@@ -11,8 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -22,18 +23,11 @@ import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
-import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
-
-import org.greenrobot.greendao.query.Query;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import org.greenrobot.greendao.query.Query;
 
 public class MyCollectionSelectActivity extends BaseActivity {
 
@@ -92,47 +86,14 @@ public class MyCollectionSelectActivity extends BaseActivity {
         mTvSelectCourse.setText(String.format("%s收藏题目", mCourseName));
 
         mSectionList = new ArrayList<>();
-        mSectionList.addAll(ResUtil.initData(mCourseName));
-        mQuestionDao = DbHelper.getQuestionDao();
-
-        Query<Question> query = mQuestionDao
-            .queryBuilder()
-            .where(QuestionDao.Properties.Course.eq(mCourseName), QuestionDao.Properties.IsCollected.eq(true))
-            .build();
-
-        List<Question> questionList = query.list();
-        // 对查询出来的所有的马克思的题目进行检查, 然后分类
-        for (Question question : questionList) {
-            for (SectionBean sectionBean : mSectionList) {
-                // 如果属于该类
-                if (TextUtils.equals(question.getType(), sectionBean.questionType)) {
-                    sectionBean.questionNum++;
-                }
-            }
-        }
-        Iterator<SectionBean> iterator = mSectionList.iterator();
-        while(iterator.hasNext()){
-            SectionBean sectionBean = iterator.next();
-            if (sectionBean.questionNum == 0) {
-                iterator.remove();
-            }
-        }
-        int lastSectionPosition = SPUtils.getInt(mCourseName + KEY_POSTFIX, -1);
-        if (lastSectionPosition > -1) {
-            for (int i = 0; i < mSectionList.size(); i++) {
-                if (i == lastSectionPosition) {
-                    mSectionList.get(i).isSelected = true;
-                    break;
-                }
-            }
-        }
+		refreshData();
         mSectionAdapter = new SectionAdapter(mSectionList);
         mSectionAdapter.setOnItemClickListener(new SectionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SectionBean section, int position) {
-                section.isSelected = true;
-                SPUtils.putInt(mCourseName + KEY_POSTFIX, position);
-                mSectionAdapter.notifyDataSetChanged();
+                //section.isSelected = true;
+                //SPUtils.putInt(mCourseName + KEY_POSTFIX, position);
+                //mSectionAdapter.notifyDataSetChanged();
 
                 Intent intent = new Intent(MyCollectionSelectActivity.this, MyCollectionAnswerActivity.class);
                 intent.putExtra(KEY_MYCOLLECTION_SELECT, section);
@@ -146,6 +107,49 @@ public class MyCollectionSelectActivity extends BaseActivity {
         mRv.addItemDecoration(divider);
     }
 
+
+	private void refreshData() {
+
+		List<SectionBean> allSectionList = ResUtil.initData(mCourseName);
+
+		mQuestionDao = DbHelper.getQuestionDao();
+
+		Query<Question> query = mQuestionDao
+			.queryBuilder()
+			.where(QuestionDao.Properties.Course.eq(mCourseName), QuestionDao.Properties.IsCollected.eq(true))
+			.build();
+
+		List<Question> questionList = query.list();
+		// 对查询出来的所有的马克思的题目进行检查, 然后分类
+		for (Question question : questionList) {
+			for (SectionBean sectionBean : allSectionList) {
+				// 如果属于该类
+				if (TextUtils.equals(question.getType(), sectionBean.questionType)) {
+					sectionBean.questionNum++;
+				}
+			}
+		}
+		Iterator<SectionBean> iterator = allSectionList.iterator();
+		while(iterator.hasNext()){
+			SectionBean sectionBean = iterator.next();
+			if (sectionBean.questionNum == 0) {
+				iterator.remove();
+			}
+		}
+		mSectionList.clear();
+		mSectionList.addAll(allSectionList);
+		//int lastSectionPosition = SPUtils.getInt(mCourseName + KEY_POSTFIX, -1);
+		//if (lastSectionPosition > -1) {
+		//	for (int i = 0; i < mSectionList.size(); i++) {
+		//		if (i == lastSectionPosition) {
+		//			mSectionList.get(i).isSelected = true;
+		//			break;
+		//		}
+		//	}
+		//}
+	}
+
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -154,7 +158,9 @@ public class MyCollectionSelectActivity extends BaseActivity {
 		}
 		switch (requestCode) {
 			case REQUEST_CODE:
-				Toast.makeText(this, "该刷新视图数据了", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "该刷新视图数据了", Toast.LENGTH_SHORT).show();
+				refreshData();
+				mSectionAdapter.notifyDataSetChanged();
 				break;
 			default:
 				break;

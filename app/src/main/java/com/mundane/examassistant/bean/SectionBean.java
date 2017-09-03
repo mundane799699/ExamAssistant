@@ -2,7 +2,7 @@ package com.mundane.examassistant.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import android.support.annotation.DrawableRes;
 import com.mundane.examassistant.R;
 
 /**
@@ -16,6 +16,7 @@ public class SectionBean implements Parcelable {
 	public String courseName;//		近代史, 思修, 马克思, 毛概下
 	public String questionType;//	单选一, 单选二, 多选一, 多选二...
 	public int questionNum;
+	@DrawableRes
 	public int type;
 	public boolean isSelected;
 
