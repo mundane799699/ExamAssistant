@@ -15,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -23,18 +24,13 @@ import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.ui.adapter.BottomSheetRvAdapter;
-import com.mundane.examassistant.ui.adapter.QuestionAdapter;
+import com.mundane.examassistant.ui.adapter.CollectionViewpagerAdapter;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 import com.mundane.examassistant.widget.view.ScrollerViewPager;
-
-import org.greenrobot.greendao.query.Query;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import org.greenrobot.greendao.query.Query;
 
 public class MyCollectionAnswerActivity extends BaseActivity {
 
@@ -70,10 +66,10 @@ public class MyCollectionAnswerActivity extends BaseActivity {
     ScrollerViewPager mViewPager;
     @BindView(R.id.iv_shadow)
     ImageView         mIvShadow;
-    private QuestionDao    mQuestionDao;
-    private List<Question> mList;
-    private SectionBean    mSection;
-    private QuestionAdapter mViewPagerAdapter;
+    private QuestionDao              mQuestionDao;
+    private List<Question>           mList;
+    private SectionBean              mSection;
+    private CollectionViewpagerAdapter mViewPagerAdapter;
     private final String POSTFIX = "mycollectionAnswer";
 
 
@@ -92,6 +88,7 @@ public class MyCollectionAnswerActivity extends BaseActivity {
             .build();
         List<Question> list = query.list();
         mList.addAll(list);
+        clearHistory();
 
         mIvArrow.setVisibility(View.GONE);
         mTvSelectCourse.setVisibility(View.GONE);
@@ -153,7 +150,7 @@ public class MyCollectionAnswerActivity extends BaseActivity {
             }
         });
 
-        mViewPagerAdapter = new QuestionAdapter(mList, mQuestionDao);
+        mViewPagerAdapter = new CollectionViewpagerAdapter(mList, mQuestionDao);
         mViewPager.setAdapter(mViewPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -285,7 +282,7 @@ public class MyCollectionAnswerActivity extends BaseActivity {
 
     private void clearHistory() {
         for (Question question : mList) {
-            question.setIsAnsweredWrong(false);
+            //question.setIsAnsweredWrong(false);
             question.setHaveBeenAnswered(false);
             question.setOptionAStatus(0);
             question.setOptionBStatus(0);
@@ -293,6 +290,6 @@ public class MyCollectionAnswerActivity extends BaseActivity {
             question.setOptionDStatus(0);
             question.setOptionEStatus(0);
         }
-        mQuestionDao.updateInTx(mList);
+        //mQuestionDao.updateInTx(mList);
     }
 }

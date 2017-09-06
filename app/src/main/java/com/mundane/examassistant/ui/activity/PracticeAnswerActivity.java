@@ -25,7 +25,7 @@ import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.ui.adapter.BottomSheetRvAdapter;
-import com.mundane.examassistant.ui.adapter.QuestionAdapter;
+import com.mundane.examassistant.ui.adapter.PracticeViewpagerAdapter;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
@@ -68,8 +68,8 @@ public class PracticeAnswerActivity extends BaseActivity {
     ScrollerViewPager mViewPager;
     @BindView(R.id.iv_shadow)
     ImageView         mIvShadow;
-    private SectionBean     mSection;
-    private QuestionAdapter mViewPagerAdapter;
+    private SectionBean              mSection;
+    private PracticeViewpagerAdapter mViewPagerAdapter;
     private final String TAG = "PracticeAnswerActivity";
     private final String POSTFIX = "practiceAnswer";
 
@@ -184,7 +184,7 @@ public class PracticeAnswerActivity extends BaseActivity {
     }
 
     private void refreshView() {
-        mViewPagerAdapter = new QuestionAdapter(mList, mQuestionDao);
+        mViewPagerAdapter = new PracticeViewpagerAdapter(mList, mQuestionDao);
         mViewPager.setAdapter(mViewPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

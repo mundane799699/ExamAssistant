@@ -10,29 +10,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
-
 import java.util.List;
 
 /**
  * @author : mundane
  * @time : 2017/4/18 10:00
  * @description :
- * @file : QuestionAdapter.java
+ * @file : PracticeViewpagerAdapter.java
  */
 
-public class QuestionAdapter extends PagerAdapter {
+public class CollectionViewpagerAdapter extends PagerAdapter {
 
 	private QuestionDao mQuestionDao;
 	private List<Question> mList;
 
-	public QuestionAdapter(List<Question> list, QuestionDao questionDao) {
+	public CollectionViewpagerAdapter(List<Question> list, QuestionDao questionDao) {
 		mList = list;
 //        mQuestionDao = DbHelper.getQuestionDao();
 		mQuestionDao = questionDao;
@@ -53,7 +51,7 @@ public class QuestionAdapter extends PagerAdapter {
 	public Object instantiateItem(ViewGroup container, int position) {
 		LayoutInflater inflater = LayoutInflater.from(container.getContext());
 		View view = inflater.inflate(R.layout.layout_answer_question_page, container, false);
-		setUpView(view, mList.get(position), position);
+        setUpView(view, mList.get(position), position);
 		container.addView(view);
 		return view;
 	}
@@ -99,7 +97,6 @@ public class QuestionAdapter extends PagerAdapter {
 					if (question.getHaveBeenAnswered()) {
 						return;
 					}
-					LogUtils.d("multi list position = " + position);
 					setMultiOptionStatus(pos, question);
 					optionMultiRvAdapter.notifyDataSetChanged();
 				}
@@ -128,6 +125,7 @@ public class QuestionAdapter extends PagerAdapter {
 	}
 
 	private void submitAnswer(Question question) {
+        // 先标记为回答正确
 		question.setIsAnsweredWrong(false);
 		if (!TextUtils.isEmpty(question.getOptionA())) {
 			if (question.getOptionAStatus() == 0 && question.getIsOptionACorrect()) {
@@ -210,7 +208,7 @@ public class QuestionAdapter extends PagerAdapter {
 		}
 
 		// 更新
-		mQuestionDao.update(question);
+		//mQuestionDao.update(question);
 
 	}
 
@@ -283,7 +281,7 @@ public class QuestionAdapter extends PagerAdapter {
 				break;
 		}
 		// 更新
-		mQuestionDao.update(question);
+		//mQuestionDao.update(question);
 	}
 
 	private void showCorrectAnswer(Question question) {
@@ -303,10 +301,10 @@ public class QuestionAdapter extends PagerAdapter {
 			question.setOptionEStatus(1);
 		}
 		// 更新
-		mQuestionDao.update(question);
+		//mQuestionDao.update(question);
 	}
 
-	private final String TAG = "QuestionAdapter";
+	private final String TAG = "PracticeViewpagerAdapter";
 
 	@Override
 	public void destroyItem(ViewGroup container, int position, Object object) {
