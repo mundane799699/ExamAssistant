@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mundane.examassistant.ui.activity.MyCollectionAnswerActivity">
+
+    <include layout="@layout/activity_main_title"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.mundane.examassistant.widget.view.ScrollerViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.mundane.examassistant.widget.view.ScrollerViewPager>
+
+        <!--阴影-->
+        <ImageView
+            android:id="@+id/iv_shadow"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_shadow"/>
+
+    </LinearLayout>
+
+</LinearLayout>

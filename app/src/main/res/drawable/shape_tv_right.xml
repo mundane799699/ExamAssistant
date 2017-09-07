@@ -6,7 +6,4 @@
     <stroke
         android:color="@color/answerTextCorrect"
         android:width="1dp"/>
-    <size
-        android:height="20dp"
-        android:width="20dp"/>
 </shape>

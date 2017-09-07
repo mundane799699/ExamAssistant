@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity {
 		mFlMyMistakes.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this, MyMistakesSelectActivity.class);
+				Intent intent = new Intent(MainActivity.this, MyMistakeSelectActivity.class);
 				intent.putExtra(KEY_COURSE_NAME, mCurrentCourse.name);
 				startActivity(intent);
 			}

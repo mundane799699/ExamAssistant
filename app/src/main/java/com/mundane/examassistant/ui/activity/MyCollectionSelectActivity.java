@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -35,28 +34,8 @@ public class MyCollectionSelectActivity extends BaseActivity {
     ImageView      mIvBack;
     @BindView(R.id.tv_select_course)
     TextView       mTvSelectCourse;
-    @BindView(R.id.iv_jump)
-    ImageView      mIvJump;
-    @BindView(R.id.tv_jump)
-    TextView       mTvJump;
-    @BindView(R.id.ll_jump)
-    LinearLayout   mLlJump;
-    @BindView(R.id.iv_mode)
-    ImageView      mIvMode;
-    @BindView(R.id.tv_mode)
-    TextView       mTvMode;
-    @BindView(R.id.ll_mode)
-    LinearLayout   mLlMode;
-    @BindView(R.id.iv_collect)
-    ImageView      mIvCollect;
-    @BindView(R.id.tv_collect)
-    TextView       mTvCollect;
-    @BindView(R.id.ll_collect)
-    LinearLayout   mLlCollect;
-    @BindView(R.id.iv_arrow)
-    ImageView      mIvArrow;
-    @BindView(R.id.iv_setting)
-    ImageView      mIvSetting;
+    @BindView(R.id.iv_clear)
+    ImageView      mIvClear;
     @BindView(R.id.rl_title)
     RelativeLayout mRlTitle;
     @BindView(R.id.rv)
@@ -82,7 +61,6 @@ public class MyCollectionSelectActivity extends BaseActivity {
 
     private void init() {
         mIvBack.setVisibility(View.VISIBLE);
-        mIvArrow.setVisibility(View.GONE);
         mTvSelectCourse.setText(String.format("%s收藏题目", mCourseName));
 
         mSectionList = new ArrayList<>();
@@ -167,7 +145,7 @@ public class MyCollectionSelectActivity extends BaseActivity {
 		}
 	}
 
-	@OnClick({R.id.iv_back, R.id.tv_select_course, R.id.iv_setting, R.id.rl_title})
+	@OnClick({R.id.iv_back, R.id.tv_select_course, R.id.iv_clear, R.id.rl_title})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -175,7 +153,7 @@ public class MyCollectionSelectActivity extends BaseActivity {
                 break;
             case R.id.tv_select_course:
                 break;
-            case R.id.iv_setting:
+            case R.id.iv_clear:
                 break;
             case R.id.rl_title:
                 break;

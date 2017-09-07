@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_title"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/colorPrimary"
+    >
+
+
+    <!--返回箭头默认隐藏-->
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingBottom="5dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:src="@drawable/ic_arrow_back_24dp"
+        tools:visibility="visible"/>
+
+    <!--近代史默认显示-->
+    <TextView
+        android:id="@+id/tv_select_course"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:text="近代史"
+        />
+
+        <!--android:scaleType="centerCrop"-->
+    <ImageView
+        android:scaleType="center"
+        android:id="@+id/iv_clear"
+        android:layout_width="56dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_delete"
+        />
+
+
+</RelativeLayout>

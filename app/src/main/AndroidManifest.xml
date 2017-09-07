@@ -24,8 +24,9 @@
         </activity>
         <activity android:name=".ui.activity.MyCollectionSelectActivity"/>
         <activity android:name=".ui.activity.MyCollectionAnswerActivity"/>
-        <activity android:name=".ui.activity.MyMistakesSelectActivity">
+        <activity android:name=".ui.activity.MyMistakeSelectActivity">
         </activity>
+        <activity android:name=".ui.activity.MyMistakeAnswerActivity"/>
     </application>
 
 </manifest>
