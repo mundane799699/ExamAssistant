@@ -47,14 +47,17 @@ public class Question {
 	private int optionCStatus;
 	private int optionDStatus;
 	private int optionEStatus;
-	@Generated(hash = 1439031157)
+	// 错题答对的次数
+	private int answerRightTimes;
+	@Generated(hash = 125993387)
 	public Question(Long id, String course, String type, String question,
 			String optionA, String optionB, String optionC, String optionD,
 			String optionE, String answer, boolean isShowAnswer, boolean isCollected,
 			boolean isAnsweredWrong, boolean haveBeenAnswered, boolean isOptionACorrect,
 			boolean isOptionBCorrect, boolean isOptionCCorrect, boolean isOptionDCorrect,
 			boolean isOptionECorrect, int optionAStatus, int optionBStatus,
-			int optionCStatus, int optionDStatus, int optionEStatus) {
+			int optionCStatus, int optionDStatus, int optionEStatus,
+			int answerRightTimes) {
 		this.id = id;
 		this.course = course;
 		this.type = type;
@@ -79,6 +82,7 @@ public class Question {
 		this.optionCStatus = optionCStatus;
 		this.optionDStatus = optionDStatus;
 		this.optionEStatus = optionEStatus;
+		this.answerRightTimes = answerRightTimes;
 	}
 	@Generated(hash = 1868476517)
 	public Question() {
@@ -226,5 +230,11 @@ public class Question {
 	}
 	public void setOptionEStatus(int optionEStatus) {
 		this.optionEStatus = optionEStatus;
+	}
+	public int getAnswerRightTimes() {
+		return this.answerRightTimes;
+	}
+	public void setAnswerRightTimes(int answerRightTimes) {
+		this.answerRightTimes = answerRightTimes;
 	}
 }

@@ -26,31 +26,31 @@
         app:layout_constraintGuide_percent="0.6"/>
 
     <android.support.constraint.Guideline
-        android:orientation="horizontal"
         android:id="@+id/guideLine2"
-        app:layout_constraintGuide_percent="0.85"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85"
         />
 
     <View
         android:id="@+id/view1"
-        android:background="@color/gray_efefef"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@color/gray_efefef"
         app:layout_constraintBottom_toTopOf="@+id/guideLine2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
 
     <View
         android:id="@+id/view2"
-        android:background="@color/gray_efefef"
         android:layout_width="1dp"
         android:layout_height="0dp"
+        android:background="@color/gray_efefef"
+        app:layout_constraintBottom_toTopOf="@+id/view1"
         app:layout_constraintRight_toLeftOf="@+id/guideLine"
         app:layout_constraintTop_toTopOf="@+id/frameLayout_section_practice"
-        app:layout_constraintBottom_toTopOf="@+id/view1"
         />
 
     <RelativeLayout
@@ -63,28 +63,28 @@
 
         <FrameLayout
             android:id="@+id/fl_practice_history"
-            android:layout_above="@+id/view"
-            android:layout_alignParentTop="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/view"
+            android:layout_alignParentTop="true">
 
             <LinearLayout
-                android:layout_gravity="center"
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/home_history"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/home_history"/>
 
                 <TextView
-                    android:layout_gravity="center"
-                    android:text="练习记录"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="练习记录"/>
 
             </LinearLayout>
 
@@ -92,35 +92,35 @@
 
         <View
             android:id="@+id/view"
-            android:background="@color/gray_efefef"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:background="@color/gray_efefef"/>
 
         <FrameLayout
             android:id="@+id/fl_exam"
-            android:layout_below="@+id/view"
-            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/view">
 
             <LinearLayout
-                android:layout_gravity="center"
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/home_exam"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/home_exam"/>
 
                 <TextView
-                    android:layout_gravity="center"
-                    android:text="模拟考试"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="模拟考试"/>
 
             </LinearLayout>
 
@@ -132,34 +132,34 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout_section_practice"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout_section_practice">
 
         <FrameLayout
             android:id="@+id/fl_my_collect"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/second_view"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/second_view">
 
             <LinearLayout
-                android:layout_gravity="center"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:src="@drawable/home_collection"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/home_collection"/>
 
                 <TextView
-                    android:layout_gravity="center"
-                    android:text="我的收藏"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="我的收藏"/>
 
             </LinearLayout>
 
@@ -167,34 +167,35 @@
 
         <View
             android:id="@+id/second_view"
-            android:background="@color/gray_efefef"
-            android:layout_centerHorizontal="true"
             android:layout_width="1dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@color/gray_efefef"/>
 
         <FrameLayout
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/second_view"
+            android:id="@+id/fl_my_mistakes"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/second_view">
 
             <LinearLayout
-                android:layout_gravity="center"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:src="@drawable/home_wrong"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/home_wrong"/>
 
                 <TextView
-                    android:layout_gravity="center"
-                    android:text="我的错题"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="我的错题"/>
 
             </LinearLayout>
 
@@ -208,10 +209,10 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/view1"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideLine"
         app:layout_constraintTop_toBottomOf="@+id/banner"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
