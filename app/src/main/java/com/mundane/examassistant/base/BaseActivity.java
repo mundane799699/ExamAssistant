@@ -3,6 +3,8 @@ package com.mundane.examassistant.base;
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.umeng.analytics.MobclickAgent;
+
 /**
  * @author : mundane
  * @time : 2017/4/11 14:11
@@ -32,5 +34,15 @@ public class BaseActivity extends AppCompatActivity {
 		if (mProgressDialog.isShowing()) {
 			mProgressDialog.dismiss();
 		}
+	}
+
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

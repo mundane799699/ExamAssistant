@@ -1,9 +1,12 @@
 package com.mundane.examassistant.global;
 
 import android.app.Application;
-
 import android.content.Context;
-import com.facebook.stetho.Stetho;
+
+import com.mundane.examassistant.BuildConfig;
+import com.mundane.examassistant.utils.LogUtils;
+import com.mundane.examassistant.utils.UMengUtil;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * @author : mundane
@@ -21,7 +24,15 @@ public class ExamAssistantApplication extends Application {
 		super.onCreate();
         sContext = getApplicationContext();
         //		chrome://inspect/#devices
-		Stetho.initializeWithDefaults(this);
+//		if (BuildConfig.DEBUG) {
+//			Stetho.initializeWithDefaults(this);
+//		}
+		if (BuildConfig.DEBUG) {
+			LogUtils.d("是debug模式");
+			MobclickAgent.setDebugMode(true);
+			LogUtils.d(UMengUtil.getDeviceInfo(this));
+		}
+		MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
 	}
 
 

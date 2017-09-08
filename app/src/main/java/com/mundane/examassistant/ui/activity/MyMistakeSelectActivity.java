@@ -3,7 +3,6 @@ package com.mundane.examassistant.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,10 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.mundane.examassistant.R;
+import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
@@ -23,12 +21,18 @@ import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
 import com.mundane.examassistant.widget.RecycleViewDivider;
+
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.greenrobot.greendao.query.Query;
 
-public class MyMistakeSelectActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class MyMistakeSelectActivity extends BaseActivity {
 
     @BindView(R.id.iv_back)
     ImageView      mIvBack;
