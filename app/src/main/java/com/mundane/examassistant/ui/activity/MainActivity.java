@@ -14,23 +14,20 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.CourseItem;
 import com.mundane.examassistant.ui.adapter.SelectCoursePopupWindowRvAdapter;
 import com.mundane.examassistant.utils.SPUtils;
+import com.mundane.examassistant.utils.ToastUtils;
 import com.mundane.examassistant.widget.GlideImageLoader;
 import com.mundane.examassistant.widget.SelectCoursePopupWindow;
 import com.youth.banner.Banner;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.mundane.examassistant.global.Constant.KEY_CURRENT_COURSE;
 
@@ -158,13 +155,13 @@ public class MainActivity extends BaseActivity {
 		mFlPracticeHistory.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(MainActivity.this, "练习记录还没有做", Toast.LENGTH_SHORT).show();
+				ToastUtils.toast("练习记录还没有做");
 			}
 		});
 		mFlExam.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(MainActivity.this, "模拟考试也还没有做", Toast.LENGTH_SHORT).show();
+				ToastUtils.toast("模拟考试也还没有做");
 			}
 		});
 	}
@@ -184,6 +181,8 @@ public class MainActivity extends BaseActivity {
 				}
 				break;
 			case R.id.iv_setting:
+				Intent intent = new Intent(this, SettingActivity.class);
+				startActivity(intent);
 				break;
 		}
 	}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.mundane.examassistant">
+    package="com.mundane.examassistant">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -24,8 +24,7 @@
 
         <activity android:name=".ui.activity.MainActivity"/>
         <activity android:name=".ui.activity.PracticeSelectActivity"/>
-        <activity android:name=".ui.activity.GenerateDbFileActivity">
-        </activity>
+        <activity android:name=".ui.activity.GenerateDbFileActivity"/>
         <activity android:name=".ui.activity.PracticeAnswerActivity"/>
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
@@ -36,9 +35,11 @@
         </activity>
         <activity android:name=".ui.activity.MyCollectionSelectActivity"/>
         <activity android:name=".ui.activity.MyCollectionAnswerActivity"/>
-        <activity android:name=".ui.activity.MyMistakeSelectActivity">
-        </activity>
+        <activity android:name=".ui.activity.MyMistakeSelectActivity"/>
         <activity android:name=".ui.activity.MyMistakeAnswerActivity"/>
+        <activity android:name=".ui.activity.SettingActivity"/>
+        <activity
+            android:name=".ui.activity.AboutMeActivity"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.mundane.examassistant.utils;
 
 import com.mundane.examassistant.bean.SectionBean;
 
+import com.mundane.examassistant.bean.TimeDelayBean;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,5 +80,46 @@ public class ResUtil {
 		list.add(new SectionBean(courseName, "多选六", 0));
 		list.add(new SectionBean(courseName, "多选七", 0));
         return list;
+	}
+
+
+	public static ArrayList<TimeDelayBean> getAnswerRightData() {
+		ArrayList<TimeDelayBean> list = new ArrayList<>();
+		list.add(new TimeDelayBean("不翻页", -1));
+		list.add(new TimeDelayBean("0.25秒后", 250));
+		list.add(new TimeDelayBean("0.5秒后", 500));
+		list.add(new TimeDelayBean("0.75秒后", 750));
+		list.add(new TimeDelayBean("1秒后", 1000));
+		list.add(new TimeDelayBean("1.5秒后", 1500));
+		list.add(new TimeDelayBean("2秒后", 2000));
+		list.add(new TimeDelayBean("3秒后", 3000));
+		return list;
+	}
+
+
+	public static ArrayList<TimeDelayBean> getAnswerRightRemoveData() {
+		ArrayList<TimeDelayBean> list = new ArrayList<>();
+		list.add(new TimeDelayBean("不移除", -1));
+		list.add(new TimeDelayBean("1次", 1));
+		list.add(new TimeDelayBean("2次", 2));
+		list.add(new TimeDelayBean("3次", 3));
+		list.add(new TimeDelayBean("4次", 4));
+		list.add(new TimeDelayBean("5次", 5));
+		list.add(new TimeDelayBean("6次", 6));
+		return list;
+	}
+
+
+	public static ArrayList<TimeDelayBean> getFlipPageDate() {
+		ArrayList<TimeDelayBean> list = new ArrayList<>();
+		list.add(new TimeDelayBean("不翻页", -1));
+		list.add(new TimeDelayBean("0.5秒后", 500));
+		list.add(new TimeDelayBean("1秒后", 1000));
+		list.add(new TimeDelayBean("1.5秒后", 1500));
+		list.add(new TimeDelayBean("2秒后", 2000));
+		list.add(new TimeDelayBean("2.5秒后", 2500));
+		list.add(new TimeDelayBean("3秒后", 3000));
+		list.add(new TimeDelayBean("4秒后", 4000));
+		return list;
 	}
 }

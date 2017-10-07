@@ -20,4 +20,6 @@ public interface Constant {
 //	boolean isDebug = true;
 	String LOG_TAG = "mundane";
 	String KEY_CURRENT_COURSE = "current_course";
+
+	String KEY_ALIPAY = "FKX01515RUUEZHPM79QY52";
 }

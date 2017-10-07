@@ -34,7 +34,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         tools:text="近代史"
-        tools:visibility="gone"/>
+        />
 
     <!--浏览总题数默认隐藏-->
     <LinearLayout
@@ -136,7 +136,7 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:src="@drawable/icon_arrow_down"
-        tools:visibility="gone"/>
+        />
 
     <!--设置按钮默认显示-->
     <ImageView

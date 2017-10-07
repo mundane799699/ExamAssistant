@@ -92,3 +92,14 @@ public static java.lang.String TABLENAME;
 -keep class * implements android.os.Parcelable {    # 保持Parcelable不被混淆
   public static final android.os.Parcelable$Creator *;
 }
+
+# glide 的混淆代码
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# banner 的混淆代码
+-keep class com.youth.banner.** {
+    *;
+ }
