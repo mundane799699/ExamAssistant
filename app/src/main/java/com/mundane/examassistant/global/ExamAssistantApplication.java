@@ -2,7 +2,6 @@ package com.mundane.examassistant.global;
 
 import android.app.Application;
 import android.content.Context;
-
 import com.mundane.examassistant.BuildConfig;
 import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.utils.UMengUtil;
@@ -30,7 +29,8 @@ public class ExamAssistantApplication extends Application {
 		if (BuildConfig.DEBUG) {
 			LogUtils.d("是debug模式");
 			MobclickAgent.setDebugMode(true);
-			LogUtils.d(UMengUtil.getDeviceInfo(this));
+			String deviceInfo = UMengUtil.getDeviceInfo(this);
+			LogUtils.d(deviceInfo);
 		}
 		MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
 	}

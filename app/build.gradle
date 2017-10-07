@@ -29,7 +29,8 @@ android {
         wandoujia {}
         //...添加其它渠道
     }
-    productFlavors.all { flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL: name]
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL: name]
     }
     buildTypes {
         release {
