@@ -85,7 +85,7 @@ public class ResUtil {
 
 	public static ArrayList<TimeDelayBean> getAnswerRightData() {
 		ArrayList<TimeDelayBean> list = new ArrayList<>();
-		list.add(new TimeDelayBean("不翻页", -1));
+		list.add(new TimeDelayBean("不翻页", 0));
 		list.add(new TimeDelayBean("0.25秒后", 250));
 		list.add(new TimeDelayBean("0.5秒后", 500));
 		list.add(new TimeDelayBean("0.75秒后", 750));
@@ -99,7 +99,7 @@ public class ResUtil {
 
 	public static ArrayList<TimeDelayBean> getAnswerRightRemoveData() {
 		ArrayList<TimeDelayBean> list = new ArrayList<>();
-		list.add(new TimeDelayBean("不移除", -1));
+		list.add(new TimeDelayBean("不移除", 0));
 		list.add(new TimeDelayBean("1次", 1));
 		list.add(new TimeDelayBean("2次", 2));
 		list.add(new TimeDelayBean("3次", 3));
@@ -112,7 +112,7 @@ public class ResUtil {
 
 	public static ArrayList<TimeDelayBean> getFlipPageDate() {
 		ArrayList<TimeDelayBean> list = new ArrayList<>();
-		list.add(new TimeDelayBean("不翻页", -1));
+		list.add(new TimeDelayBean("不翻页", 0));
 		list.add(new TimeDelayBean("0.5秒后", 500));
 		list.add(new TimeDelayBean("1秒后", 1000));
 		list.add(new TimeDelayBean("1.5秒后", 1500));

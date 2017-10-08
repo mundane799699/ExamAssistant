@@ -23,8 +23,10 @@ import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
+import com.mundane.examassistant.global.Constant;
 import com.mundane.examassistant.ui.adapter.BottomSheetRvAdapter;
-import com.mundane.examassistant.ui.adapter.CollectionViewpagerAdapter;
+import com.mundane.examassistant.ui.adapter.MistakeViewpagerAdapter;
+import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 import com.mundane.examassistant.widget.view.ScrollerViewPager;
@@ -69,10 +71,11 @@ public class MyMistakeAnswerActivity extends BaseActivity {
     private QuestionDao              mQuestionDao;
     private List<Question>           mList;
     private SectionBean              mSection;
-    private CollectionViewpagerAdapter mViewPagerAdapter;
+    private MistakeViewpagerAdapter mViewPagerAdapter;
+	private long mAnswerRightRemoveTimes; // 错题答对后自动移除的次数
 
 
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_mistake_answer);
@@ -89,7 +92,9 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         mList.addAll(list);
         clearHistory();
 
-        mIvArrow.setVisibility(View.GONE);
+		mAnswerRightRemoveTimes = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES);
+
+		mIvArrow.setVisibility(View.GONE);
         mTvSelectCourse.setVisibility(View.GONE);
         mIvSetting.setVisibility(View.GONE);
         mIvBack.setVisibility(View.VISIBLE);
@@ -149,7 +154,23 @@ public class MyMistakeAnswerActivity extends BaseActivity {
             }
         });
 
-        mViewPagerAdapter = new CollectionViewpagerAdapter(mList, mQuestionDao);
+        mViewPagerAdapter = new MistakeViewpagerAdapter(mList, mQuestionDao);
+		mViewPagerAdapter.setOnAnswerRightListener(new MistakeViewpagerAdapter.OnAnswerRight() {
+			@Override
+			public void answerRight(Question question) {
+				int currentQuestionAnswerRightTimes = question.getAnswerRightTimes();
+				currentQuestionAnswerRightTimes++;
+				if (mAnswerRightRemoveTimes > 0) {
+					if (currentQuestionAnswerRightTimes >= mAnswerRightRemoveTimes) { // 如果已经达到了移除的次数
+						question.setAnswerRightTimes(0);
+						question.setIsAnsweredWrong(false); // 从错题中移除
+					} else { // 还没有达到规定的移除次数, 就只是将答对的次数+1, 然后更新数据库
+						question.setAnswerRightTimes(currentQuestionAnswerRightTimes);
+					}
+					mQuestionDao.update(question);
+				}
+			}
+		});
         mViewPager.setAdapter(mViewPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

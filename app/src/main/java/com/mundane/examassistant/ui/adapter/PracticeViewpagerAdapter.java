@@ -10,14 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
-
 import java.util.List;
 
 /**
@@ -36,6 +34,17 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 		mList = list;
 //        mQuestionDao = DbHelper.getQuestionDao();
 		mQuestionDao = questionDao;
+	}
+
+	public interface OnAnswerRight {
+		void answerRight();
+	}
+
+	private OnAnswerRight mOnAnswerRightListener;
+
+
+	public void setOnAnswerRightListener(OnAnswerRight onAnswerRightListener) {
+		mOnAnswerRightListener = onAnswerRightListener;
 	}
 
 
@@ -69,7 +78,6 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 			optionSingleRvAdapter.setOnItemClickListener(new OptionSingleRvAdapter.OnItemClickListener() {
 				@Override
 				public void onItemClicked(int pos) {
-					LogUtils.d("single list position = " + position);
 					//	如果该问题已经被回答过, 不产生任何反应
 					if (question.getHaveBeenAnswered()) {
 						return;
@@ -99,7 +107,6 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 					if (question.getHaveBeenAnswered()) {
 						return;
 					}
-					LogUtils.d("multi list position = " + position);
 					setMultiOptionStatus(pos, question);
 					optionMultiRvAdapter.notifyDataSetChanged();
 				}
@@ -260,26 +267,61 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 				question.setOptionAStatus(question.getIsOptionACorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
 				question.setIsAnsweredWrong(!question.getIsOptionACorrect());
+				if (question.getIsOptionACorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight();
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				break;
 			case 1:
 				question.setOptionBStatus(question.getIsOptionBCorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
 				question.setIsAnsweredWrong(!question.getIsOptionBCorrect());
+				if (question.getIsOptionBCorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight();
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				break;
 			case 2:
 				question.setOptionCStatus(question.getIsOptionCCorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
 				question.setIsAnsweredWrong(!question.getIsOptionCCorrect());
+				if (question.getIsOptionCCorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight();
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				break;
 			case 3:
 				question.setOptionDStatus(question.getIsOptionDCorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
 				question.setIsAnsweredWrong(!question.getIsOptionDCorrect());
+				if (question.getIsOptionDCorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight();
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				break;
 			case 4:
 				question.setOptionEStatus(question.getIsOptionECorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
 				question.setIsAnsweredWrong(!question.getIsOptionECorrect());
+				if (question.getIsOptionECorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight();
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				break;
 		}
 		// 更新

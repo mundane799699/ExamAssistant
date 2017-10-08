@@ -14,7 +14,6 @@ import com.mundane.examassistant.R;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.utils.DensityUtils;
-import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
 import java.util.List;
 
@@ -25,12 +24,23 @@ import java.util.List;
  * @file : PracticeViewpagerAdapter.java
  */
 
-public class CollectionViewpagerAdapter extends PagerAdapter {
+public class MistakeViewpagerAdapter extends PagerAdapter {
 
 	private QuestionDao mQuestionDao;
 	private List<Question> mList;
 
-	public CollectionViewpagerAdapter(List<Question> list, QuestionDao questionDao) {
+	public interface OnAnswerRight {
+		void answerRight(Question question);
+	}
+
+	private OnAnswerRight mOnAnswerRightListener;
+
+
+	public void setOnAnswerRightListener(OnAnswerRight onAnswerRightListener) {
+		mOnAnswerRightListener = onAnswerRightListener;
+	}
+
+	public MistakeViewpagerAdapter(List<Question> list, QuestionDao questionDao) {
 		mList = list;
 //        mQuestionDao = DbHelper.getQuestionDao();
 		mQuestionDao = questionDao;
@@ -66,15 +76,12 @@ public class CollectionViewpagerAdapter extends PagerAdapter {
 			optionSingleRvAdapter.setOnItemClickListener(new OptionSingleRvAdapter.OnItemClickListener() {
 				@Override
 				public void onItemClicked(int pos) {
-					LogUtils.d("single list position = " + position);
-					//	如果该问题已经被回答过, 不产生任何反应
-					if (question.getHaveBeenAnswered()) {
+					if (question.getHaveBeenAnswered()) { // 如果该问题已经被回答过, 不产生任何反应
 						return;
 					}
-					//	如果该问题还没有被回答过
-					question.setHaveBeenAnswered(true);    //	将该问题标记为已经被回答过
+					question.setHaveBeenAnswered(true); // 如果该问题还没有被回答过, 将该问题标记为已经被回答过
 
-					setOptionStatus(pos, question);        //	显示被选中的条目是正确答案还是错误答案
+					setOptionStatus(pos, question); // 显示被选中的条目是正确答案还是错误答案
 					showCorrectAnswer(question);                //	显示正确答案
 					optionSingleRvAdapter.notifyDataSetChanged();
 //				optionSingleRvAdapter.setOnItemClickListener(null);    //	其实这句代码可以去掉了
@@ -254,29 +261,66 @@ public class CollectionViewpagerAdapter extends PagerAdapter {
 	private void setOptionStatus(int position, Question question) {
 		switch (position) {
 			case 0:
+				if (question.getIsOptionACorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight(question);
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				question.setOptionAStatus(question.getIsOptionACorrect() ? 1 : 2);
-				// 是否回答错误, 需要被收录到错题集中
-				question.setIsAnsweredWrong(!question.getIsOptionACorrect());
+				// 如果不把这句话注释掉, 假如选择正确了, question.setIsAnsweredWrong(false)
+				// 然后再走answerRight(question)回调里的方法, 答对的次数还没有达到规定的移除次数, 但是把它的isAnsweredWrong给update了, 就会导致
+				// 这个question在错题中移除掉
+				// question.setIsAnsweredWrong(!question.getIsOptionACorrect());
 				break;
 			case 1:
+				if (question.getIsOptionBCorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight(question);
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				question.setOptionBStatus(question.getIsOptionBCorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
-				question.setIsAnsweredWrong(!question.getIsOptionBCorrect());
+				//question.setIsAnsweredWrong(!question.getIsOptionBCorrect());
 				break;
 			case 2:
+				if (question.getIsOptionCCorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight(question);
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				question.setOptionCStatus(question.getIsOptionCCorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
-				question.setIsAnsweredWrong(!question.getIsOptionCCorrect());
+				//question.setIsAnsweredWrong(!question.getIsOptionCCorrect());
 				break;
 			case 3:
+				if (question.getIsOptionDCorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight(question);
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				question.setOptionDStatus(question.getIsOptionDCorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
-				question.setIsAnsweredWrong(!question.getIsOptionDCorrect());
+				//question.setIsAnsweredWrong(!question.getIsOptionDCorrect());
 				break;
 			case 4:
+				if (question.getIsOptionECorrect()) {
+					if (mOnAnswerRightListener != null) {
+						mOnAnswerRightListener.answerRight(question);
+					}
+				} else {
+					//ToastUtils.toast("回答错误");
+				}
 				question.setOptionEStatus(question.getIsOptionECorrect() ? 1 : 2);
 				// 是否回答错误, 需要被收录到错题集中
-				question.setIsAnsweredWrong(!question.getIsOptionECorrect());
+				//question.setIsAnsweredWrong(!question.getIsOptionECorrect());
 				break;
 		}
 		// 更新

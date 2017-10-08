@@ -2,13 +2,13 @@ package com.mundane.examassistant.ui.activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +24,7 @@ import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
+import com.mundane.examassistant.global.Constant;
 import com.mundane.examassistant.ui.adapter.BottomSheetRvAdapter;
 import com.mundane.examassistant.ui.adapter.PracticeViewpagerAdapter;
 import com.mundane.examassistant.utils.SPUtils;
@@ -72,16 +73,14 @@ public class PracticeAnswerActivity extends BaseActivity {
     private PracticeViewpagerAdapter mViewPagerAdapter;
     private final String TAG = "PracticeAnswerActivity";
     private final String POSTFIX = "practiceAnswer";
+	private Handler mHandler = new Handler();
 
-
-
-
-
-    private QuestionDao    mQuestionDao;
+	private QuestionDao    mQuestionDao;
     private List<Question> mList;
+	private long mDelayTime;
 
 
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer_question);
@@ -94,8 +93,10 @@ public class PracticeAnswerActivity extends BaseActivity {
     private void initData() {
         mQuestionDao = DbHelper.getQuestionDao();
         mList = new ArrayList<>();
-        mSection = getIntent().getParcelableExtra(PracticeSelectActivity.KEY_PRACTICE_SELECT);
+        mSection = getIntent().getParcelableExtra(Constant.KEY_PRACTICE_SELECT);
         mList.addAll(getConditionList());
+
+		mDelayTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME);
     }
 
 
@@ -106,6 +107,26 @@ public class PracticeAnswerActivity extends BaseActivity {
         List<Question> list = query.list();
         return list;
     }
+
+	public void startAutoPlay() {
+		mHandler.removeCallbacks(mCheatAutoFlipTask);
+		mHandler.postDelayed(mCheatAutoFlipTask, mDelayTime);
+	}
+
+	public void stopAutoPlay() {
+		mHandler.removeCallbacks(mCheatAutoFlipTask);
+	}
+
+	private final Runnable mCheatAutoFlipTask = new Runnable() {
+		@Override
+		public void run() {
+			int currentItem = mViewPager.getCurrentItem();
+			if (currentItem < mList.size() - 1) {
+				mViewPager.setCurrentItem(currentItem + 1, true);
+				mHandler.postDelayed(mCheatAutoFlipTask, mDelayTime);
+			}
+		}
+	};
 
 
     private void initView() {
@@ -128,17 +149,21 @@ public class PracticeAnswerActivity extends BaseActivity {
             public void onClick(View v) {
                 String modeText = mTvMode.getText().toString();
                 if (TextUtils.equals("答题模式", modeText)) {
-                    mTvMode.setText("开挂模式");
+                    mTvMode.setText("开挂模式"); // 现在是开挂模式了
                     mIvMode.setImageResource(R.drawable.answer_mode_show);
                     for (Question question : mList) {
                         question.setIsShowAnswer(true);
                     }
-                } else {
-                    mTvMode.setText("答题模式");
+					if (mDelayTime > 0) {
+                        startAutoPlay();
+					}
+				} else {
+                    mTvMode.setText("答题模式"); // 现在是答题模式了
                     mIvMode.setImageResource(R.drawable.answer_mode_hide);
                     for (Question question : mList) {
                         question.setIsShowAnswer(false);
                     }
+                    stopAutoPlay();
                 }
                 // 刷新adapter
                 int linearLayoutCount = mViewPager.getChildCount();
@@ -180,52 +205,75 @@ public class PracticeAnswerActivity extends BaseActivity {
                 finish();
             }
         });
-        refreshView();
+		final long delayTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
+		mViewPagerAdapter = new PracticeViewpagerAdapter(mList, mQuestionDao);
+		mViewPagerAdapter.setOnAnswerRightListener(new PracticeViewpagerAdapter.OnAnswerRight() {
+			@Override
+			public void answerRight() {
+				if (delayTime > 0) {
+					mHandler.postDelayed(mAnswerRightFlipTask, delayTime);
+				}
+			}
+		});
+		mViewPager.setAdapter(mViewPagerAdapter);
+		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				mIvShadow.setTranslationX(-positionOffsetPixels);
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+				mTvJump.setText(String.format("%d/%d", mViewPager.getCurrentItem() + 1, mList.size()));
+				SPUtils.putInt(mSection.courseName + mSection.questionType + POSTFIX, position);
+				Question question = mList.get(position);
+				if (question.getIsCollected()) {
+					mTvCollect.setText("已收藏");
+					mIvCollect.setImageResource(R.drawable.answer_collection_true);
+				} else {
+					mTvCollect.setText("收藏");
+					mIvCollect.setImageResource(R.drawable.answer_collection_false);
+				}
+			}
+
+
+			@Override
+			public void onPageScrollStateChanged(int state) {
+
+			}
+		});
+		mViewPager.setPageTransformer(true, new SlidingPageTransformer());
+		int lastPosition = SPUtils.getInt(mSection.courseName + mSection.questionType + POSTFIX);
+		mViewPager.setCurrentItem(lastPosition);
+		Question lastQuestion = mList.get(lastPosition);
+		if (lastQuestion.getIsCollected()) {
+			mTvCollect.setText("已收藏");
+			mIvCollect.setImageResource(R.drawable.answer_collection_true);
+		} else {
+			mTvCollect.setText("收藏");
+			mIvCollect.setImageResource(R.drawable.answer_collection_false);
+		}
     }
 
-    private void refreshView() {
-        mViewPagerAdapter = new PracticeViewpagerAdapter(mList, mQuestionDao);
-        mViewPager.setAdapter(mViewPagerAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                mIvShadow.setTranslationX(-positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mTvJump.setText(String.format("%d/%d", mViewPager.getCurrentItem() + 1, mList.size()));
-                Log.d(TAG, "position = " + position);
-                SPUtils.putInt(mSection.courseName + mSection.questionType + POSTFIX, position);
-                Question question = mList.get(position);
-                if (question.getIsCollected()) {
-                    mTvCollect.setText("已收藏");
-                    mIvCollect.setImageResource(R.drawable.answer_collection_true);
-                } else {
-                    mTvCollect.setText("收藏");
-                    mIvCollect.setImageResource(R.drawable.answer_collection_false);
-                }
-            }
 
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+	private final Runnable mAnswerRightFlipTask = new Runnable() {
+		@Override
+		public void run() {
+			int currentItem = mViewPager.getCurrentItem();
+			if (currentItem < mList.size() - 1) {
+				mViewPager.setCurrentItem(currentItem + 1, true);
+			}
+		}
+	};
 
-            }
-        });
-        mViewPager.setPageTransformer(true, new SlidingPageTransformer());
-        int lastPosition = SPUtils.getInt(mSection.courseName + mSection.questionType + POSTFIX);
-        mViewPager.setCurrentItem(lastPosition);
-        Question lastQuestion = mList.get(lastPosition);
-        if (lastQuestion.getIsCollected()) {
-            mTvCollect.setText("已收藏");
-            mIvCollect.setImageResource(R.drawable.answer_collection_true);
-        } else {
-            mTvCollect.setText("收藏");
-            mIvCollect.setImageResource(R.drawable.answer_collection_false);
-        }
-    }
 
+	@Override
+	protected void onDestroy() {
+		mHandler.removeCallbacksAndMessages(null);
+		mHandler = null;
+		super.onDestroy();
+	}
 
     private void showBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);

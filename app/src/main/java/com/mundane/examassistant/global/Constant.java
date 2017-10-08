@@ -22,4 +22,12 @@ public interface Constant {
 	String KEY_CURRENT_COURSE = "current_course";
 
 	String KEY_ALIPAY = "FKX01515RUUEZHPM79QY52";
+
+	String KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME = "key_answer_right_auto_flip_page_time";
+
+	String KEY_PRACTICE_SELECT = "key_practice_select";
+
+	String KEY_AUTO_FLIP_TIME = "key_auto_flip_time";
+
+	String KEY_ANSWER_RIGHT_REMOVE_TIMES = "key_answer_right_remove_times";
 }

@@ -17,7 +17,9 @@ import com.mundane.examassistant.BuildConfig;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.TimeDelayBean;
+import com.mundane.examassistant.global.Constant;
 import com.mundane.examassistant.utils.ResUtil;
+import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.utils.Shares;
 import com.mundane.examassistant.widget.AnswerRightDialogFragment;
 
@@ -92,11 +94,66 @@ public class SettingActivity extends BaseActivity {
 		mIvArrow.setVisibility(View.GONE);
 		mIvSetting.setVisibility(View.GONE);
 		mTvAppVersion.setText(String.format("题库助手 v%s", BuildConfig.VERSION_NAME));
+		long answerRightFlipDelayTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
+		if (answerRightFlipDelayTime == 0) {
+			mTvAnswerRightDelayTime.setText("不翻页");
+		} else if (answerRightFlipDelayTime == 250) {
+			mTvAnswerRightDelayTime.setText("0.25秒后");
+		} else if (answerRightFlipDelayTime == 500) {
+			mTvAnswerRightDelayTime.setText("0.5秒后");
+		} else if (answerRightFlipDelayTime == 750) {
+			mTvAnswerRightDelayTime.setText("0.75秒后");
+		} else if (answerRightFlipDelayTime == 1000) {
+			mTvAnswerRightDelayTime.setText("1秒后");
+		} else if (answerRightFlipDelayTime == 1500) {
+			mTvAnswerRightDelayTime.setText("1.5秒后");
+		} else if (answerRightFlipDelayTime == 2000) {
+			mTvAnswerRightDelayTime.setText("2秒后");
+		} else if (answerRightFlipDelayTime == 3000) {
+			mTvAnswerRightDelayTime.setText("3秒后");
+		}
+
+		long cheatAutoFlipTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME); // 开挂模式下自动翻页的时间
+		if (cheatAutoFlipTime == 0) {
+			mTvFlipPage.setText("不翻页");
+		} else if (cheatAutoFlipTime == 500) {
+			mTvFlipPage.setText("0.5秒后");
+		} else if (cheatAutoFlipTime == 1000) {
+			mTvFlipPage.setText("1秒后");
+		} else if (cheatAutoFlipTime == 1500) {
+			mTvFlipPage.setText("1.5秒后");
+		} else if (cheatAutoFlipTime == 2000) {
+			mTvFlipPage.setText("2秒后");
+		} else if (cheatAutoFlipTime == 2500) {
+			mTvFlipPage.setText("2.5秒后");
+		} else if (cheatAutoFlipTime == 3000) {
+			mTvFlipPage.setText("3秒后");
+		} else if (cheatAutoFlipTime == 4000) {
+			mTvFlipPage.setText("4秒后");
+		}
+
+		long answerRightRemoveTimes = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES);
+		if (answerRightRemoveTimes == 0) {
+			mTvAnswerRightRemove.setText("不移除");
+		} else if (answerRightRemoveTimes == 1) {
+			mTvAnswerRightRemove.setText("1次");
+		} else if (answerRightRemoveTimes == 2) {
+			mTvAnswerRightRemove.setText("2次");
+		} else if (answerRightRemoveTimes == 3) {
+			mTvAnswerRightRemove.setText("3次");
+		} else if (answerRightRemoveTimes == 4) {
+			mTvAnswerRightRemove.setText("4次");
+		} else if (answerRightRemoveTimes == 5) {
+			mTvAnswerRightRemove.setText("5次");
+		} else if (answerRightRemoveTimes == 6) {
+			mTvAnswerRightRemove.setText("6次");
+		}
 		mAnswerRightDialogFragment = AnswerRightDialogFragment.newInstance(ResUtil.getAnswerRightData());
 		mAnswerRightDialogFragment.setOnItemClickListener(new AnswerRightDialogFragment.OnItemClickListener() {
 			@Override
 			public void onItemClicked(TimeDelayBean timeDelayBean) {
 				mTvAnswerRightDelayTime.setText(timeDelayBean.text);
+				SPUtils.putLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME, timeDelayBean.time);
 			}
 		});
 		mAnswerRightRemoveDialogFragment = AnswerRightDialogFragment.newInstance(ResUtil.getAnswerRightRemoveData());
@@ -104,6 +161,7 @@ public class SettingActivity extends BaseActivity {
 			@Override
 			public void onItemClicked(TimeDelayBean timeDelayBean) {
 				mTvAnswerRightRemove.setText(timeDelayBean.text);
+				SPUtils.putLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES, timeDelayBean.time);
 			}
 		});
 		mFlipPageDialogFragment = AnswerRightDialogFragment.newInstance(ResUtil.getFlipPageDate());
@@ -111,6 +169,7 @@ public class SettingActivity extends BaseActivity {
 			@Override
 			public void onItemClicked(TimeDelayBean timeDelayBean) {
 				mTvFlipPage.setText(timeDelayBean.text);
+				SPUtils.putLong(Constant.KEY_AUTO_FLIP_TIME, timeDelayBean.time);
 			}
 		});
 		mLlAnswerRight.setOnClickListener(new View.OnClickListener() {

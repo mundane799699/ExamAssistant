@@ -19,6 +19,7 @@ import com.mundane.examassistant.bean.SectionBean;
 import com.mundane.examassistant.db.DbHelper;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
+import com.mundane.examassistant.global.Constant;
 import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
@@ -58,12 +59,18 @@ public class PracticeSelectActivity extends BaseActivity {
     }
 
 	private final String TAG = "PracticeSelectActivity";
-	public static final String KEY_PRACTICE_SELECT = "key_practice_select";
 
 	private void init() {
 		mIvBack.setVisibility(View.VISIBLE);
 		mIvArrow.setVisibility(View.GONE);
         mTvSelectCourse.setText(String.format("%s章节练习", mCourseName));
+		mIvSetting.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(PracticeSelectActivity.this, SettingActivity.class);
+				startActivity(intent);
+			}
+		});
 
         mSectionList = new ArrayList<>();
         mSectionList.addAll(ResUtil.initData(mCourseName));
@@ -110,7 +117,7 @@ public class PracticeSelectActivity extends BaseActivity {
 				SPUtils.putInt(mCourseName + KEY_POSTFIX, position);
 
 				Intent intent = new Intent(PracticeSelectActivity.this, PracticeAnswerActivity.class);
-				intent.putExtra(KEY_PRACTICE_SELECT, section);
+				intent.putExtra(Constant.KEY_PRACTICE_SELECT, section);
                 startActivity(intent);
 			}
 		});

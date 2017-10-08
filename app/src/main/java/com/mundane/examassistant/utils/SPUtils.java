@@ -13,6 +13,7 @@ public class SPUtils {
     private static final String FILE_NAME            = "sp_config";
     private static final String DEFAULT_STRING_VALUE = "";
     private static final int    DEFAULT_INT_VALUE    = 0;
+	private static final long DEFAULT_LONG_VALUE = 0;
 
 
     private static SharedPreferences getSp() {
@@ -32,17 +33,30 @@ public class SPUtils {
 
 
     public static void putString(String key, String value) {
-        SharedPreferences.Editor edit = getEditor();
-        edit.putString(key, value);
-        edit.commit();
+        SharedPreferences.Editor editor = getEditor();
+        editor.putString(key, value);
+        editor.commit();
     }
 
 
     public static void putInt(String key, int value) {
-        SharedPreferences.Editor edit = getEditor();
-        edit.putInt(key, value);
-        edit.commit();
+        SharedPreferences.Editor editor = getEditor();
+        editor.putInt(key, value);
+        editor.commit();
     }
+
+
+	public static void putLong(String key, long value) {
+		SharedPreferences.Editor editor = getEditor();
+		editor.putLong(key, value);
+		editor.commit();
+	}
+
+
+	public static long getLong(String key) {
+		SharedPreferences sp = getSp();
+		return sp.getLong(key, DEFAULT_LONG_VALUE);
+	}
 
 
     public static String getString(String key) {
