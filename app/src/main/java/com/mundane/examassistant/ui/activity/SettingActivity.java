@@ -253,7 +253,7 @@ public class SettingActivity extends BaseActivity {
 		mLlShare.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Shares.share(SettingActivity.this, "分享一款十分好用的考试复习App: 题库助手, 妈妈再也不用担心我的学习!");
+				Shares.share(SettingActivity.this, getString(R.string.share_text));
 			}
 		});
 		mLlAboutMe.setOnClickListener(new View.OnClickListener() {

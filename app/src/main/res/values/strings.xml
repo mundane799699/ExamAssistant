@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">题库助手</string>
     <string name="author"><![CDATA[作者:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mundane<br>微信(QQ):&nbsp;&nbsp;799699348<br>邮箱:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;799699348@qq.com]]></string>
-    <string
-        name="introduce"><![CDATA[项目简介:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该项目是已经毕业两年的Android程序员(当然指的是我自己→_→)的个人业余项目, 题库来自于一同毕业于东华大学的iOS程序员<a href=\'https://github.com/banchichen\'>@banchichen</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里表示十分感谢, 其实也是因为先有他的iOS版本的题库助手, 然后我才想着去补充一个Android版本, 然后从他那里要过来了所有的素材<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\'https://github.com/mundane799699/ExamAssistant\'>源代码</a>完全开源(点击超链接直达github地址)。如果觉得好用, 欢迎打赏我, 您的支持是我最大的动力]]></string>
+    <string name="introduce"><![CDATA[项目简介:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该项目是已经毕业两年的Android程序员(当然指的是我自己→_→)的个人业余项目, 题库来自于一同毕业于东华大学的iOS程序员<a href=\'https://github.com/banchichen\'>@banchichen</a><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里表示十分感谢, 其实也是因为先有他的iOS版本的题库助手, 然后我才想着去补充一个Android版本, 然后从他那里要过来了所有的素材<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\'https://github.com/mundane799699/ExamAssistant\'>源代码</a>完全开源(点击超链接直达github地址)。如果觉得好用, 欢迎打赏我, 您的支持是我最大的动力]]></string>
+    <string name="share_text">分享一款十分好用的考试复习App: 题库助手, 妈妈再也不用担心我的学习! 推荐~：http://fir.im/examassistant</string>
 </resources>
