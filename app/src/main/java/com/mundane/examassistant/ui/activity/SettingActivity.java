@@ -11,17 +11,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.mundane.examassistant.BuildConfig;
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.TimeDelayBean;
+import com.mundane.examassistant.db.DbHelper;
+import com.mundane.examassistant.db.entity.Question;
+import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.global.Constant;
 import com.mundane.examassistant.utils.ResUtil;
 import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.utils.Shares;
 import com.mundane.examassistant.widget.AnswerRightDialogFragment;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SettingActivity extends BaseActivity {
 
@@ -76,6 +83,7 @@ public class SettingActivity extends BaseActivity {
 	private AnswerRightDialogFragment mAnswerRightDialogFragment;
 	private AnswerRightDialogFragment mAnswerRightRemoveDialogFragment;
 	private AnswerRightDialogFragment mFlipPageDialogFragment;
+	private QuestionDao mQuestionDao;
 
 
 	@Override
@@ -94,6 +102,7 @@ public class SettingActivity extends BaseActivity {
 		mIvArrow.setVisibility(View.GONE);
 		mIvSetting.setVisibility(View.GONE);
 		mTvAppVersion.setText(String.format("题库助手 v%s", BuildConfig.VERSION_NAME));
+		// 答对后自动翻页的延时时间
 		long answerRightFlipDelayTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
 		if (answerRightFlipDelayTime == 0) {
 			mTvAnswerRightDelayTime.setText("不翻页");
@@ -113,7 +122,8 @@ public class SettingActivity extends BaseActivity {
 			mTvAnswerRightDelayTime.setText("3秒后");
 		}
 
-		long cheatAutoFlipTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME); // 开挂模式下自动翻页的时间
+		// 开挂模式下自动翻页的延时时间
+		long cheatAutoFlipTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME);
 		if (cheatAutoFlipTime == 0) {
 			mTvFlipPage.setText("不翻页");
 		} else if (cheatAutoFlipTime == 500) {
@@ -132,6 +142,7 @@ public class SettingActivity extends BaseActivity {
 			mTvFlipPage.setText("4秒后");
 		}
 
+		// 错题答对后自动移除的次数
 		long answerRightRemoveTimes = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES);
 		if (answerRightRemoveTimes == 0) {
 			mTvAnswerRightRemove.setText("不移除");
@@ -205,7 +216,31 @@ public class SettingActivity extends BaseActivity {
 					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-
+							// 答对后自动翻页的延时时间
+							long answerRightFlipDelayTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
+							// 开挂模式下自动翻页的延时时间
+							long cheatAutoFlipTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME);
+							// 错题答对后自动移除的次数
+							long answerRightRemoveTimes = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES);
+							mQuestionDao = DbHelper.getQuestionDao();
+							List<Question> questionList = mQuestionDao.loadAll();
+							for (Question question : questionList) {
+								question.setIsShowAnswer(false);
+								question.setIsCollected(false);
+								question.setIsAnsweredWrong(false);
+								question.setHaveBeenAnswered(false);
+								question.setOptionAStatus(0);
+								question.setOptionBStatus(0);
+								question.setOptionCStatus(0);
+								question.setOptionDStatus(0);
+								question.setOptionEStatus(0);
+								question.setAnswerRightTimes(0);
+							}
+							mQuestionDao.updateInTx(questionList);
+							SPUtils.clear();
+							SPUtils.putLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME, answerRightFlipDelayTime);
+							SPUtils.putLong(Constant.KEY_AUTO_FLIP_TIME, cheatAutoFlipTime);
+							SPUtils.putLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES, answerRightRemoveTimes);
 						}
 					})
 					.create();

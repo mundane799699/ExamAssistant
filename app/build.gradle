@@ -25,8 +25,7 @@ android {
     productFlavors {
         xiaomi {}
         _360 {}
-        baidu {}
-        wandoujia {}
+        kuan {}
         //...添加其它渠道
     }
     productFlavors.all {

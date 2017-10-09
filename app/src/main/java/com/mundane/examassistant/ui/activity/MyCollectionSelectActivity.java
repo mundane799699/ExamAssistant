@@ -1,8 +1,10 @@
 package com.mundane.examassistant.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,9 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -23,10 +23,16 @@ import com.mundane.examassistant.ui.adapter.SectionAdapter;
 import com.mundane.examassistant.utils.DensityUtils;
 import com.mundane.examassistant.utils.ResUtil;
 import com.mundane.examassistant.widget.RecycleViewDivider;
+
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.greenrobot.greendao.query.Query;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MyCollectionSelectActivity extends BaseActivity {
 
@@ -62,6 +68,35 @@ public class MyCollectionSelectActivity extends BaseActivity {
     private void init() {
         mIvBack.setVisibility(View.VISIBLE);
         mTvSelectCourse.setText(String.format("%s收藏题目", mCourseName));
+
+		mIvClear.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MyCollectionSelectActivity.this);
+				builder
+						.setTitle(String.format("确定要删除%s的所有收藏吗?", mCourseName))
+						.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+							}
+						}).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Query<Question> query = mQuestionDao
+								.queryBuilder()
+								.where(QuestionDao.Properties.Course.eq(mCourseName))
+								.build();
+						List<Question> list = query.list();
+						for (Question question : list) {
+							question.setIsCollected(false);
+						}
+						mQuestionDao.updateInTx(list);
+						finish();
+					}
+				}).create().show();
+			}
+		});
 
         mSectionList = new ArrayList<>();
 		refreshData();

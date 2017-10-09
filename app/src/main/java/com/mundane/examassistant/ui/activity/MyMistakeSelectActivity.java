@@ -1,8 +1,10 @@
 package com.mundane.examassistant.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -57,12 +59,41 @@ public class MyMistakeSelectActivity extends BaseActivity {
 		setContentView(R.layout.activity_my_mistakes_select);
 		ButterKnife.bind(this);
 		mCourseName = getIntent().getStringExtra(MainActivity.KEY_COURSE_NAME);
+		mQuestionDao = DbHelper.getQuestionDao();
 		init();
 	}
 
 	private void init() {
 		mIvBack.setVisibility(View.VISIBLE);
 		mTvSelectCourse.setText(String.format("%s错题", mCourseName));
+		mIvClear.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MyMistakeSelectActivity.this);
+				builder
+						.setTitle(String.format("确定要删除%s的所有错题吗?", mCourseName))
+						.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				}).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Query<Question> query = mQuestionDao
+								.queryBuilder()
+								.where(QuestionDao.Properties.Course.eq(mCourseName))
+								.build();
+						List<Question> list = query.list();
+						for (Question question : list) {
+							question.setIsAnsweredWrong(false);
+						}
+						mQuestionDao.updateInTx(list);
+						finish();
+					}
+				}).create().show();
+			}
+		});
 
 		mSectionList = new ArrayList<>();
 		refreshData();
@@ -100,11 +131,7 @@ public class MyMistakeSelectActivity extends BaseActivity {
     }
 
 	private void refreshData() {
-
 		List<SectionBean> allSectionList = ResUtil.initData(mCourseName);
-
-		mQuestionDao = DbHelper.getQuestionDao();
-
 		Query<Question> query = mQuestionDao
 				.queryBuilder()
 				.where(QuestionDao.Properties.Course.eq(mCourseName), QuestionDao.Properties.IsAnsweredWrong.eq(true))
