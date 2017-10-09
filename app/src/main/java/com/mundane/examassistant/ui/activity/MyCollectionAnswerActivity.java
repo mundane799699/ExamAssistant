@@ -137,19 +137,22 @@ public class MyCollectionAnswerActivity extends BaseActivity {
         mLlMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String modeText = mTvMode.getText().toString();
-                if (TextUtils.equals("答题模式", modeText)) {
+                if (!isCheatMode()) { // 现在是答题模式
                     mTvMode.setText("开挂模式");
                     mIvMode.setImageResource(R.drawable.answer_mode_show);
                     for (Question question : mDataList) {
                         question.setIsShowAnswer(true);
                     }
+					if (mDelayTime > 0) {
+						startAutoPlay();
+					}
                 } else {
                     mTvMode.setText("答题模式");
                     mIvMode.setImageResource(R.drawable.answer_mode_hide);
                     for (Question question : mDataList) {
                         question.setIsShowAnswer(false);
                     }
+					stopAutoPlay();
                 }
                 // 刷新adapter
                 refreshRvAdapter();

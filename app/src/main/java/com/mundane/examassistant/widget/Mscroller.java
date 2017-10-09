@@ -33,7 +33,7 @@ public class Mscroller extends Scroller{
         if (mNoDuration) {
             super.startScroll(startX, startY, dx, dy, 0);
         } else {
-            super.startScroll(startX, startY, dx, dy, duration);
+            super.startScroll(startX, startY, dx, dy, 500);
         }
     }
 

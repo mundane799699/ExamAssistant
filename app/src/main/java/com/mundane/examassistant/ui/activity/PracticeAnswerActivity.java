@@ -170,8 +170,7 @@ public class PracticeAnswerActivity extends BaseActivity {
         mLlMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String modeText = mTvMode.getText().toString();
-                if (TextUtils.equals("答题模式", modeText)) {
+                if (!isCheatMode()) {
                     mTvMode.setText("开挂模式"); // 现在是开挂模式了
                     mIvMode.setImageResource(R.drawable.answer_mode_show);
                     for (Question question : mList) {
@@ -189,19 +188,7 @@ public class PracticeAnswerActivity extends BaseActivity {
                     stopAutoPlay();
                 }
                 // 刷新adapter
-                int linearLayoutCount = mViewPager.getChildCount();
-                for (int i = 0; i < linearLayoutCount; i++) {
-                    if (mViewPager.getChildAt(i) instanceof LinearLayout) {
-                        LinearLayout linearLayout = (LinearLayout) mViewPager.getChildAt(i);
-                        int viewCount = linearLayout.getChildCount();
-                        for (int j = 0; j < viewCount; j++) {
-                            if (linearLayout.getChildAt(j) instanceof RecyclerView) {
-                                RecyclerView rv = (RecyclerView) linearLayout.getChildAt(j);
-                                rv.getAdapter().notifyDataSetChanged();
-                            }
-                        }
-                    }
-                }
+				refreshRvAdapter();
             }
         });
         mLlCollect.setVisibility(View.VISIBLE);
@@ -278,7 +265,23 @@ public class PracticeAnswerActivity extends BaseActivity {
 		}
     }
 
-    // 是否是开挂模式
+	private void refreshRvAdapter() {
+		int linearLayoutCount = mViewPager.getChildCount();
+		for (int i = 0; i < linearLayoutCount; i++) {
+			if (mViewPager.getChildAt(i) instanceof LinearLayout) {
+				LinearLayout linearLayout = (LinearLayout) mViewPager.getChildAt(i);
+				int viewCount = linearLayout.getChildCount();
+				for (int j = 0; j < viewCount; j++) {
+					if (linearLayout.getChildAt(j) instanceof RecyclerView) {
+						RecyclerView rv = (RecyclerView) linearLayout.getChildAt(j);
+						rv.getAdapter().notifyDataSetChanged();
+					}
+				}
+			}
+		}
+	}
+
+	// 是否是开挂模式
 	private boolean isCheatMode() {
 		String modeText = mTvMode.getText().toString();
 		if (TextUtils.equals("开挂模式", modeText)) { // 只有开挂模式下才有自动轮播
