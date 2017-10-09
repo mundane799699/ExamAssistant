@@ -30,7 +30,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 	private List<Question> mList;
 
 	public interface OnAnswerRight {
-		void answerRight(Question question);
+		void answerRight(Question question, int position);
 	}
 
 	private OnAnswerRight mOnAnswerRightListener;
@@ -81,7 +81,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 					}
 					question.setHaveBeenAnswered(true); // 如果该问题还没有被回答过, 将该问题标记为已经被回答过
 
-					setOptionStatus(pos, question); // 显示被选中的条目是正确答案还是错误答案
+					setOptionStatus(pos, question, position); // 显示被选中的条目是正确答案还是错误答案
 					showCorrectAnswer(question);                //	显示正确答案
 					optionSingleRvAdapter.notifyDataSetChanged();
 //				optionSingleRvAdapter.setOnItemClickListener(null);    //	其实这句代码可以去掉了
@@ -115,7 +115,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 					}
 					//	如果该问题还没有被回答过
 					question.setHaveBeenAnswered(true);
-					submitAnswer(question);
+					submitAnswer(question, position);
 					optionMultiRvAdapter.notifyDataSetChanged();
 				}
 			});
@@ -130,7 +130,12 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 
 	}
 
-	private void submitAnswer(Question question) {
+	// 0:默认显示状态, 图标灰色字母, 文字是普通灰色;
+	// 1:选择正确的状态, 图标是绿色对勾, 文字是绿色;
+	// 2:选择错误的状态, 图标是红色叉叉, 文字是红色;
+	// 3:多选模式中正在选择还未点提交按钮的选项的状态, 图标是蓝色字母, 文字是蓝色;
+	// 4:多选中属于正确选项但是用户未发现这项, 图标是绿色字母, 文字是绿色
+	private void submitAnswer(Question question, int position) {
         // 先标记为回答正确
 		question.setIsAnsweredWrong(false);
 		if (!TextUtils.isEmpty(question.getOptionA())) {
@@ -213,6 +218,13 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 			}
 		}
 
+		boolean isAnsweredWrong = question.getIsAnsweredWrong();
+		if (!isAnsweredWrong) { // 如果回答正确了
+			if (mOnAnswerRightListener != null) {
+				mOnAnswerRightListener.answerRight(question, position);
+			}
+		}
+
 		// 更新
 		//mQuestionDao.update(question);
 
@@ -258,12 +270,12 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 		}
 	}
 
-	private void setOptionStatus(int position, Question question) {
-		switch (position) {
+	private void setOptionStatus(int pos, Question question, int position) {
+		switch (pos) {
 			case 0:
 				if (question.getIsOptionACorrect()) {
 					if (mOnAnswerRightListener != null) {
-						mOnAnswerRightListener.answerRight(question);
+						mOnAnswerRightListener.answerRight(question, position);
 					}
 				} else {
 					//ToastUtils.toast("回答错误");
@@ -277,7 +289,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 			case 1:
 				if (question.getIsOptionBCorrect()) {
 					if (mOnAnswerRightListener != null) {
-						mOnAnswerRightListener.answerRight(question);
+						mOnAnswerRightListener.answerRight(question, position);
 					}
 				} else {
 					//ToastUtils.toast("回答错误");
@@ -289,7 +301,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 			case 2:
 				if (question.getIsOptionCCorrect()) {
 					if (mOnAnswerRightListener != null) {
-						mOnAnswerRightListener.answerRight(question);
+						mOnAnswerRightListener.answerRight(question, position);
 					}
 				} else {
 					//ToastUtils.toast("回答错误");
@@ -301,7 +313,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 			case 3:
 				if (question.getIsOptionDCorrect()) {
 					if (mOnAnswerRightListener != null) {
-						mOnAnswerRightListener.answerRight(question);
+						mOnAnswerRightListener.answerRight(question, position);
 					}
 				} else {
 					//ToastUtils.toast("回答错误");
@@ -313,7 +325,7 @@ public class MistakeViewpagerAdapter extends PagerAdapter {
 			case 4:
 				if (question.getIsOptionECorrect()) {
 					if (mOnAnswerRightListener != null) {
-						mOnAnswerRightListener.answerRight(question);
+						mOnAnswerRightListener.answerRight(question, position);
 					}
 				} else {
 					//ToastUtils.toast("回答错误");

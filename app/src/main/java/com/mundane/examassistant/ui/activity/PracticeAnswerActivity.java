@@ -16,8 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -31,9 +30,14 @@ import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 import com.mundane.examassistant.widget.view.ScrollerViewPager;
+
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.greendao.query.Query;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PracticeAnswerActivity extends BaseActivity {
 
@@ -78,6 +82,7 @@ public class PracticeAnswerActivity extends BaseActivity {
 	private QuestionDao    mQuestionDao;
     private List<Question> mList;
 	private long mDelayTime;
+	private long mAnswerRightFlipTime;
 
 
 	@Override
@@ -97,6 +102,7 @@ public class PracticeAnswerActivity extends BaseActivity {
         mList.addAll(getConditionList());
 
 		mDelayTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME);
+		mAnswerRightFlipTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
     }
 
 
@@ -144,6 +150,23 @@ public class PracticeAnswerActivity extends BaseActivity {
         });
         mTvJump.setText(String.format("%d/%d", 1, mList.size()));
         mLlMode.setVisibility(View.VISIBLE);
+		mViewPager.setOnActionListener(new ScrollerViewPager.OnActionListener() {
+			@Override
+			public void onActionUp() {
+				if (isCheatMode()) {
+					if (mDelayTime > 0) {
+						startAutoPlay();
+					}
+				}
+			}
+
+			@Override
+			public void onActionDown() {
+				if (isCheatMode()) {
+					stopAutoPlay();
+				}
+			}
+		});
         mLlMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,13 +228,13 @@ public class PracticeAnswerActivity extends BaseActivity {
                 finish();
             }
         });
-		final long delayTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
+
 		mViewPagerAdapter = new PracticeViewpagerAdapter(mList, mQuestionDao);
 		mViewPagerAdapter.setOnAnswerRightListener(new PracticeViewpagerAdapter.OnAnswerRight() {
 			@Override
 			public void answerRight() {
-				if (delayTime > 0) {
-					mHandler.postDelayed(mAnswerRightFlipTask, delayTime);
+				if (mAnswerRightFlipTime > 0) {
+					mHandler.postDelayed(mAnswerRightFlipTask, mAnswerRightFlipTime);
 				}
 			}
 		});
@@ -255,7 +278,15 @@ public class PracticeAnswerActivity extends BaseActivity {
 		}
     }
 
-
+    // 是否是开挂模式
+	private boolean isCheatMode() {
+		String modeText = mTvMode.getText().toString();
+		if (TextUtils.equals("开挂模式", modeText)) { // 只有开挂模式下才有自动轮播
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	private final Runnable mAnswerRightFlipTask = new Runnable() {
 		@Override
@@ -277,6 +308,17 @@ public class PracticeAnswerActivity extends BaseActivity {
 
     private void showBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+		bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				// 关闭bottomSheetDialog的时候开始轮播
+				if (isCheatMode()) {
+					if (mDelayTime > 0) {
+						startAutoPlay();
+					}
+				}
+			}
+		});
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_layout, mLlJump, false);
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv);
         TextView tvRight = (TextView) view.findViewById(R.id.tv_right);
@@ -336,8 +378,12 @@ public class PracticeAnswerActivity extends BaseActivity {
         });
         rv.setAdapter(adapter);
         bottomSheetDialog.setContentView(view);
+		// 打开bottomSheetDialog的时候停止轮播
         bottomSheetDialog.show();
-    }
+		if (isCheatMode()) {
+			stopAutoPlay();
+		}
+	}
 
 
     private void clearHistory() {

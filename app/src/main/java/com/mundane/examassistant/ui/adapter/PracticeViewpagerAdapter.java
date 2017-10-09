@@ -10,12 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.db.entity.Question;
 import com.mundane.examassistant.db.entity.QuestionDao;
 import com.mundane.examassistant.utils.DensityUtils;
-import com.mundane.examassistant.utils.LogUtils;
 import com.mundane.examassistant.widget.RecycleViewDivider;
+
 import java.util.List;
 
 /**
@@ -68,7 +69,6 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 	}
 
 	private void setUpView(View view, final Question question, final int position) {
-		LogUtils.d("instantiateItem position = " + position);
 		TextView tvQuestion = (TextView) view.findViewById(R.id.tv_question);
 		tvQuestion.setText(question.getQuestion());
 		final RecyclerView rvOption = (RecyclerView) view.findViewById(R.id.rv_option);
@@ -135,6 +135,7 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 	}
 
 	private void submitAnswer(Question question) {
+		// 先标记为回答正确
 		question.setIsAnsweredWrong(false);
 		if (!TextUtils.isEmpty(question.getOptionA())) {
 			if (question.getOptionAStatus() == 0 && question.getIsOptionACorrect()) {
@@ -213,6 +214,13 @@ public class PracticeViewpagerAdapter extends PagerAdapter {
 				question.setOptionEStatus(2);
 				// 标记为回答错误
 				question.setIsAnsweredWrong(true);
+			}
+		}
+
+		boolean isAnsweredWrong = question.getIsAnsweredWrong();
+		if (!isAnsweredWrong) { // 如果回答正确了
+			if (mOnAnswerRightListener != null) {
+				mOnAnswerRightListener.answerRight();
 			}
 		}
 

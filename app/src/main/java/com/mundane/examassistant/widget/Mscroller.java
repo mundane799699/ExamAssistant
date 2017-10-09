@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
+import com.mundane.examassistant.utils.LogUtils;
+
 /**
  * Created by mundane on 2017/8/12.
  */
@@ -27,6 +29,7 @@ public class Mscroller extends Scroller{
 
     @Override
     public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+		LogUtils.d("ViewPager's Scroll duration = " + duration);
         if (mNoDuration) {
             super.startScroll(startX, startY, dx, dy, 0);
         } else {

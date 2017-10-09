@@ -2,6 +2,7 @@ package com.mundane.examassistant.ui.activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -15,8 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.mundane.examassistant.R;
 import com.mundane.examassistant.base.BaseActivity;
 import com.mundane.examassistant.bean.SectionBean;
@@ -30,9 +30,14 @@ import com.mundane.examassistant.utils.SPUtils;
 import com.mundane.examassistant.widget.BottomSheetItemDecoration;
 import com.mundane.examassistant.widget.SlidingPageTransformer;
 import com.mundane.examassistant.widget.view.ScrollerViewPager;
+
+import org.greenrobot.greendao.query.Query;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.greendao.query.Query;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MyMistakeAnswerActivity extends BaseActivity {
 
@@ -69,10 +74,21 @@ public class MyMistakeAnswerActivity extends BaseActivity {
     @BindView(R.id.iv_shadow)
     ImageView         mIvShadow;
     private QuestionDao              mQuestionDao;
-    private List<Question>           mList;
+    private List<Question> mDataList;
     private SectionBean              mSection;
     private MistakeViewpagerAdapter mViewPagerAdapter;
 	private long mAnswerRightRemoveTimes; // 错题答对后自动移除的次数
+	private List<Question> mOriginalList;
+	private long mDelayTime;
+	private long mAnswerRightFlipTime;
+	private Handler mHandler = new Handler();
+
+	@Override
+	protected void onDestroy() {
+		mHandler.removeCallbacksAndMessages(null);
+		mHandler = null;
+		super.onDestroy();
+	}
 
 
 	@Override
@@ -82,15 +98,18 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mQuestionDao = DbHelper.getQuestionDao();
-        mList = new ArrayList<>();
+        mDataList = new ArrayList<>();
         mSection = getIntent().getParcelableExtra(MyMistakeSelectActivity.KEY_MYMISTAKE_SELECT);
         Query<Question> query = mQuestionDao
             .queryBuilder()
             .where(QuestionDao.Properties.Course.eq(mSection.courseName), QuestionDao.Properties.Type.eq(mSection.questionType), QuestionDao.Properties.IsAnsweredWrong.eq(true))
             .build();
-        List<Question> list = query.list();
-        mList.addAll(list);
+		mOriginalList = query.list();
+        mDataList.addAll(mOriginalList);
         clearHistory();
+
+		mDelayTime = SPUtils.getLong(Constant.KEY_AUTO_FLIP_TIME);
+		mAnswerRightFlipTime = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_AUTO_FLIP_PAGE_TIME);
 
 		mAnswerRightRemoveTimes = SPUtils.getLong(Constant.KEY_ANSWER_RIGHT_REMOVE_TIMES);
 
@@ -101,13 +120,30 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         mLlJump.setVisibility(View.VISIBLE);
         mLlCollect.setVisibility(View.VISIBLE);
         mLlMode.setVisibility(View.VISIBLE);
-        mTvJump.setText(String.format("%d/%d", 1, mList.size()));
+        mTvJump.setText(String.format("%d/%d", 1, mDataList.size()));
         mLlJump.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showBottomSheetDialog();
             }
         });
+		mViewPager.setOnActionListener(new ScrollerViewPager.OnActionListener() {
+			@Override
+			public void onActionUp() {
+				if (isCheatMode()) {
+					if (mDelayTime > 0) {
+						startAutoPlay();
+					}
+				}
+			}
+
+			@Override
+			public void onActionDown() {
+				if (isCheatMode()) {
+					stopAutoPlay();
+				}
+			}
+		});
         mLlMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,13 +151,13 @@ public class MyMistakeAnswerActivity extends BaseActivity {
                 if (TextUtils.equals("答题模式", modeText)) {
                     mTvMode.setText("开挂模式");
                     mIvMode.setImageResource(R.drawable.answer_mode_show);
-                    for (Question question : mList) {
+                    for (Question question : mDataList) {
                         question.setIsShowAnswer(true);
                     }
                 } else {
                     mTvMode.setText("答题模式");
                     mIvMode.setImageResource(R.drawable.answer_mode_hide);
-                    for (Question question : mList) {
+                    for (Question question : mDataList) {
                         question.setIsShowAnswer(false);
                     }
                 }
@@ -134,7 +170,7 @@ public class MyMistakeAnswerActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String collectText = mTvCollect.getText().toString();
-                Question question = mList.get(mViewPager.getCurrentItem());
+                Question question = mDataList.get(mViewPager.getCurrentItem());
                 if (TextUtils.equals("收藏", collectText)) {
                     mTvCollect.setText("已收藏");
                     mIvCollect.setImageResource(R.drawable.answer_collection_true);
@@ -154,10 +190,13 @@ public class MyMistakeAnswerActivity extends BaseActivity {
             }
         });
 
-        mViewPagerAdapter = new MistakeViewpagerAdapter(mList, mQuestionDao);
+        mViewPagerAdapter = new MistakeViewpagerAdapter(mDataList, mQuestionDao);
 		mViewPagerAdapter.setOnAnswerRightListener(new MistakeViewpagerAdapter.OnAnswerRight() {
 			@Override
-			public void answerRight(Question question) {
+			public void answerRight(Question question, int position) {
+				if (mAnswerRightFlipTime > 0) {
+					mHandler.postDelayed(mAnswerRightFlipTask, mAnswerRightFlipTime);
+				}
 				int currentQuestionAnswerRightTimes = question.getAnswerRightTimes();
 				currentQuestionAnswerRightTimes++;
 				if (mAnswerRightRemoveTimes > 0) {
@@ -166,8 +205,13 @@ public class MyMistakeAnswerActivity extends BaseActivity {
 						question.setIsAnsweredWrong(false); // 从错题中移除
 					} else { // 还没有达到规定的移除次数, 就只是将答对的次数+1, 然后更新数据库
 						question.setAnswerRightTimes(currentQuestionAnswerRightTimes);
+						question.setIsAnsweredWrong(true);
 					}
-					mQuestionDao.update(question);
+					Question updateQuestion = mOriginalList.get(position);
+					// 只是更新答对的次数以及是否标记为错题
+					updateQuestion.setAnswerRightTimes(question.getAnswerRightTimes());
+					updateQuestion.setIsAnsweredWrong(question.getIsAnsweredWrong());
+					mQuestionDao.update(updateQuestion);
 				}
 			}
 		});
@@ -180,11 +224,11 @@ public class MyMistakeAnswerActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                int max = mList.size();
+                int max = mDataList.size();
                 String text = String.format("%d/%d", mViewPager.getCurrentItem() + 1, max);
                 mTvJump.setText(text);
                 //SPUtils.putInt(mSection.courseName + mSection.questionType + POSTFIX, position);
-                Question question = mList.get(position);
+                Question question = mDataList.get(position);
                 if (question.getIsCollected()) {
                     mTvCollect.setText("已收藏");
                     mIvCollect.setImageResource(R.drawable.answer_collection_true);
@@ -201,7 +245,7 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         mViewPager.setPageTransformer(true, new SlidingPageTransformer());
         //int lastPosition = SPUtils.getInt(mSection.courseName + mSection.questionType + POSTFIX);
         mViewPager.setCurrentItem(0);
-        Question firstQuestion = mList.get(0);
+        Question firstQuestion = mDataList.get(0);
         if (firstQuestion.getIsCollected()) {
             mTvCollect.setText("已收藏");
             mIvCollect.setImageResource(R.drawable.answer_collection_true);
@@ -210,6 +254,46 @@ public class MyMistakeAnswerActivity extends BaseActivity {
             mIvCollect.setImageResource(R.drawable.answer_collection_false);
         }
     }
+
+	public void startAutoPlay() {
+		mHandler.removeCallbacks(mCheatAutoFlipTask);
+		mHandler.postDelayed(mCheatAutoFlipTask, mDelayTime);
+	}
+
+	public void stopAutoPlay() {
+		mHandler.removeCallbacks(mCheatAutoFlipTask);
+	}
+
+	private final Runnable mAnswerRightFlipTask = new Runnable() {
+		@Override
+		public void run() {
+			int currentItem = mViewPager.getCurrentItem();
+			if (currentItem < mDataList.size() - 1) {
+				mViewPager.setCurrentItem(currentItem + 1, true);
+			}
+		}
+	};
+
+	private final Runnable mCheatAutoFlipTask = new Runnable() {
+		@Override
+		public void run() {
+			int currentItem = mViewPager.getCurrentItem();
+			if (currentItem < mDataList.size() - 1) {
+				mViewPager.setCurrentItem(currentItem + 1, true);
+				mHandler.postDelayed(mCheatAutoFlipTask, mDelayTime);
+			}
+		}
+	};
+
+	// 是否是开挂模式
+	private boolean isCheatMode() {
+		String modeText = mTvMode.getText().toString();
+		if (TextUtils.equals("开挂模式", modeText)) { // 只有开挂模式下才有自动轮播
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 
 	@Override
@@ -238,6 +322,17 @@ public class MyMistakeAnswerActivity extends BaseActivity {
 
     private void showBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+		bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				// 关闭bottomSheetDialog的时候开始轮播
+				if (isCheatMode()) {
+					if (mDelayTime > 0) {
+						startAutoPlay();
+					}
+				}
+			}
+		});
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_layout, mLlJump, false);
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv);
         TextView tvRight = (TextView) view.findViewById(R.id.tv_right);
@@ -258,7 +353,7 @@ public class MyMistakeAnswerActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // 清除历史记录
                         clearHistory();
-                        mViewPager.setCurrentItem(mList.size() - 1, false);
+                        mViewPager.setCurrentItem(mDataList.size() - 1, false);
                         // 第二个参数为false时有空白页的bug
                         mViewPager.setNoDuration(true);
                         mViewPager.setCurrentItem(0, true);
@@ -271,7 +366,7 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         int rightQuestionCount = 0;
         int wrongQuestionCount = 0;
         int undoQuestionCount = 0;
-        for (Question question : mList) {
+        for (Question question : mDataList) {
             if (question.getHaveBeenAnswered()) {
                 if (question.getIsAnsweredWrong()) {
                     wrongQuestionCount++;
@@ -287,7 +382,7 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         tvUndo.setText(String.format("%d", undoQuestionCount));
         rv.setLayoutManager(new GridLayoutManager(this, 6));
         rv.addItemDecoration(new BottomSheetItemDecoration(this));
-        BottomSheetRvAdapter adapter = new BottomSheetRvAdapter(mList);
+        BottomSheetRvAdapter adapter = new BottomSheetRvAdapter(mDataList);
         adapter.setOnItemClickListener(new BottomSheetRvAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int position) {
@@ -297,11 +392,15 @@ public class MyMistakeAnswerActivity extends BaseActivity {
         });
         rv.setAdapter(adapter);
         bottomSheetDialog.setContentView(view);
-        bottomSheetDialog.show();
+		// 打开bottomSheetDialog的时候停止轮播
+		bottomSheetDialog.show();
+		if (isCheatMode()) {
+			stopAutoPlay();
+		}
     }
 
     private void clearHistory() {
-        for (Question question : mList) {
+        for (Question question : mDataList) {
             //question.setIsAnsweredWrong(false);
             question.setHaveBeenAnswered(false);
             question.setOptionAStatus(0);
@@ -310,6 +409,6 @@ public class MyMistakeAnswerActivity extends BaseActivity {
             question.setOptionDStatus(0);
             question.setOptionEStatus(0);
         }
-        //mQuestionDao.updateInTx(mList);
+        //mQuestionDao.updateInTx(mDataList);
     }
 }
