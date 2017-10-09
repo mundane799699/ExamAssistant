@@ -1,7 +1,25 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+def keyStore = file('examassistant.jks')
+
 android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        manifestPlaceholders = [UMENG_CHANNEL: "wandoujia"] //默认渠道
+    }
+
     signingConfigs {
         config {
             keyAlias 'mundane_key'
@@ -10,33 +28,44 @@ android {
             storeFile file('examassistant.jks')
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
-    defaultConfig {
-        applicationId "com.mundane.examassistant"
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [UMENG_CHANNEL: "wandoujia"] //默认渠道
-    }
     //自动多渠道打包
     productFlavors {
-        xiaomi {}
-        _360 {}
+        yingyongbao {}
         kuan {}
+        fir {}
+        googleplay {}
         //...添加其它渠道
     }
     productFlavors.all {
         flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL: name]
     }
     buildTypes {
+        debug {
+            debuggable true
+        }
         release {
+            debuggable false
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true // 移除无用的resource文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keyStore.exists()) {
+                println "examassistant: using mundane's key"
+                signingConfig signingConfigs.config
+            } else {
+                println "examassistant: using default key"
+            }
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "Examassistant_release_v${defaultConfig.versionName}_${releaseTime()}_${variant.productFlavors[0].name}.apk"
+                        def outputPath = "${rootDir}/apk"
+                        output.outputFile = new File(outputPath, fileName)
+                    }
+                }
+            }
         }
     }
 
