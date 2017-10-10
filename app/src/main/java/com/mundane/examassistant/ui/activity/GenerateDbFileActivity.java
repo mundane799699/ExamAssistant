@@ -42,43 +42,30 @@ public class GenerateDbFileActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_generate_db);
-
+		mList = new ArrayList<>();
 		checkData();
 
 	}
 
 
-
-    @Override
-    protected void onDestroy() {
-        if (mHandler != null) {
-            mHandler.removeCallbacksAndMessages(null);
-            mHandler = null;
-        }
-        super.onDestroy();
-    }
+	@Override
+	protected void onDestroy() {
+		if (mHandler != null) {
+			mHandler.removeCallbacksAndMessages(null);
+			mHandler = null;
+		}
+		super.onDestroy();
+	}
 
 
 	private void checkData() {
-		mList = new ArrayList<>();
-		mList.addAll(getConditionList());
-		if (mList.isEmpty()) {        //	数据库中没有数据, 需要导入数据
-			showProgressDialog("正在导入数据中, 请稍后");
-			new DbThread().start();
-		} else {                    //	数据库中已经有数据, 直接用从数据库中取出的数据
 
-		}
-	}
-
-	private List<Question> getConditionList() {
-		if (mQuestionDao == null) {
-			mQuestionDao = DbHelper.getQuestionDao();
-		}
 		mQuestionDao = DbHelper.getQuestionDao();
-		List<Question> list = mQuestionDao.loadAll();
-		return list;
+		List<Question> originalList = mQuestionDao.loadAll();
+		mList.addAll(originalList);
+		showProgressDialog("正在导入数据中, 请稍后");
+		new DbThread().start();
 	}
-
 
 	private class DbThread extends Thread {
 		@Override
