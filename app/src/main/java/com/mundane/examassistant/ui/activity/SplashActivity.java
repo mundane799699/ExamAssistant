@@ -69,7 +69,7 @@ public class SplashActivity extends BaseActivity {
 		@Override
 		public void run() {
 			File dbFolder = new File(DB_PATH);
-			if (!dbFolder.mkdirs()) {
+			if (!dbFolder.exists()) {
 				dbFolder.mkdirs();
 			}
 			File dbFile = new File(dbFolder, DB_NAME);
